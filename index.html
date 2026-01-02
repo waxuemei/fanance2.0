@@ -20,7 +20,7 @@
             var display = document.getElementById('global-error-display');
             if(display) {
                 display.style.display = 'block';
-                display.innerHTML += '<h3>⚠️ 程序发生错误:</h3><p>' + msg + '</p>';
+                display.innerHTML += '<h3>⚠️ 程序发生错误:</h3><p>' + msg + '</p><p>位置: ' + line + '行</p>';
             }
         };
     </script>
@@ -53,7 +53,7 @@
 
         // --- 核心配置逻辑 ---
         const getStoredConfig = () => {
-            // 1. 优先：您提供的硬编码配置
+            // 1. 优先：您提供的硬编码配置 (已修复语法错误)
             const manualConfig = {
                 apiKey: "AIzaSyCQeU-r_iUCoq0WWt86pXIVBYuY4Qt1lFc",
                 authDomain: "finance123-c01a0.firebaseapp.com",
