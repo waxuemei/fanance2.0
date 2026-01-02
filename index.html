@@ -52,12 +52,36 @@
             UserPlus, CheckCircle, XCircle, Lock, Eye, EyeOff, X
         } from 'lucide-react';
 
-        // --- Configuration ---
-        const firebaseConfig = JSON.parse(__firebase_config);
+        // --- Configuration (用户配置区) ---
+        // ⚠️⚠️⚠️ 部署前请务必修改此处配置！ ⚠️⚠️⚠️
+        // 请前往 Firebase 控制台 -> 项目设置 -> 您的应用 -> SDK 设置与配置 复制以下内容
+        const firebaseConfig = {
+            apiKey: "您的API_KEY",
+            authDomain: "您的项目ID.firebaseapp.com",
+            projectId: "您的项目ID",
+            storageBucket: "您的项目ID.firebasestorage.app",
+            messagingSenderId: "您的发送者ID",
+            appId: "您的APP_ID"
+        };
+
+        // 检查配置是否已填写，如果未填写则显示提示（防止白屏）
+        if (firebaseConfig.apiKey === "您的API_KEY") {
+            const root = document.getElementById('root');
+            root.innerHTML = `
+                <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;padding:20px;text-align:center;font-family:sans-serif;">
+                    <h2 style="color:#ef4444;font-size:24px;margin-bottom:10px;">⚠️ 配置缺失</h2>
+                    <p style="color:#374151;line-height:1.5;">这是您第一次部署吗？<br/>请使用文本编辑器打开 <strong>index.html</strong> 文件，<br/>找到大约第 65 行的 <code>firebaseConfig</code>，<br/>并填入您的 Firebase 项目信息。</p>
+                </div>
+            `;
+            throw new Error("Firebase configuration missing. Please edit index.html.");
+        }
+
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        
+        // 使用固定的应用ID，确保多端数据一致
+        const appId = 'xu-tire-shop-v1'; 
 
         const BOSS_PIN = "8888"; // 老板密码
         const UNDO_TIME_LIMIT_MS = 5 * 60 * 1000;
@@ -152,11 +176,8 @@
             // Auth & Init
             useEffect(() => {
                 const initAuth = async () => {
-                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                        await signInWithCustomToken(auth, __initial_auth_token);
-                    } else {
-                        await signInAnonymously(auth);
-                    }
+                    // 默认使用匿名登录，如果需要更高级的权限控制建议在 Firebase 控制台开启 Email/Password 登录
+                    await signInAnonymously(auth);
                 };
                 initAuth();
 
