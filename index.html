@@ -7,20 +7,31 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <style>
-        /* Hide scrollbar for clean UI */
         ::-webkit-scrollbar { width: 0px; background: transparent; }
         body { -webkit-tap-highlight-color: transparent; }
-        
-        /* Mobile Safe Area Padding */
-        .pb-safe {
-            padding-bottom: calc(5rem + env(safe-area-inset-bottom));
-        }
-        @media (min-width: 768px) {
-            .pb-safe { padding-bottom: 0; }
-        }
+        .pb-safe { padding-bottom: calc(5rem + env(safe-area-inset-bottom)); }
+        @media (min-width: 768px) { .pb-safe { padding-bottom: 0; } }
+        /* 错误显示器样式 */
+        #global-error-display { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 9999; padding: 20px; overflow: auto; color: red; font-family: monospace; }
     </style>
+    <!-- 错误捕捉脚本：白屏时显示具体报错 -->
+    <script>
+        window.onerror = function(msg, url, line, col, error) {
+            var display = document.getElementById('global-error-display');
+            if(display) {
+                display.style.display = 'block';
+                display.innerHTML += '<h3>⚠️ 程序发生错误:</h3><p>' + msg + '</p><p>位置: ' + url + ':' + line + ':' + col + '</p><pre>' + (error ? error.stack : '') + '</pre>';
+            }
+        };
+        window.addEventListener('unhandledrejection', function(event) {
+            var display = document.getElementById('global-error-display');
+            if(display) {
+                display.style.display = 'block';
+                display.innerHTML += '<h3>⚠️ 未处理的异步错误:</h3><p>' + event.reason + '</p>';
+            }
+        });
+    </script>
     
-    <!-- Import Map for Modules -->
     <script type="importmap">
     {
       "imports": {
@@ -29,12 +40,14 @@
         "lucide-react": "https://esm.sh/lucide-react@0.263.1",
         "firebase/app": "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js",
         "firebase/auth": "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js",
-        "firebase/firestore": "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js"
+        "firebase/firestore": "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js",
+        "firebase/analytics": "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js"
       }
     }
     </script>
 </head>
 <body class="bg-slate-50 text-slate-900 select-none">
+    <div id="global-error-display"></div>
     <div id="root"></div>
 
     <script type="text/babel" data-type="module">
@@ -42,436 +55,279 @@
         import { createRoot } from 'react-dom/client';
         import { initializeApp } from 'firebase/app';
         import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from 'firebase/auth';
-        import { 
-            getFirestore, collection, doc, setDoc, addDoc, onSnapshot, 
-            query, orderBy, deleteDoc, updateDoc, serverTimestamp, getDoc, runTransaction, where 
-        } from 'firebase/firestore';
-        import { 
-            Users, Wrench, PackagePlus, History, TrendingUp, LogOut, 
-            AlertTriangle, Trash2, Plus, Minus, Search, ArrowRight, ShieldCheck,
-            UserPlus, CheckCircle, XCircle, Lock, Eye, EyeOff, X
-        } from 'lucide-react';
+        import { getFirestore, collection, doc, setDoc, addDoc, onSnapshot, query, orderBy, deleteDoc, updateDoc, serverTimestamp, getDoc, runTransaction, where } from 'firebase/firestore';
+        import { Users, Wrench, PackagePlus, History, TrendingUp, LogOut, AlertTriangle, Trash2, Plus, Minus, Search, ArrowRight, ShieldCheck, UserPlus, CheckCircle, XCircle, Lock, Eye, EyeOff, X, Settings, Cloud } from 'lucide-react';
 
-        // --- Configuration (用户配置区) ---
-        // ⚠️⚠️⚠️ 部署前请务必修改此处配置！ ⚠️⚠️⚠️
-        // 请前往 Firebase 控制台 -> 项目设置 -> 您的应用 -> SDK 设置与配置 复制以下内容
-        const firebaseConfig = {
-            apiKey: "AIzaSyCQeU-r_iUCoq0WWt86pXIVBYuY4Qt1lFc",
-            authDomain: "finance123-c01a0.firebaseapp.com",
-            projectId: "finance123-c01a0",
-            storageBucket: "finance123-c01a0.firebasestorage.app",
-            messagingSenderId: "519457301228",
-            appId: "1:519457301228:web:cc713b1fc1fca47ed0bbc9",
-            measurementId: "G-H0BW472LGV"apiKey: ",
+        // --- 核心配置逻辑 (已填入您的配置) ---
+        const getStoredConfig = () => {
+            // 1. 优先：您提供的硬编码配置
+            const manualConfig = {
+                apiKey: "AIzaSyCQeU-r_iUCoq0WWt86pXIVBYuY4Qt1lFc",
+                authDomain: "finance123-c01a0.firebaseapp.com",
+                projectId: "finance123-c01a0",
+                storageBucket: "finance123-c01a0.firebasestorage.app",
+                messagingSenderId: "519457301228",
+                appId: "1:519457301228:web:cc713b1fc1fca47ed0bbc9",
+                measurementId: "G-H0BW472LGV"
+            };
+            
+            // 如果是在 Canvas 预览环境，尝试使用环境变量
+            if (typeof __firebase_config !== 'undefined') {
+                try {
+                    return JSON.parse(__firebase_config);
+                } catch(e) {
+                    console.log("Canvas config parse error, using manual config");
+                }
+            }
+
+            return manualConfig;
         };
 
-        // 检查配置是否已填写，如果未填写则显示提示（防止白屏）
-        if (firebaseConfig.apiKey === "您的API_KEY") {
-            const root = document.getElementById('root');
-            root.innerHTML = `
-                <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;padding:20px;text-align:center;font-family:sans-serif;">
-                    <h2 style="color:#ef4444;font-size:24px;margin-bottom:10px;">⚠️ 配置缺失</h2>
-                    <p style="color:#374151;line-height:1.5;">这是您第一次部署吗？<br/>请使用文本编辑器打开 <strong>index.html</strong> 文件，<br/>找到大约第 65 行的 <code>firebaseConfig</code>，<br/>并填入您的 Firebase 项目信息。</p>
-                </div>
-            `;
-            throw new Error("Firebase configuration missing. Please edit index.html.");
-        }
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-        
-        // 使用固定的应用ID，确保多端数据一致
-        const appId = 'xu-tire-shop-v1'; 
-
-        const BOSS_PIN = "8888"; // 老板密码
+        const config = getStoredConfig();
+        const BOSS_PIN = "8888";
         const UNDO_TIME_LIMIT_MS = 5 * 60 * 1000;
+        const appUniqueId = typeof __app_id !== 'undefined' ? __app_id : 'xu-tire-shop-v1';
 
         // --- UI Components ---
-        const Card = ({ children, className = "" }) => (
-            <div className={`bg-white rounded-xl shadow-sm border border-slate-100 p-4 ${className}`}>
-                {children}
-            </div>
-        );
-
+        const Card = ({ children, className = "" }) => <div className={`bg-white rounded-xl shadow-sm border border-slate-100 p-4 ${className}`}>{children}</div>;
         const Button = ({ onClick, children, variant = "primary", className = "", disabled = false }) => {
-            const baseStyle = "px-4 py-3 rounded-lg font-medium transition-all active:scale-95 disabled:opacity-50 disabled:scale-100 flex items-center justify-center gap-2";
-            const variants = {
-                primary: "bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-200",
-                secondary: "bg-slate-100 text-slate-700 hover:bg-slate-200",
-                danger: "bg-red-50 text-red-600 hover:bg-red-100",
-                success: "bg-emerald-500 text-white hover:bg-emerald-600 shadow-lg shadow-emerald-200",
-                outline: "border border-slate-200 text-slate-600 hover:bg-slate-50",
-            };
-            return (
-                <button onClick={onClick} className={`${baseStyle} ${variants[variant]} ${className}`} disabled={disabled}>
-                    {children}
-                </button>
-            );
+            const base = "px-4 py-3 rounded-lg font-medium transition-all active:scale-95 disabled:opacity-50 disabled:scale-100 flex items-center justify-center gap-2";
+            const vs = { primary: "bg-blue-600 text-white shadow-lg shadow-blue-200", outline: "border border-slate-200 text-slate-600" };
+            return <button onClick={onClick} className={`${base} ${vs[variant] || vs.primary} ${className}`} disabled={disabled}>{children}</button>;
         };
-
         const Input = ({ label, value, onChange, type = "text", placeholder = "", disabled = false, inputMode }) => {
-            const [showPass, setShowPass] = useState(false);
-            const isPassword = type === "password";
-            
-            // Auto-detect input mode for better mobile keyboard
-            const finalInputMode = inputMode || (type === 'number' ? 'decimal' : 'text');
-
+            const [show, setShow] = useState(false);
+            const isPass = type === "password";
             return (
-                <div className="flex flex-col gap-1 mb-3 relative">
-                    <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">{label}</label>
+                <div className="mb-3">
+                    <label className="text-xs font-bold text-slate-500 uppercase tracking-wider block mb-1">{label}</label>
                     <div className="relative">
-                        <input
-                            type={isPassword && showPass ? "text" : type}
-                            inputMode={finalInputMode}
-                            value={value}
-                            onChange={(e) => onChange(e.target.value)}
-                            className="w-full px-3 py-3 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 bg-white disabled:bg-slate-50 transition-all text-base"
-                            placeholder={placeholder}
-                            disabled={disabled}
-                            style={{ fontSize: '16px' }} // Prevent iOS zoom on focus
-                        />
-                        {isPassword && (
-                            <button 
-                                type="button"
-                                onClick={() => setShowPass(!showPass)}
-                                className="absolute right-3 top-3 text-slate-400 p-1"
-                            >
-                                {showPass ? <EyeOff size={20}/> : <Eye size={20}/>}
-                            </button>
-                        )}
+                        <input type={isPass && show ? "text" : type} inputMode={inputMode} value={value} onChange={e => onChange(e.target.value)} className="w-full p-3 border rounded-lg bg-white text-base focus:ring-2 focus:ring-blue-500/50 outline-none" placeholder={placeholder} disabled={disabled} style={{fontSize:'16px'}} />
+                        {isPass && <button onClick={() => setShow(!show)} className="absolute right-3 top-3 text-slate-400 p-1">{show ? <EyeOff size={20}/> : <Eye size={20}/>}</button>}
                     </div>
                 </div>
             );
         };
 
-        const Modal = ({ isOpen, onClose, title, children }) => {
-            if (!isOpen) return null;
-            return (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-                    <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl p-6 relative animate-in zoom-in-95 duration-200 max-h-[90vh] overflow-y-auto">
-                        <div className="flex justify-between items-center mb-4 sticky top-0 bg-white z-10">
-                            <h3 className="text-xl font-bold text-slate-800">{title}</h3>
-                            <button onClick={onClose} className="p-2 hover:bg-slate-100 rounded-full text-slate-400 -mr-2">
-                                <Plus className="w-6 h-6 rotate-45" />
-                            </button>
-                        </div>
-                        {children}
-                    </div>
-                </div>
-            );
-        };
+        // --- Main App Logic ---
+        function Main() {
+            if (!config || !config.apiKey) {
+                return <div className="p-8 text-center text-red-500">❌ 错误：未找到 Firebase 配置，请检查 index.html 代码。</div>;
+            }
 
-        // --- Main App ---
-        function TireShopApp() {
+            // 初始化 Firebase
+            let app, auth, db;
+            try {
+                app = initializeApp(config);
+                auth = getAuth(app);
+                db = getFirestore(app);
+            } catch (e) {
+                console.error("Firebase Init Error:", e);
+                return <div className="p-8 text-center text-red-500">❌ Firebase 初始化失败: {e.message}</div>;
+            }
+
+            return <TireShopApp app={app} auth={auth} db={db} />;
+        }
+
+        // --- Business App ---
+        function TireShopApp({ app, auth, db }) {
             const [user, setUser] = useState(null);
             const [loading, setLoading] = useState(true);
             const [bossLocked, setBossLocked] = useState(false);
-            
             const [inventory, setInventory] = useState([]);
             const [transactions, setTransactions] = useState([]);
             const [currentTab, setCurrentTab] = useState('dashboard');
             const [showLogin, setShowLogin] = useState(true);
             const [notification, setNotification] = useState(null);
 
-            // Auth & Init
+            // Auth
             useEffect(() => {
-                const initAuth = async () => {
-                    // 默认使用匿名登录，如果需要更高级的权限控制建议在 Firebase 控制台开启 Email/Password 登录
-                    await signInAnonymously(auth);
+                const initAuth = async () => { 
+                    try {
+                        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                            await signInWithCustomToken(auth, __initial_auth_token);
+                        } else {
+                            await signInAnonymously(auth);
+                        }
+                    } catch (e) {
+                        console.error("Auth Error:", e);
+                        // 如果自动登录失败，尝试匿名登录作为兜底
+                        try { await signInAnonymously(auth); } catch(e2) { console.error("Anonymous Auth Failed:", e2); }
+                    }
                 };
                 initAuth();
-
-                return onAuthStateChanged(auth, async (firebaseUser) => {
-                    if (firebaseUser) {
-                        const savedUser = localStorage.getItem('tireShopUser');
-                        if (savedUser) {
-                            const parsedUser = JSON.parse(savedUser);
-                            if (parsedUser.role === 'boss') {
-                                setUser(parsedUser);
-                                setShowLogin(false);
-                                setBossLocked(true); // Auto-lock boss on reload for security
-                            } else {
-                                // Validate employee status
+                
+                return onAuthStateChanged(auth, async (u) => {
+                    if (u) {
+                        const saved = localStorage.getItem('tireShopUser');
+                        if (saved) {
+                            const p = JSON.parse(saved);
+                            if (p.role === 'boss') { setUser(p); setShowLogin(false); setBossLocked(true); }
+                            else {
                                 try {
-                                    const userRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', parsedUser.name);
-                                    const userSnap = await getDoc(userRef);
-                                    if (userSnap.exists() && userSnap.data().status === 'approved') {
-                                        setUser(parsedUser);
-                                        setShowLogin(false);
-                                    } else {
-                                        localStorage.removeItem('tireShopUser');
-                                        setShowLogin(true);
-                                    }
-                                } catch (e) {
-                                    localStorage.removeItem('tireShopUser');
-                                    setShowLogin(true);
+                                    const snap = await getDoc(doc(db, 'artifacts', appUniqueId, 'public', 'data', 'users', p.name));
+                                    if (snap.exists() && snap.data().status === 'approved') { setUser(p); setShowLogin(false); }
+                                    else { localStorage.removeItem('tireShopUser'); setShowLogin(true); }
+                                } catch(e) { 
+                                    // 网络错误时不强制登出，允许离线查看（如果有缓存）
+                                    console.log("Verify user status failed:", e);
+                                    setUser(p); setShowLogin(false);
                                 }
                             }
-                        } else {
-                            setShowLogin(true);
-                        }
+                        } else setShowLogin(true);
                     }
                     setLoading(false);
                 });
             }, []);
 
-            // Data Listeners
+            // Data
             useEffect(() => {
                 if (!user || bossLocked) return;
-
-                const invQ = query(collection(db, 'artifacts', appId, 'public', 'data', 'inventory'));
-                const unsubInv = onSnapshot(invQ, (snap) => {
-                    setInventory(snap.docs.map(d => ({ id: d.id, ...d.data() })));
-                });
-
-                const txQ = query(collection(db, 'artifacts', appId, 'public', 'data', 'transactions'));
-                const unsubTx = onSnapshot(txQ, (snap) => {
-                    setTransactions(snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => b.timestamp - a.timestamp));
-                });
-
+                const unsubInv = onSnapshot(query(collection(db, 'artifacts', appUniqueId, 'public', 'data', 'inventory')), (s) => setInventory(s.docs.map(d => ({id:d.id,...d.data()}))));
+                const unsubTx = onSnapshot(query(collection(db, 'artifacts', appUniqueId, 'public', 'data', 'transactions')), (s) => setTransactions(s.docs.map(d => ({id:d.id,...d.data()})).sort((a,b)=>b.timestamp-a.timestamp)));
                 return () => { unsubInv(); unsubTx(); };
             }, [user, bossLocked]);
 
-            const showNotify = (msg, type = 'success') => {
-                setNotification({ msg, type });
-                setTimeout(() => setNotification(null), 3000);
-            };
+            const showNotify = (msg, type = 'success') => { setNotification({ msg, type }); setTimeout(() => setNotification(null), 3000); };
+            const handleLoginSuccess = (u) => { setUser(u); localStorage.setItem('tireShopUser', JSON.stringify(u)); setShowLogin(false); setBossLocked(false); setCurrentTab('dashboard'); };
+            const handleLogout = () => { setUser(null); localStorage.removeItem('tireShopUser'); setShowLogin(true); setBossLocked(false); };
 
-            const handleLoginSuccess = (userData) => {
-                setUser(userData);
-                localStorage.setItem('tireShopUser', JSON.stringify(userData));
-                setShowLogin(false);
-                setBossLocked(false);
-                setCurrentTab('dashboard');
-            };
-
-            const handleLogout = () => {
-                setUser(null);
-                localStorage.removeItem('tireShopUser');
-                setShowLogin(true);
-                setBossLocked(false);
-            };
-
-            // Business Logic
-            const handleStockIn = async (brand, spec, qty, costPerUnit) => {
+            // Logic
+            const handleStockIn = async (brand, spec, qty, cost) => {
                 try {
-                    const quantity = parseInt(qty);
-                    const cost = parseFloat(costPerUnit);
-                    const cleanBrand = brand.trim();
-                    const cleanSpec = spec.trim();
-                    const docId = `${cleanBrand}_${cleanSpec}`.replace(/[\s/]+/g, '_').toUpperCase();
-                    
-                    const itemRef = doc(db, 'artifacts', appId, 'public', 'data', 'inventory', docId);
-
+                    const q = parseInt(qty), c = parseFloat(cost);
+                    const bid = `${brand.trim()}_${spec.trim()}`.replace(/[\s/]+/g, '_').toUpperCase();
+                    const ref = doc(db, 'artifacts', appUniqueId, 'public', 'data', 'inventory', bid);
                     await runTransaction(db, async (t) => {
-                        const itemDoc = await t.get(itemRef);
-                        let newQty = quantity;
-                        let newAvgCost = cost;
-
-                        if (itemDoc.exists()) {
-                            const d = itemDoc.data();
-                            const currQty = Number(d.quantity) || 0;
-                            const currAvg = Number(d.avgCost) || 0;
-                            newQty = currQty + quantity;
-                            newAvgCost = ((currQty * currAvg) + (quantity * cost)) / newQty;
-                        }
-
-                        t.set(itemRef, { brand: cleanBrand, spec: cleanSpec, quantity: newQty, avgCost: newAvgCost }, { merge: true });
-                        
-                        const txRef = doc(collection(db, 'artifacts', appId, 'public', 'data', 'transactions'));
-                        t.set(txRef, {
-                            type: 'stock_in', brand: cleanBrand, spec: cleanSpec, quantity, cost,
-                            totalCost: quantity * cost, date: new Date().toISOString(), timestamp: Date.now(), operator: user.name
-                        });
+                        const snap = await t.get(ref);
+                        let nq = q, navg = c;
+                        if (snap.exists()) { const d = snap.data(); const cq = Number(d.quantity)||0; const ca = Number(d.avgCost)||0; nq = cq+q; navg = ((cq*ca)+(q*c))/nq; }
+                        t.set(ref, { brand: brand.trim(), spec: spec.trim(), quantity: nq, avgCost: navg }, { merge: true });
+                        t.set(doc(collection(db, 'artifacts', appUniqueId, 'public', 'data', 'transactions')), { type: 'stock_in', brand: brand.trim(), spec: spec.trim(), quantity: q, cost: c, totalCost: q*c, date: new Date().toISOString(), timestamp: Date.now(), operator: user.name });
                     });
-                    showNotify(`成功入库 ${quantity} 条`);
-                } catch (e) {
-                    showNotify("入库失败: " + e.message, "error");
-                }
+                    showNotify(`入库成功: ${q}条`);
+                } catch (e) { showNotify("入库失败: " + e.message, "error"); }
             };
 
-            const handleSale = async (invId, qty, sellPrice) => {
+            const handleSale = async (id, qty, price) => {
                 try {
-                    const quantity = parseInt(qty);
-                    const price = parseFloat(sellPrice);
-                    const itemRef = doc(db, 'artifacts', appId, 'public', 'data', 'inventory', invId);
-
+                    const q = parseInt(qty), p = parseFloat(price);
+                    const ref = doc(db, 'artifacts', appUniqueId, 'public', 'data', 'inventory', id);
                     await runTransaction(db, async (t) => {
-                        const itemDoc = await t.get(itemRef);
-                        if (!itemDoc.exists()) throw "商品不存在";
-                        const d = itemDoc.data();
-                        const currQty = Number(d.quantity) || 0;
-                        if (currQty < quantity) throw "库存不足";
-
-                        t.update(itemRef, { quantity: currQty - quantity });
-                        
-                        const txRef = doc(collection(db, 'artifacts', appId, 'public', 'data', 'transactions'));
-                        t.set(txRef, {
-                            type: 'sale', inventoryId: invId, brand: d.brand, spec: d.spec, quantity, price,
-                            totalPrice: price * quantity, costAtTime: Number(d.avgCost) || 0,
-                            profit: (price - (Number(d.avgCost) || 0)) * quantity,
-                            date: new Date().toISOString(), timestamp: Date.now(), operator: user.name, employeeId: user.name
-                        });
+                        const snap = await t.get(ref);
+                        if (!snap.exists()) throw "无此商品";
+                        const d = snap.data();
+                        const cq = Number(d.quantity)||0;
+                        if (cq < q) throw "库存不足";
+                        t.update(ref, { quantity: cq-q });
+                        const ca = Number(d.avgCost)||0;
+                        t.set(doc(collection(db, 'artifacts', appUniqueId, 'public', 'data', 'transactions')), { type: 'sale', inventoryId: id, brand: d.brand, spec: d.spec, quantity: q, price: p, totalPrice: p*q, costAtTime: ca, profit: (p-ca)*q, date: new Date().toISOString(), timestamp: Date.now(), operator: user.name });
                     });
-                    showNotify("销售记录成功！");
-                } catch (e) {
-                    showNotify(typeof e === 'string' ? e : "销售失败", "error");
-                }
+                    showNotify("销售成功");
+                } catch (e) { showNotify(typeof e==='string'?e:"销售失败", "error"); }
             };
 
-            const handleService = async (serviceName, qty, totalPrice) => {
+            const handleService = async (type, qty, price) => {
                 try {
-                    await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'transactions'), {
-                        type: 'service', serviceName, quantity: parseInt(qty), totalPrice: parseFloat(totalPrice),
-                        profit: parseFloat(totalPrice), date: new Date().toISOString(), timestamp: Date.now(), operator: user.name
-                    });
-                    showNotify("服务记录成功！");
-                } catch (e) {
-                    showNotify("记录失败", "error");
-                }
+                    await addDoc(collection(db, 'artifacts', appUniqueId, 'public', 'data', 'transactions'), { type: 'service', serviceName: type, quantity: parseInt(qty), totalPrice: parseFloat(price), profit: parseFloat(price), date: new Date().toISOString(), timestamp: Date.now(), operator: user.name });
+                    showNotify("服务记录成功");
+                } catch (e) { showNotify("记录失败", "error"); }
             };
 
             const handleUndo = async (tx) => {
-                if (Date.now() - tx.timestamp > UNDO_TIME_LIMIT_MS && user.role !== 'boss') {
-                    showNotify("已超过5分钟撤回时间，请联系老板", "error");
-                    return;
-                }
+                if (Date.now()-tx.timestamp > UNDO_TIME_LIMIT_MS && user.role !== 'boss') { showNotify("超时无法撤回", "error"); return; }
                 try {
                     await runTransaction(db, async (t) => {
-                        if (tx.type === 'sale' && tx.inventoryId) {
-                            const itemRef = doc(db, 'artifacts', appId, 'public', 'data', 'inventory', tx.inventoryId);
-                            const itemDoc = await t.get(itemRef);
-                            if (itemDoc.exists()) t.update(itemRef, { quantity: (Number(itemDoc.data().quantity) || 0) + tx.quantity });
+                        if (tx.type==='sale' && tx.inventoryId) {
+                            const r = doc(db, 'artifacts', appUniqueId, 'public', 'data', 'inventory', tx.inventoryId);
+                            const s = await t.get(r);
+                            if (s.exists()) t.update(r, { quantity: (Number(s.data().quantity)||0)+tx.quantity });
                         }
-                        if (tx.type === 'stock_in') {
-                            const docId = `${tx.brand}_${tx.spec}`.replace(/[\s/]+/g, '_').toUpperCase();
-                            const itemRef = doc(db, 'artifacts', appId, 'public', 'data', 'inventory', docId);
-                            const itemDoc = await t.get(itemRef);
-                            if (itemDoc.exists()) {
-                                const q = Number(itemDoc.data().quantity) || 0;
-                                if (q < tx.quantity) throw "库存不足以撤销";
-                                t.update(itemRef, { quantity: q - tx.quantity });
-                            }
+                        if (tx.type==='stock_in') {
+                            const bid = `${tx.brand}_${tx.spec}`.replace(/[\s/]+/g, '_').toUpperCase();
+                            const r = doc(db, 'artifacts', appUniqueId, 'public', 'data', 'inventory', bid);
+                            const s = await t.get(r);
+                            if(s.exists()){ const cq = Number(s.data().quantity)||0; if(cq<tx.quantity) throw "库存不足无法撤回"; t.update(r,{quantity: cq-tx.quantity}); }
                         }
-                        t.delete(doc(db, 'artifacts', appId, 'public', 'data', 'transactions', tx.id));
+                        t.delete(doc(db, 'artifacts', appUniqueId, 'public', 'data', 'transactions', tx.id));
                     });
-                    showNotify("记录已撤销");
-                } catch (e) {
-                    showNotify("撤销失败: " + e, "error");
-                }
+                    showNotify("已撤销");
+                } catch(e) { showNotify(typeof e==='string'?e:"撤销失败", "error"); }
             };
 
-            if (loading) return <div className="min-h-screen flex items-center justify-center text-slate-400">系统加载中...</div>;
-            if (bossLocked) return <BossLockScreen onUnlock={(pin) => pin === BOSS_PIN ? (setBossLocked(false), showNotify("解锁成功")) : showNotify("密码错误", "error")} onSwitchUser={handleLogout} />;
-            if (showLogin) return <LoginScreen onLoginSuccess={handleLoginSuccess} showNotify={showNotify} />;
+            if (loading) return <div className="h-screen flex items-center justify-center text-slate-400">加载中...</div>;
+            if (bossLocked) return <BossLockScreen onUnlock={p => p===BOSS_PIN?(setBossLocked(false),showNotify("解锁")) : showNotify("密码错误","error")} onSwitchUser={handleLogout} />;
+            if (showLogin) return <LoginScreen onLoginSuccess={handleLoginSuccess} showNotify={showNotify} db={db} />;
 
             return (
                 <div className="min-h-screen pb-safe">
-                    {notification && (
-                        <div className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 px-6 py-3 rounded-full shadow-xl text-white font-medium animate-in fade-in slide-in-from-top-4 ${notification.type === 'error' ? 'bg-red-500' : 'bg-emerald-500'} max-w-[90vw] text-center`}>
-                            {notification.msg}
-                        </div>
-                    )}
-                    
-                    <header className="bg-slate-900 text-white sticky top-0 z-40 shadow-lg">
-                        <div className="max-w-3xl mx-auto px-4 py-4 flex justify-between items-center">
-                            <div className="flex items-center gap-3">
-                                <div className="bg-blue-600 p-2 rounded-lg shrink-0"><Users className="w-5 h-5 text-white" /></div>
-                                <div>
-                                    <h1 className="font-bold text-lg leading-tight">许氏轮胎店</h1>
-                                    <p className="text-xs text-slate-400 flex items-center gap-1">
-                                        <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-                                        {user.role === 'boss' ? '老板端' : '员工端'} · {user.name}
-                                    </p>
-                                </div>
-                            </div>
-                            <button onClick={handleLogout} className="text-slate-400 hover:text-white p-2"><LogOut className="w-5 h-5" /></button>
-                        </div>
-                    </header>
-
+                    {notification && <div className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 px-6 py-3 rounded-full shadow-xl text-white font-medium animate-in fade-in slide-in-from-top-4 ${notification.type==='error'?'bg-red-500':'bg-emerald-500'} max-w-[90vw] text-center`}>{notification.msg}</div>}
+                    <header className="bg-slate-900 text-white sticky top-0 z-40 shadow-lg px-4 py-4 flex justify-between items-center"><div className="flex items-center gap-3"><div className="bg-blue-600 p-2 rounded-lg shrink-0"><Users size={20}/></div><div><h1 className="font-bold text-lg">许氏轮胎店</h1><p className="text-xs text-slate-400">{user.role==='boss'?'老板端':'员工端'} · {user.name}</p></div></div><button onClick={handleLogout} className="text-slate-400 hover:text-white p-2"><LogOut size={20}/></button></header>
                     <main className="max-w-3xl mx-auto p-4 space-y-6">
-                        <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 p-2 md:relative md:bg-transparent md:border-0 md:p-0 z-30 pb-safe">
-                            <div className="max-w-3xl mx-auto grid grid-cols-3 gap-2">
-                                <NavBtn active={currentTab === 'dashboard'} onClick={() => setCurrentTab('dashboard')} icon={TrendingUp} label="概览" />
-                                <NavBtn active={currentTab === 'operate'} onClick={() => setCurrentTab('operate')} icon={Wrench} label="记账" />
-                                {user.role === 'boss' ? (
-                                    <NavBtn active={currentTab === 'inventory'} onClick={() => setCurrentTab('inventory')} icon={PackagePlus} label="仓库" />
-                                ) : (
-                                    <NavBtn active={currentTab === 'history'} onClick={() => setCurrentTab('history')} icon={History} label="记录" />
-                                )}
-                            </div>
-                        </nav>
-
-                        {currentTab === 'dashboard' && <DashboardView user={user} txs={transactions} inv={inventory} showNotify={showNotify} />}
-                        {currentTab === 'operate' && <OperateView user={user} inv={inventory} onSale={handleSale} onService={handleService} />}
-                        {currentTab === 'inventory' && user.role === 'boss' && <InventoryView inv={inventory} onStockIn={handleStockIn} />}
-                        {currentTab === 'history' && <HistoryView user={user} txs={transactions} onUndo={handleUndo} />}
+                        <nav className="fixed bottom-0 left-0 right-0 bg-white border-t p-2 z-30 pb-safe md:relative md:border-0 md:p-0"><div className="max-w-3xl mx-auto grid grid-cols-3 gap-2">
+                            <NavBtn active={currentTab==='dashboard'} onClick={()=>setCurrentTab('dashboard')} icon={TrendingUp} label="概览"/>
+                            <NavBtn active={currentTab==='operate'} onClick={()=>setCurrentTab('operate')} icon={Wrench} label="记账"/>
+                            {user.role==='boss'?<NavBtn active={currentTab==='inventory'} onClick={()=>setCurrentTab('inventory')} icon={PackagePlus} label="仓库"/>:<NavBtn active={currentTab==='history'} onClick={()=>setCurrentTab('history')} icon={History} label="记录"/>}
+                        </div></nav>
+                        {currentTab==='dashboard' && <DashboardView user={user} txs={transactions} inv={inventory} showNotify={showNotify} db={db} />}
+                        {currentTab==='operate' && <OperateView user={user} inv={inventory} onSale={handleSale} onService={handleService} />}
+                        {currentTab==='inventory' && <InventoryView inv={inventory} onStockIn={handleStockIn} />}
+                        {currentTab==='history' && <HistoryView user={user} txs={transactions} onUndo={handleUndo} />}
                     </main>
                 </div>
             );
         }
 
-        // --- Views ---
-
-        const LoginScreen = ({ onLoginSuccess, showNotify }) => {
-            const [mode, setMode] = useState(null);
-            const [activeTab, setActiveTab] = useState('login');
+        // --- Sub Components ---
+        const LoginScreen = ({ onLoginSuccess, showNotify, db }) => {
+            const [tab, setTab] = useState('login');
             const [name, setName] = useState("");
-            const [password, setPassword] = useState("");
+            const [pass, setPass] = useState("");
             const [loading, setLoading] = useState(false);
+            const [mode, setMode] = useState(null);
 
-            const handleBoss = () => {
-                if (password === BOSS_PIN) onLoginSuccess({ name: 'Boss', role: 'boss' });
-                else showNotify("密码错误", "error");
-            };
-
-            const handleEmpLogin = async () => {
-                if (!name || !password) return;
+            const handleLogin = async () => {
+                if (mode === 'boss') {
+                    if (pass === BOSS_PIN) onLoginSuccess({ name: 'Boss', role: 'boss' });
+                    else showNotify("密码错误", "error");
+                    return;
+                }
+                if (!name || !pass) return;
                 setLoading(true);
                 try {
-                    const snap = await getDoc(doc(db, 'artifacts', appId, 'public', 'data', 'users', name));
+                    const snap = await getDoc(doc(db, 'artifacts', appUniqueId, 'public', 'data', 'users', name));
                     if (!snap.exists()) showNotify("账号不存在", "error");
                     else {
                         const d = snap.data();
-                        if (d.password !== password) showNotify("密码错误", "error");
-                        else if (d.status === 'pending') showNotify("审核中", "error");
-                        else if (d.status === 'rejected') showNotify("申请已拒绝", "error");
+                        if (d.password !== pass) showNotify("密码错误", "error");
+                        else if (d.status !== 'approved') showNotify("账号审核中或被拒", "error");
                         else onLoginSuccess({ name: d.name, role: 'employee' });
                     }
-                } catch (e) { showNotify("登录失败", "error"); }
+                } catch(e) { showNotify("登录失败: "+e.message, "error"); }
                 setLoading(false);
             };
 
-            const handleRegister = async () => {
-                if (!name || !password) return;
+            const handleReg = async () => {
+                if (!name || !pass) return;
                 setLoading(true);
                 try {
-                    const ref = doc(db, 'artifacts', appId, 'public', 'data', 'users', name);
+                    const ref = doc(db, 'artifacts', appUniqueId, 'public', 'data', 'users', name);
                     const snap = await getDoc(ref);
-                    if (snap.exists()) showNotify("用户名已存在", "error");
+                    if (snap.exists()) showNotify("用户已存在", "error");
                     else {
-                        await setDoc(ref, { name, password, role: 'employee', status: 'pending', createdAt: new Date().toISOString() });
-                        showNotify("申请已提交，请等待审核");
-                        setActiveTab('login');
+                        await setDoc(ref, { name, password: pass, role: 'employee', status: 'pending', createdAt: new Date().toISOString() });
+                        showNotify("申请已提交"); setTab('login');
                     }
-                } catch (e) { showNotify("注册失败", "error"); }
+                } catch(e) { showNotify("注册失败", "error"); }
                 setLoading(false);
             };
 
             if (!mode) return (
                 <div className="min-h-screen bg-slate-900 flex flex-col items-center justify-center p-6 space-y-8">
-                    <div className="text-center space-y-2">
-                        <div className="w-16 h-16 bg-blue-600 rounded-2xl mx-auto flex items-center justify-center shadow-lg"><Users className="text-white w-8 h-8"/></div>
-                        <h1 className="text-3xl font-bold text-white">许氏轮胎店</h1>
-                    </div>
-                    <div className="grid gap-4 w-full max-w-sm">
-                        <button onClick={() => setMode('employee')} className="bg-white p-6 rounded-xl flex items-center justify-between group active:scale-95 transition-transform">
-                            <div className="flex items-center gap-4"><div className="bg-blue-100 p-3 rounded-lg text-blue-600"><Wrench /></div><div className="text-left"><div className="font-bold text-lg">我是员工</div><div className="text-sm text-slate-500">记账、查库存</div></div></div><ArrowRight className="text-slate-300"/>
-                        </button>
-                        <button onClick={() => setMode('boss')} className="bg-slate-800 text-white p-6 rounded-xl flex items-center justify-between border border-slate-700 active:scale-95 transition-transform">
-                            <div className="flex items-center gap-4"><div className="bg-slate-700 p-3 rounded-lg text-slate-300"><ShieldCheck /></div><div className="text-left"><div className="font-bold text-lg">我是老板</div><div className="text-sm text-slate-400">管理、看利润</div></div></div><ArrowRight className="text-slate-600"/>
-                        </button>
+                    <div className="text-center"><div className="w-16 h-16 bg-blue-600 rounded-2xl mx-auto flex items-center justify-center shadow-lg mb-2"><Users className="text-white w-8 h-8"/></div><h1 className="text-3xl font-bold text-white">许氏轮胎店</h1></div>
+                    <div className="w-full max-w-sm space-y-4">
+                        <button onClick={()=>setMode('employee')} className="bg-white p-6 rounded-xl flex justify-between items-center w-full active:scale-95 transition-transform"><div className="flex gap-4 items-center"><div className="bg-blue-100 p-3 rounded text-blue-600"><Wrench/></div><div className="text-left"><div className="font-bold">我是员工</div><div className="text-sm text-slate-500">记账/查询</div></div></div><ArrowRight className="text-slate-300"/></button>
+                        <button onClick={()=>setMode('boss')} className="bg-slate-800 border border-slate-700 text-white p-6 rounded-xl flex justify-between items-center w-full active:scale-95 transition-transform"><div className="flex gap-4 items-center"><div className="bg-slate-700 p-3 rounded text-slate-300"><ShieldCheck/></div><div className="text-left"><div className="font-bold">我是老板</div><div className="text-sm text-slate-400">管理/利润</div></div></div><ArrowRight className="text-slate-600"/></button>
                     </div>
                 </div>
             );
@@ -479,44 +335,41 @@
             return (
                 <div className="min-h-screen bg-slate-50 flex items-center justify-center p-6">
                     <Card className="w-full max-w-sm">
-                        <h2 className="text-2xl font-bold text-slate-800 mb-6 text-center">{mode === 'employee' ? '员工入口' : '老板登录'}</h2>
-                        {mode === 'employee' ? (
-                            <div className="space-y-4">
-                                <div className="flex border-b border-slate-100 mb-4">
-                                    <button onClick={() => setActiveTab('login')} className={`flex-1 pb-2 font-bold border-b-2 transition-colors ${activeTab === 'login' ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-400'}`}>登录</button>
-                                    <button onClick={() => setActiveTab('register')} className={`flex-1 pb-2 font-bold border-b-2 transition-colors ${activeTab === 'register' ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-400'}`}>注册</button>
-                                </div>
-                                <Input label="姓名" value={name} onChange={setName} placeholder="输入您的名字" />
-                                <Input label="登录密码" type="password" value={password} onChange={setPassword} placeholder="设置您的密码" />
-                                {activeTab === 'login' ? (
-                                    <Button onClick={handleEmpLogin} disabled={loading} className="w-full">{loading ? '登录中...' : '登录'}</Button>
-                                ) : (
-                                    <Button onClick={handleRegister} disabled={loading} className="w-full" variant="outline">{loading ? '提交中...' : '提交申请'}</Button>
-                                )}
-                            </div>
-                        ) : (
-                            <div className="space-y-4">
-                                <Input label="管理员密码" type="password" value={password} onChange={setPassword} placeholder="请输入密码" inputMode="numeric" />
-                                <Button onClick={handleBoss} disabled={!password} className="w-full">验证身份</Button>
+                        <h2 className="text-2xl font-bold text-slate-800 mb-6 text-center">{mode==='employee'?'员工入口':'老板入口'}</h2>
+                        {mode === 'employee' && (
+                            <div className="flex border-b mb-4">
+                                <button onClick={()=>setTab('login')} className={`flex-1 pb-2 font-bold border-b-2 transition-colors ${tab==='login'?'border-blue-600 text-blue-600':'border-transparent text-slate-400'}`}>登录</button>
+                                <button onClick={()=>setTab('reg')} className={`flex-1 pb-2 font-bold border-b-2 transition-colors ${tab==='reg'?'border-blue-600 text-blue-600':'border-transparent text-slate-400'}`}>注册</button>
                             </div>
                         )}
-                        <button onClick={() => { setMode(null); setName(""); setPassword(""); }} className="w-full text-center text-sm text-slate-400 mt-4 p-2">返回选择</button>
+                        <div className="space-y-4">
+                            {mode==='boss' ? (
+                                <Input label="管理员密码" type="password" value={pass} onChange={setPass} inputMode="numeric" placeholder="输入 PIN 码"/>
+                            ) : (
+                                <>
+                                    <Input label="姓名" value={name} onChange={setName} placeholder="您的名字"/>
+                                    <Input label="密码" type="password" value={pass} onChange={setPass} placeholder="设置密码"/>
+                                </>
+                            )}
+                            <Button onClick={tab==='login'||mode==='boss'?handleLogin:handleReg} disabled={loading}>{loading?'处理中...':(tab==='login'||mode==='boss'?'进入系统':'提交申请')}</Button>
+                        </div>
+                        <button onClick={()=>{setMode(null);setName("");setPass("")}} className="w-full text-center text-sm text-slate-400 mt-4 p-2">返回选择</button>
                     </Card>
                 </div>
             );
         };
 
         const BossLockScreen = ({ onUnlock, onSwitchUser }) => {
-            const [pin, setPin] = useState("");
+            const [p, setP] = useState("");
             return (
                 <div className="min-h-screen bg-slate-900 flex flex-col items-center justify-center p-6">
                     <Card className="w-full max-w-sm text-center">
-                        <div className="bg-slate-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"><Lock className="w-8 h-8 text-slate-600" /></div>
-                        <h2 className="text-2xl font-bold text-slate-800 mb-2">欢迎回来，老板</h2>
-                        <p className="text-slate-500 mb-6">为了安全，请输入密码解锁</p>
-                        <Input type="password" value={pin} onChange={setPin} placeholder="请输入密码" inputMode="numeric" />
-                        <Button onClick={() => onUnlock(pin)} className="w-full mb-4">解锁</Button>
-                        <button onClick={onSwitchUser} className="text-sm text-slate-400 p-2">切换账号</button>
+                        <div className="bg-slate-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"><Lock className="w-8 h-8 text-slate-600"/></div>
+                        <h2 className="text-2xl font-bold text-slate-800 mb-2">欢迎回来</h2>
+                        <p className="text-slate-500 mb-6">请输入密码解锁</p>
+                        <Input type="password" value={p} onChange={setP} inputMode="numeric" placeholder="密码"/>
+                        <Button onClick={()=>onUnlock(p)} className="mb-4">解锁</Button>
+                        <button onClick={onSwitchUser} className="text-slate-400 text-sm p-2">切换账号</button>
                     </Card>
                 </div>
             );
@@ -525,11 +378,11 @@
         const StaffManager = ({ showNotify }) => {
             const [pending, setPending] = useState([]);
             useEffect(() => {
-                return onSnapshot(query(collection(db, 'artifacts', appId, 'public', 'data', 'users'), where("status", "==", "pending")), 
+                return onSnapshot(query(collection(db, 'artifacts', appUniqueId, 'public', 'data', 'users'), where("status", "==", "pending")), 
                 (snap) => setPending(snap.docs.map(d => d.data())));
             }, []);
             const handle = async (name, ok) => {
-                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'users', name), { status: ok ? 'approved' : 'rejected' });
+                await updateDoc(doc(db, 'artifacts', appUniqueId, 'public', 'data', 'users', name), { status: ok ? 'approved' : 'rejected' });
                 showNotify(ok ? `已批准 ${name}` : `已拒绝 ${name}`);
             };
             if (!pending.length) return null;
@@ -546,7 +399,7 @@
             );
         };
 
-        const DashboardView = ({ user, txs, inv, showNotify }) => {
+        const DashboardView = ({ user, txs, inv, showNotify, db }) => {
             const today = new Date().toDateString();
             const todayTx = txs.filter(t => new Date(t.date).toDateString() === today);
             const stats = useMemo(() => {
@@ -608,14 +461,14 @@
                                     </select>
                                 </div>
                                 {item && <div className="bg-blue-50 text-blue-800 text-xs p-2 rounded">当前库存: {item.quantity}</div>}
-                                <div className="grid grid-cols-2 gap-4"><Input label="数量" type="number" value={sq} onChange={setSq} /><Input label="单价" type="number" value={sp} onChange={setSp} /></div>
+                                <div className="grid grid-cols-2 gap-4"><Input label="数量" type="number" value={sq} onChange={setSq} inputMode="decimal" /><Input label="单价" type="number" value={sp} onChange={setSp} inputMode="decimal" /></div>
                                 <div className="bg-slate-50 p-3 rounded flex justify-between"><span className="text-slate-500">总计:</span><span className="font-bold text-lg">¥{((parseFloat(sq)||0)*(parseFloat(sp)||0)).toFixed(0)}</span></div>
                                 <Button onClick={() => { onSale(sid, sq, sp); setSid(""); setSq(""); setSp(""); }} disabled={!sid || !sq || !sp}>确认销售</Button>
                             </div>
                         ) : (
                             <div className="space-y-4">
                                 <div className="flex flex-col gap-1"><label className="text-xs font-semibold text-slate-500 uppercase">服务类型</label><select className="w-full p-3 border border-slate-200 rounded-lg bg-white h-12 text-base" value={st} onChange={e => setSt(e.target.value)} style={{fontSize:'16px'}}>{["补胎","动平衡","四轮定位","充气"].map(o=><option key={o} value={o}>{o}</option>)}</select></div>
-                                <Input label="数量" type="number" value={svq} onChange={setSvq} /><Input label="总价" type="number" value={svp} onChange={setSvp} />
+                                <Input label="数量" type="number" value={svq} onChange={setSvq} inputMode="decimal" /><Input label="总价" type="number" value={svp} onChange={setSvp} inputMode="decimal" />
                                 <Button onClick={() => { onService(st, svq, svp); setSvq(""); setSvp(""); }} disabled={!svq || !svp}>确认记录</Button>
                             </div>
                         )}
@@ -693,17 +546,14 @@
         };
 
         const NavBtn = ({ active, onClick, icon: Icon, label }) => (
-            <button onClick={onClick} className={`flex flex-col items-center justify-center p-2 rounded-xl active:bg-slate-100 transition-colors ${active ? 'text-blue-600 bg-blue-50' : 'text-slate-400'}`}><Icon className={`w-6 h-6 mb-1 ${active?'fill-current':''}`}/><span className="text-xs font-medium">{label}</span></button>
+            <button onClick={onClick} className={`flex flex-col items-center justify-center p-2 rounded-xl transition-colors ${active ? 'text-blue-600 bg-blue-50' : 'text-slate-400'}`}><Icon className={`w-6 h-6 mb-1 ${active?'fill-current':''}`}/><span className="text-xs font-medium">{label}</span></button>
         );
         const StatCard = ({ label, value, color, fullWidth }) => (
             <Card className={`text-center ${fullWidth?'col-span-2':''}`}><div className="text-xs font-semibold text-slate-400 uppercase mb-1">{label}</div><div className={`text-2xl font-bold text-${color}-600`}>{value}</div></Card>
         );
 
         const root = createRoot(document.getElementById('root'));
-        root.render(<TireShopApp />);
+        root.render(<Main />);
     </script>
 </body>
 </html>
-
-
-
