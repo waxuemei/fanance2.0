@@ -75,7 +75,7 @@
                     <svg class="w-5 h-5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                 </button>
             </div>
-            <p class="text-slate-500 text-xs mt-8">LeanCloud 云端版 v1.1</p>
+            <p class="text-slate-500 text-xs mt-8">LeanCloud 云端版 v1.4</p>
         </div>
     </div>
 
@@ -152,9 +152,10 @@
             <div id="empTodayRecords" class="mb-6"></div>
         </main>
         <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 p-2 z-30">
-            <div class="max-w-3xl mx-auto grid grid-cols-3 gap-2">
+            <div class="max-w-3xl mx-auto grid grid-cols-4 gap-2">
                 <button onclick="showEmpTab('dashboard')" class="nav-btn active" id="empNavDashboard"><svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg><span class="text-xs">概览</span></button>
                 <button onclick="showEmpTab('operate')" class="nav-btn" id="empNavOperate"><svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg><span class="text-xs">记账</span></button>
+                <button onclick="showEmpTab('report')" class="nav-btn" id="empNavReport"><svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg><span class="text-xs">报表</span></button>
                 <button onclick="showEmpTab('history')" class="nav-btn" id="empNavHistory"><svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg><span class="text-xs">记录</span></button>
             </div>
         </nav>
@@ -172,6 +173,7 @@
             <div class="flex p-1 bg-slate-200 rounded-xl mb-4">
                 <button onclick="switchOperateTab('sale')" id="opTabSale" class="flex-1 py-2 font-bold rounded-lg bg-white shadow text-blue-600">换胎</button>
                 <button onclick="switchOperateTab('service')" id="opTabService" class="flex-1 py-2 font-bold rounded-lg text-slate-500">补胎</button>
+                <button onclick="switchOperateTab('other')" id="opTabOther" class="flex-1 py-2 font-bold rounded-lg text-slate-500">其他</button>
             </div>
             <div id="saleForm" class="card">
                 <div class="mb-4">
@@ -204,6 +206,21 @@
                 </div>
                 <button onclick="submitService()" class="btn btn-primary w-full">确认记录</button>
             </div>
+            <div id="otherForm" class="card" style="display:none;">
+                <div class="mb-4">
+                    <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">业务名称</label>
+                    <input type="text" id="otherName" class="input" placeholder="如：换电瓶、换机油等">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">业务描述（可选）</label>
+                    <input type="text" id="otherDesc" class="input" placeholder="备注说明">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">收款金额</label>
+                    <input type="number" id="otherPrice" class="input" placeholder="元">
+                </div>
+                <button onclick="submitOther()" class="btn btn-primary w-full">确认记录</button>
+            </div>
         </main>
     </div>
 
@@ -217,6 +234,36 @@
         </header>
         <main class="max-w-3xl mx-auto p-4 pb-safe">
             <div id="empHistoryList"></div>
+        </main>
+    </div>
+
+    <!-- 员工报表页面 -->
+    <div id="employeeReportPage" class="page">
+        <header class="bg-slate-900 text-white sticky top-0 z-40 shadow-lg">
+            <div class="max-w-3xl mx-auto px-4 py-4 flex items-center gap-3">
+                <button onclick="showEmpTab('dashboard')" class="p-2"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg></button>
+                <h1 class="font-bold text-lg">我的报表</h1>
+            </div>
+        </header>
+        <main class="max-w-3xl mx-auto p-4 pb-safe">
+            <!-- 日期选择 -->
+            <div class="card mb-4">
+                <div class="flex gap-2 items-end">
+                    <div class="flex-1">
+                        <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">选择日期</label>
+                        <input type="date" id="empReportDate" class="input" onchange="loadEmpReport()">
+                    </div>
+                    <button onclick="setEmpReportToday()" class="btn btn-secondary">今天</button>
+                </div>
+            </div>
+            <!-- 统计数据 -->
+            <div class="grid grid-cols-2 gap-3 mb-4">
+                <div class="stat-card"><div class="text-xs text-slate-500 mb-1">营业额</div><div id="empReportRevenue" class="text-xl font-bold text-blue-600">¥0</div></div>
+                <div class="stat-card"><div class="text-xs text-slate-500 mb-1">单量</div><div id="empReportOrders" class="text-xl font-bold text-slate-600">0</div></div>
+            </div>
+            <!-- 详细记录 -->
+            <h3 class="font-bold text-slate-700 mb-3">详细记录</h3>
+            <div id="empReportRecords"></div>
         </main>
     </div>
 
@@ -254,9 +301,10 @@
             <div id="bossTodayRecords"></div>
         </main>
         <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 p-2 z-30">
-            <div class="max-w-3xl mx-auto grid grid-cols-3 gap-2">
+            <div class="max-w-3xl mx-auto grid grid-cols-4 gap-2">
                 <button onclick="showBossTab('dashboard')" class="nav-btn active" id="bossNavDashboard"><svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg><span class="text-xs">概览</span></button>
                 <button onclick="showBossTab('operate')" class="nav-btn" id="bossNavOperate"><svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg><span class="text-xs">记账</span></button>
+                <button onclick="showBossTab('report')" class="nav-btn" id="bossNavReport"><svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg><span class="text-xs">报表</span></button>
                 <button onclick="showBossTab('inventory')" class="nav-btn" id="bossNavInventory"><svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg><span class="text-xs">仓库</span></button>
             </div>
         </nav>
@@ -274,6 +322,7 @@
             <div class="flex p-1 bg-slate-200 rounded-xl mb-4">
                 <button onclick="switchBossOperateTab('sale')" id="bossOpTabSale" class="flex-1 py-2 font-bold rounded-lg bg-white shadow text-blue-600">换胎</button>
                 <button onclick="switchBossOperateTab('service')" id="bossOpTabService" class="flex-1 py-2 font-bold rounded-lg text-slate-500">补胎</button>
+                <button onclick="switchBossOperateTab('other')" id="bossOpTabOther" class="flex-1 py-2 font-bold rounded-lg text-slate-500">其他</button>
             </div>
             <div id="bossSaleForm" class="card">
                 <div class="mb-4">
@@ -305,6 +354,21 @@
                     <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-2">总价</label><input type="number" id="bossServicePrice" class="input" placeholder="元"></div>
                 </div>
                 <button onclick="submitBossService()" class="btn btn-primary w-full">确认记录</button>
+            </div>
+            <div id="bossOtherForm" class="card" style="display:none;">
+                <div class="mb-4">
+                    <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">业务名称</label>
+                    <input type="text" id="bossOtherName" class="input" placeholder="如：换电瓶、换机油等">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">业务描述（可选）</label>
+                    <input type="text" id="bossOtherDesc" class="input" placeholder="备注说明">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">收款金额</label>
+                    <input type="number" id="bossOtherPrice" class="input" placeholder="元">
+                </div>
+                <button onclick="submitBossOther()" class="btn btn-primary w-full">确认记录</button>
             </div>
         </main>
     </div>
@@ -339,6 +403,42 @@
         </main>
     </div>
 
+    <!-- 老板报表页面 -->
+    <div id="bossReportPage" class="page">
+        <header class="bg-slate-900 text-white sticky top-0 z-40 shadow-lg">
+            <div class="max-w-3xl mx-auto px-4 py-4 flex items-center gap-3">
+                <button onclick="showBossTab('dashboard')" class="p-2"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg></button>
+                <h1 class="font-bold text-lg">日期报表</h1>
+            </div>
+        </header>
+        <main class="max-w-3xl mx-auto p-4 pb-safe">
+            <!-- 日期选择 -->
+            <div class="card mb-4">
+                <div class="flex gap-2 items-end">
+                    <div class="flex-1">
+                        <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">选择日期</label>
+                        <input type="date" id="bossReportDate" class="input" onchange="loadBossReport()">
+                    </div>
+                    <button onclick="setBossReportToday()" class="btn btn-secondary">今天</button>
+                </div>
+            </div>
+            <!-- 统计数据 -->
+            <div class="grid grid-cols-3 gap-3 mb-4">
+                <div class="stat-card"><div class="text-xs text-slate-500 mb-1">营业额</div><div id="reportRevenue" class="text-xl font-bold text-blue-600">¥0</div></div>
+                <div class="stat-card"><div class="text-xs text-slate-500 mb-1">毛利</div><div id="reportProfit" class="text-xl font-bold text-emerald-600">¥0</div></div>
+                <div class="stat-card"><div class="text-xs text-slate-500 mb-1">单量</div><div id="reportOrders" class="text-xl font-bold text-slate-600">0</div></div>
+            </div>
+            <!-- 员工业绩 -->
+            <div class="card mb-4">
+                <h3 class="font-bold text-slate-700 mb-3">员工业绩</h3>
+                <div id="reportByEmployee"></div>
+            </div>
+            <!-- 详细记录 -->
+            <h3 class="font-bold text-slate-700 mb-3">详细记录</h3>
+            <div id="reportRecords"></div>
+        </main>
+    </div>
+
     <!-- 入库弹窗 -->
     <div id="stockInModal" class="modal" style="display:none;">
         <div class="modal-content">
@@ -353,6 +453,55 @@
                 <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-2">单价</label><input type="number" id="stockCost" class="input" placeholder="进货价"></div>
             </div>
             <button onclick="submitStockIn()" class="btn btn-primary w-full">确认入库</button>
+        </div>
+    </div>
+
+    <!-- 编辑库存弹窗 -->
+    <div id="editInventoryModal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold">编辑库存</h3>
+                <button onclick="hideEditInventoryModal()" class="p-2 text-slate-400"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+            </div>
+            <input type="hidden" id="editInvId">
+            <div class="mb-4"><label class="block text-xs font-semibold text-slate-500 uppercase mb-2">品牌</label><input type="text" id="editInvBrand" class="input"></div>
+            <div class="mb-4"><label class="block text-xs font-semibold text-slate-500 uppercase mb-2">规格</label><input type="text" id="editInvSpec" class="input"></div>
+            <div class="grid grid-cols-2 gap-4 mb-4">
+                <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-2">库存数量</label><input type="number" id="editInvQty" class="input"></div>
+                <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-2">成本单价</label><input type="number" id="editInvCost" class="input"></div>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="saveEditInventory()" class="btn btn-primary flex-1">保存修改</button>
+                <button onclick="deleteInventory()" class="btn btn-danger flex-1">删除</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 编辑交易记录弹窗 -->
+    <div id="editTxModal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold">编辑记录</h3>
+                <button onclick="hideEditTxModal()" class="p-2 text-slate-400"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+            </div>
+            <input type="hidden" id="editTxId">
+            <input type="hidden" id="editTxType">
+            <div id="editTxSaleFields">
+                <div class="mb-4"><label class="block text-xs font-semibold text-slate-500 uppercase mb-2">品牌</label><input type="text" id="editTxBrand" class="input" readonly></div>
+                <div class="mb-4"><label class="block text-xs font-semibold text-slate-500 uppercase mb-2">规格</label><input type="text" id="editTxSpec" class="input" readonly></div>
+            </div>
+            <div id="editTxServiceFields" style="display:none;">
+                <div class="mb-4"><label class="block text-xs font-semibold text-slate-500 uppercase mb-2">服务类型</label><input type="text" id="editTxServiceName" class="input" readonly></div>
+            </div>
+            <div class="grid grid-cols-2 gap-4 mb-4">
+                <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-2">数量</label><input type="number" id="editTxQty" class="input"></div>
+                <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-2" id="editTxPriceLabel">单价</label><input type="number" id="editTxPrice" class="input"></div>
+            </div>
+            <div class="bg-slate-50 p-3 rounded flex justify-between mb-4"><span class="text-slate-500">总计:</span><span id="editTxTotal" class="font-bold text-lg">¥0</span></div>
+            <div class="flex gap-2">
+                <button onclick="saveEditTx()" class="btn btn-primary flex-1">保存修改</button>
+                <button onclick="deleteTx()" class="btn btn-danger flex-1">删除记录</button>
+            </div>
         </div>
     </div>
 
@@ -396,6 +545,10 @@
             document.getElementById('employeeOperatePage').classList.add('active');
             document.getElementById('empNavOperate').classList.add('active');
             loadInventorySelect();
+        } else if (tab === 'report') {
+            document.getElementById('employeeReportPage').classList.add('active');
+            document.getElementById('empNavReport').classList.add('active');
+            setEmpReportToday();
         } else if (tab === 'history') {
             document.getElementById('employeeHistoryPage').classList.add('active');
             document.getElementById('empNavHistory').classList.add('active');
@@ -415,6 +568,10 @@
             document.getElementById('bossOperatePage').classList.add('active');
             document.getElementById('bossNavOperate').classList.add('active');
             loadBossInventorySelect();
+        } else if (tab === 'report') {
+            document.getElementById('bossReportPage').classList.add('active');
+            document.getElementById('bossNavReport').classList.add('active');
+            setBossReportToday();
         } else if (tab === 'inventory') {
             document.getElementById('bossInventoryPage').classList.add('active');
             document.getElementById('bossNavInventory').classList.add('active');
@@ -425,15 +582,19 @@
     function switchOperateTab(tab) {
         document.getElementById('opTabSale').className = tab === 'sale' ? 'flex-1 py-2 font-bold rounded-lg bg-white shadow text-blue-600' : 'flex-1 py-2 font-bold rounded-lg text-slate-500';
         document.getElementById('opTabService').className = tab === 'service' ? 'flex-1 py-2 font-bold rounded-lg bg-white shadow text-blue-600' : 'flex-1 py-2 font-bold rounded-lg text-slate-500';
+        document.getElementById('opTabOther').className = tab === 'other' ? 'flex-1 py-2 font-bold rounded-lg bg-white shadow text-blue-600' : 'flex-1 py-2 font-bold rounded-lg text-slate-500';
         document.getElementById('saleForm').style.display = tab === 'sale' ? 'block' : 'none';
         document.getElementById('serviceForm').style.display = tab === 'service' ? 'block' : 'none';
+        document.getElementById('otherForm').style.display = tab === 'other' ? 'block' : 'none';
     }
 
     function switchBossOperateTab(tab) {
         document.getElementById('bossOpTabSale').className = tab === 'sale' ? 'flex-1 py-2 font-bold rounded-lg bg-white shadow text-blue-600' : 'flex-1 py-2 font-bold rounded-lg text-slate-500';
         document.getElementById('bossOpTabService').className = tab === 'service' ? 'flex-1 py-2 font-bold rounded-lg bg-white shadow text-blue-600' : 'flex-1 py-2 font-bold rounded-lg text-slate-500';
+        document.getElementById('bossOpTabOther').className = tab === 'other' ? 'flex-1 py-2 font-bold rounded-lg bg-white shadow text-blue-600' : 'flex-1 py-2 font-bold rounded-lg text-slate-500';
         document.getElementById('bossSaleForm').style.display = tab === 'sale' ? 'block' : 'none';
         document.getElementById('bossServiceForm').style.display = tab === 'service' ? 'block' : 'none';
+        document.getElementById('bossOtherForm').style.display = tab === 'other' ? 'block' : 'none';
     }
 
     // ==================== 用户认证 ====================
@@ -573,7 +734,7 @@
         } else {
             empty.style.display = 'none';
             tbody.innerHTML = filtered.map(i => `
-                <tr>
+                <tr onclick="showEditInventoryModal('${i.id}')" class="cursor-pointer hover:bg-slate-50">
                     <td class="p-3"><div class="font-bold">${i.brand}</div><div class="text-xs text-slate-500">${i.spec}</div></td>
                     <td class="p-3 text-right font-bold ${i.quantity < 4 ? 'text-red-500' : ''}">${i.quantity}</td>
                     <td class="p-3 text-right text-slate-500">¥${(i.avgCost || 0).toFixed(0)}</td>
@@ -658,12 +819,15 @@
                 brand: r.get('brand'),
                 spec: r.get('spec'),
                 serviceName: r.get('serviceName'),
+                serviceDesc: r.get('serviceDesc'),
                 quantity: r.get('quantity'),
                 price: r.get('price'),
                 totalPrice: r.get('totalPrice'),
                 totalCost: r.get('totalCost'),
                 profit: r.get('profit'),
                 operator: r.get('operator'),
+                inventoryId: r.get('inventoryId'),
+                costAtTime: r.get('costAtTime'),
                 date: r.createdAt
             }));
         } catch (e) {
@@ -684,7 +848,7 @@
         const todayTx = transactionsCache.filter(t =>
             new Date(t.date).toDateString() === today &&
             t.operator === currentUser.name &&
-            (t.type === 'sale' || t.type === 'service')
+            (t.type === 'sale' || t.type === 'service' || t.type === 'other')
         );
 
         const revenue = todayTx.reduce((s, t) => s + (t.totalPrice || 0), 0);
@@ -695,7 +859,7 @@
 
         document.getElementById('empTodayRecords').innerHTML = todayTx.length === 0
             ? '<div class="text-center py-8 text-slate-400">暂无今日记录</div>'
-            : todayTx.map(t => renderTxItem(t, false)).join('');
+            : todayTx.map(t => renderTxItem(t, false, true)).join('');
     }
 
     async function loadEmpHistory() {
@@ -705,7 +869,7 @@
 
         document.getElementById('empHistoryList').innerHTML = myTx.length === 0
             ? '<div class="text-center py-8 text-slate-400">暂无记录</div>'
-            : myTx.map(t => renderTxItem(t, false)).join('');
+            : myTx.map(t => renderTxItem(t, false, true)).join('');
     }
 
     async function loadBossDashboard() {
@@ -716,7 +880,7 @@
         const today = new Date().toDateString();
         const todayTx = transactionsCache.filter(t =>
             new Date(t.date).toDateString() === today &&
-            (t.type === 'sale' || t.type === 'service')
+            (t.type === 'sale' || t.type === 'service' || t.type === 'other')
         );
 
         const revenue = todayTx.reduce((s, t) => s + (t.totalPrice || 0), 0);
@@ -740,7 +904,7 @@
 
         document.getElementById('bossTodayRecords').innerHTML = todayTx.length === 0
             ? '<div class="text-center py-8 text-slate-400">暂无今日记录</div>'
-            : todayTx.map(t => renderTxItem(t, true)).join('');
+            : todayTx.map(t => renderTxItem(t, true, true)).join('');
     }
 
     async function loadPendingStaff() {
@@ -803,31 +967,51 @@
         }
     }
 
-    function renderTxItem(t, showProfit) {
+    function renderTxItem(t, showProfit, canEdit = false) {
         const typeColors = {
             'stock_in': 'bg-purple-100 text-purple-600',
             'sale': 'bg-blue-100 text-blue-600',
-            'service': 'bg-emerald-100 text-emerald-600'
+            'service': 'bg-emerald-100 text-emerald-600',
+            'other': 'bg-orange-100 text-orange-600'
         };
         const typeIcons = {
             'stock_in': '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>',
             'sale': '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path>',
-            'service': '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>'
+            'service': '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>',
+            'other': '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path>'
         };
 
-        const title = t.type === 'stock_in' ? `进货: ${t.brand}` : t.type === 'sale' ? `销售: ${t.brand}` : t.serviceName;
-        const detail = t.spec ? `${t.spec} ` : '';
+        let title, detail;
+        if (t.type === 'stock_in') {
+            title = `进货: ${t.brand}`;
+            detail = t.spec ? `${t.spec} ` : '';
+        } else if (t.type === 'sale') {
+            title = `销售: ${t.brand}`;
+            detail = t.spec ? `${t.spec} ` : '';
+        } else if (t.type === 'other') {
+            title = t.serviceName;
+            detail = t.serviceDesc ? `${t.serviceDesc} ` : '';
+        } else {
+            title = t.serviceName;
+            detail = '';
+        }
         const time = new Date(t.date).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
+        const clickHandler = canEdit ? `onclick="showEditTxModal('${t.id}')"` : '';
+        const cursorClass = canEdit ? 'cursor-pointer hover:bg-slate-50' : '';
+        const qtyDisplay = (t.type === 'other' || t.type === 'service') ? '' : `x${t.quantity} · `;
 
         return `
-            <div class="record-item flex justify-between items-center">
+            <div class="record-item flex justify-between items-center ${cursorClass}" ${clickHandler}>
                 <div class="flex gap-3 items-center flex-1 min-w-0">
-                    <div class="p-2 rounded-lg ${typeColors[t.type]}"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">${typeIcons[t.type]}</svg></div>
-                    <div class="min-w-0"><div class="font-bold text-sm truncate">${title}</div><div class="text-xs text-slate-500">${detail}x${t.quantity} · ${time} · ${t.operator}</div></div>
+                    <div class="p-2 rounded-lg ${typeColors[t.type] || 'bg-slate-100 text-slate-600'}"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">${typeIcons[t.type] || typeIcons['service']}</svg></div>
+                    <div class="min-w-0"><div class="font-bold text-sm truncate">${title}</div><div class="text-xs text-slate-500">${detail}${qtyDisplay}${time} · ${t.operator}</div></div>
                 </div>
-                <div class="text-right">
-                    <div class="font-bold">¥${t.type === 'stock_in' ? t.totalCost : t.totalPrice}</div>
-                    ${showProfit && t.profit ? `<div class="text-xs text-emerald-600">赚 ¥${t.profit.toFixed(0)}</div>` : ''}
+                <div class="text-right flex items-center gap-2">
+                    <div>
+                        <div class="font-bold">¥${t.type === 'stock_in' ? t.totalCost : t.totalPrice}</div>
+                        ${showProfit && t.profit ? `<div class="text-xs text-emerald-600">赚 ¥${t.profit.toFixed(0)}</div>` : ''}
+                    </div>
+                    ${canEdit ? `<svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>` : ''}
                 </div>
             </div>
         `;
@@ -984,6 +1168,68 @@
         }
     }
 
+    async function submitOther() {
+        const name = document.getElementById('otherName').value.trim();
+        const desc = document.getElementById('otherDesc').value.trim();
+        const price = parseFloat(document.getElementById('otherPrice').value);
+
+        if (!name || !price) { alert('请填写业务名称和收款金额'); return; }
+
+        try {
+            const Transaction = AV.Object.extend('Transaction');
+            const tx = new Transaction();
+            tx.set('type', 'other');
+            tx.set('serviceName', name);
+            tx.set('serviceDesc', desc);
+            tx.set('quantity', 1);
+            tx.set('totalPrice', price);
+            tx.set('profit', price);
+            tx.set('operator', currentUser.name);
+            await tx.save();
+
+            alert('记录成功！');
+            document.getElementById('otherName').value = '';
+            document.getElementById('otherDesc').value = '';
+            document.getElementById('otherPrice').value = '';
+
+            showSyncIndicator();
+        } catch (e) {
+            console.error(e);
+            alert('操作失败: ' + e.message);
+        }
+    }
+
+    async function submitBossOther() {
+        const name = document.getElementById('bossOtherName').value.trim();
+        const desc = document.getElementById('bossOtherDesc').value.trim();
+        const price = parseFloat(document.getElementById('bossOtherPrice').value);
+
+        if (!name || !price) { alert('请填写业务名称和收款金额'); return; }
+
+        try {
+            const Transaction = AV.Object.extend('Transaction');
+            const tx = new Transaction();
+            tx.set('type', 'other');
+            tx.set('serviceName', name);
+            tx.set('serviceDesc', desc);
+            tx.set('quantity', 1);
+            tx.set('totalPrice', price);
+            tx.set('profit', price);
+            tx.set('operator', currentUser.name);
+            await tx.save();
+
+            alert('记录成功！');
+            document.getElementById('bossOtherName').value = '';
+            document.getElementById('bossOtherDesc').value = '';
+            document.getElementById('bossOtherPrice').value = '';
+
+            showSyncIndicator();
+        } catch (e) {
+            console.error(e);
+            alert('操作失败: ' + e.message);
+        }
+    }
+
     // ==================== 入库 ====================
     function showStockInModal() {
         document.getElementById('stockInModal').style.display = 'flex';
@@ -1056,6 +1302,324 @@
         } catch (e) {
             console.error(e);
             alert('入库失败: ' + e.message);
+        }
+    }
+
+    // ==================== 编辑库存 ====================
+    function showEditInventoryModal(id) {
+        const item = inventoryCache.find(i => i.id === id);
+        if (!item) return;
+
+        document.getElementById('editInvId').value = id;
+        document.getElementById('editInvBrand').value = item.brand;
+        document.getElementById('editInvSpec').value = item.spec;
+        document.getElementById('editInvQty').value = item.quantity;
+        document.getElementById('editInvCost').value = item.avgCost;
+        document.getElementById('editInventoryModal').style.display = 'flex';
+    }
+
+    function hideEditInventoryModal() {
+        document.getElementById('editInventoryModal').style.display = 'none';
+    }
+
+    async function saveEditInventory() {
+        const id = document.getElementById('editInvId').value;
+        const brand = document.getElementById('editInvBrand').value.trim();
+        const spec = document.getElementById('editInvSpec').value.trim();
+        const qty = parseInt(document.getElementById('editInvQty').value);
+        const cost = parseFloat(document.getElementById('editInvCost').value);
+
+        if (!brand || !spec || isNaN(qty) || isNaN(cost)) {
+            alert('请填写完整信息');
+            return;
+        }
+
+        try {
+            const inv = AV.Object.createWithoutData('Inventory', id);
+            inv.set('brand', brand);
+            inv.set('spec', spec);
+            inv.set('quantity', qty);
+            inv.set('avgCost', cost);
+            await inv.save();
+
+            alert('修改成功！');
+            hideEditInventoryModal();
+            showSyncIndicator();
+            loadInventory();
+        } catch (e) {
+            console.error(e);
+            alert('修改失败: ' + e.message);
+        }
+    }
+
+    async function deleteInventory() {
+        if (!confirm('确定要删除这个库存记录吗？此操作不可撤销！')) return;
+
+        const id = document.getElementById('editInvId').value;
+
+        try {
+            const inv = AV.Object.createWithoutData('Inventory', id);
+            await inv.destroy();
+
+            alert('删除成功！');
+            hideEditInventoryModal();
+            showSyncIndicator();
+            loadInventory();
+        } catch (e) {
+            console.error(e);
+            alert('删除失败: ' + e.message);
+        }
+    }
+
+    // ==================== 编辑交易记录 ====================
+    let editingTx = null;
+
+    function showEditTxModal(id) {
+        const tx = transactionsCache.find(t => t.id === id);
+        if (!tx) return;
+
+        editingTx = tx;
+        document.getElementById('editTxId').value = id;
+        document.getElementById('editTxType').value = tx.type;
+
+        if (tx.type === 'sale' || tx.type === 'stock_in') {
+            document.getElementById('editTxSaleFields').style.display = 'block';
+            document.getElementById('editTxServiceFields').style.display = 'none';
+            document.getElementById('editTxBrand').value = tx.brand || '';
+            document.getElementById('editTxSpec').value = tx.spec || '';
+            document.getElementById('editTxPriceLabel').textContent = tx.type === 'stock_in' ? '进货单价' : '销售单价';
+        } else {
+            document.getElementById('editTxSaleFields').style.display = 'none';
+            document.getElementById('editTxServiceFields').style.display = 'block';
+            document.getElementById('editTxServiceName').value = tx.serviceName || '';
+            document.getElementById('editTxPriceLabel').textContent = '总价';
+        }
+
+        document.getElementById('editTxQty').value = tx.quantity;
+        document.getElementById('editTxPrice').value = tx.type === 'service' ? tx.totalPrice : tx.price;
+        updateEditTxTotal();
+
+        // 添加输入监听
+        document.getElementById('editTxQty').oninput = updateEditTxTotal;
+        document.getElementById('editTxPrice').oninput = updateEditTxTotal;
+
+        document.getElementById('editTxModal').style.display = 'flex';
+    }
+
+    function hideEditTxModal() {
+        document.getElementById('editTxModal').style.display = 'none';
+        editingTx = null;
+    }
+
+    function updateEditTxTotal() {
+        const qty = parseFloat(document.getElementById('editTxQty').value) || 0;
+        const price = parseFloat(document.getElementById('editTxPrice').value) || 0;
+        const type = document.getElementById('editTxType').value;
+
+        let total;
+        if (type === 'service') {
+            total = price; // 服务类型，价格就是总价
+        } else {
+            total = qty * price;
+        }
+        document.getElementById('editTxTotal').textContent = '¥' + total.toFixed(0);
+    }
+
+    async function saveEditTx() {
+        const id = document.getElementById('editTxId').value;
+        const type = document.getElementById('editTxType').value;
+        const qty = parseInt(document.getElementById('editTxQty').value);
+        const price = parseFloat(document.getElementById('editTxPrice').value);
+
+        if (!qty || !price) {
+            alert('请填写完整信息');
+            return;
+        }
+
+        try {
+            const tx = AV.Object.createWithoutData('Transaction', id);
+            tx.set('quantity', qty);
+
+            if (type === 'service') {
+                tx.set('totalPrice', price);
+                tx.set('profit', price);
+            } else if (type === 'sale') {
+                tx.set('price', price);
+                tx.set('totalPrice', qty * price);
+                // 重新计算利润
+                const costAtTime = editingTx.costAtTime || 0;
+                tx.set('profit', (price - costAtTime) * qty);
+            } else if (type === 'stock_in') {
+                tx.set('totalCost', qty * price);
+            }
+
+            await tx.save();
+
+            // 如果是销售记录，可能需要调整库存
+            if (type === 'sale' && editingTx.inventoryId) {
+                const qtyDiff = qty - editingTx.quantity;
+                if (qtyDiff !== 0) {
+                    const invItem = inventoryCache.find(i => i.id === editingTx.inventoryId);
+                    if (invItem) {
+                        const inv = AV.Object.createWithoutData('Inventory', editingTx.inventoryId);
+                        inv.set('quantity', invItem.quantity - qtyDiff);
+                        await inv.save();
+                    }
+                }
+            }
+
+            alert('修改成功！');
+            hideEditTxModal();
+            showSyncIndicator();
+
+            // 刷新显示
+            if (currentUser.role === 'boss') {
+                loadBossDashboard();
+            } else {
+                loadEmpDashboard();
+            }
+        } catch (e) {
+            console.error(e);
+            alert('修改失败: ' + e.message);
+        }
+    }
+
+    async function deleteTx() {
+        if (!confirm('确定要删除这条记录吗？此操作不可撤销！')) return;
+
+        const id = document.getElementById('editTxId').value;
+        const type = document.getElementById('editTxType').value;
+
+        try {
+            // 如果是销售记录，恢复库存
+            if (type === 'sale' && editingTx && editingTx.inventoryId) {
+                const invItem = inventoryCache.find(i => i.id === editingTx.inventoryId);
+                if (invItem) {
+                    const inv = AV.Object.createWithoutData('Inventory', editingTx.inventoryId);
+                    inv.set('quantity', invItem.quantity + editingTx.quantity);
+                    await inv.save();
+                }
+            }
+
+            // 删除交易记录
+            const tx = AV.Object.createWithoutData('Transaction', id);
+            await tx.destroy();
+
+            alert('删除成功！');
+            hideEditTxModal();
+            showSyncIndicator();
+
+            // 刷新显示
+            if (currentUser.role === 'boss') {
+                loadBossDashboard();
+            } else {
+                loadEmpDashboard();
+            }
+        } catch (e) {
+            console.error(e);
+            alert('删除失败: ' + e.message);
+        }
+    }
+
+    // ==================== 报表功能 ====================
+    function setBossReportToday() {
+        const today = new Date().toISOString().slice(0, 10);
+        document.getElementById('bossReportDate').value = today;
+        loadBossReport();
+    }
+
+    async function loadBossReport() {
+        await loadTransactions();
+
+        const dateStr = document.getElementById('bossReportDate').value;
+        if (!dateStr) return;
+
+        // 过滤指定日期的交易记录
+        const dayTx = transactionsCache.filter(t => {
+            const txDate = new Date(t.date).toISOString().slice(0, 10);
+            return txDate === dateStr && (t.type === 'sale' || t.type === 'service' || t.type === 'other');
+        });
+
+        // 计算统计数据
+        const revenue = dayTx.reduce((s, t) => s + (t.totalPrice || 0), 0);
+        const profit = dayTx.reduce((s, t) => s + (t.profit || 0), 0);
+        const orders = dayTx.length;
+
+        document.getElementById('reportRevenue').textContent = '¥' + revenue;
+        document.getElementById('reportProfit').textContent = '¥' + profit.toFixed(0);
+        document.getElementById('reportOrders').textContent = orders;
+
+        // 按员工分组统计
+        const byEmployee = {};
+        dayTx.forEach(t => {
+            const emp = t.operator || '未知';
+            if (!byEmployee[emp]) {
+                byEmployee[emp] = { revenue: 0, profit: 0, orders: 0 };
+            }
+            byEmployee[emp].revenue += t.totalPrice || 0;
+            byEmployee[emp].profit += t.profit || 0;
+            byEmployee[emp].orders += 1;
+        });
+
+        // 渲染员工业绩
+        const empList = Object.entries(byEmployee);
+        if (empList.length === 0) {
+            document.getElementById('reportByEmployee').innerHTML = '<div class="text-slate-400 text-center py-4">暂无数据</div>';
+        } else {
+            document.getElementById('reportByEmployee').innerHTML = empList.map(([name, data]) => `
+                <div class="flex justify-between items-center py-2 border-b border-slate-100 last:border-0">
+                    <div>
+                        <div class="font-bold">${name}</div>
+                        <div class="text-xs text-slate-500">${data.orders} 单</div>
+                    </div>
+                    <div class="text-right">
+                        <div class="font-bold text-blue-600">¥${data.revenue}</div>
+                        <div class="text-xs text-emerald-600">利润 ¥${data.profit.toFixed(0)}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 渲染详细记录
+        if (dayTx.length === 0) {
+            document.getElementById('reportRecords').innerHTML = '<div class="text-center py-8 text-slate-400">该日期暂无记录</div>';
+        } else {
+            document.getElementById('reportRecords').innerHTML = dayTx.map(t => renderTxItem(t, true, false)).join('');
+        }
+    }
+
+    function setEmpReportToday() {
+        const today = new Date().toISOString().slice(0, 10);
+        document.getElementById('empReportDate').value = today;
+        loadEmpReport();
+    }
+
+    async function loadEmpReport() {
+        await loadTransactions();
+
+        const dateStr = document.getElementById('empReportDate').value;
+        if (!dateStr) return;
+
+        // 过滤指定日期且属于当前员工的交易记录
+        const dayTx = transactionsCache.filter(t => {
+            const txDate = new Date(t.date).toISOString().slice(0, 10);
+            return txDate === dateStr &&
+                   t.operator === currentUser.name &&
+                   (t.type === 'sale' || t.type === 'service' || t.type === 'other');
+        });
+
+        // 计算统计数据
+        const revenue = dayTx.reduce((s, t) => s + (t.totalPrice || 0), 0);
+        const orders = dayTx.length;
+
+        document.getElementById('empReportRevenue').textContent = '¥' + revenue;
+        document.getElementById('empReportOrders').textContent = orders;
+
+        // 渲染详细记录
+        if (dayTx.length === 0) {
+            document.getElementById('empReportRecords').innerHTML = '<div class="text-center py-8 text-slate-400">该日期暂无记录</div>';
+        } else {
+            document.getElementById('empReportRecords').innerHTML = dayTx.map(t => renderTxItem(t, false, false)).join('');
         }
     }
 
