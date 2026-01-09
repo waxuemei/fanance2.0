@@ -5,709 +5,1040 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>许氏轮胎店</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- LeanCloud SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/leancloud-storage@4.15.2/dist/av-min.js"></script>
     <style>
-        /* Hide scrollbar for clean UI */
         ::-webkit-scrollbar { width: 0px; background: transparent; }
-        body { -webkit-tap-highlight-color: transparent; }
-        
-        /* Mobile Safe Area Padding */
-        .pb-safe {
-            padding-bottom: calc(5rem + env(safe-area-inset-bottom));
-        }
-        @media (min-width: 768px) {
-            .pb-safe { padding-bottom: 0; }
-        }
+        body { -webkit-tap-highlight-color: transparent; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+        .pb-safe { padding-bottom: calc(5rem + env(safe-area-inset-bottom)); }
+        @media (min-width: 768px) { .pb-safe { padding-bottom: 0; } }
+        .page { display: none; }
+        .page.active { display: block; }
+        .btn { padding: 12px 24px; border-radius: 12px; font-weight: 600; transition: all 0.2s; cursor: pointer; }
+        .btn:active { transform: scale(0.96); }
+        .btn-primary { background: #2563eb; color: white; }
+        .btn-secondary { background: #f1f5f9; color: #475569; }
+        .btn-success { background: #10b981; color: white; }
+        .btn-danger { background: #fef2f2; color: #dc2626; }
+        .input { width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: 12px; font-size: 16px; outline: none; transition: all 0.2s; }
+        .input:focus { border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
+        .card { background: white; border-radius: 16px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .nav-btn { display: flex; flex-direction: column; align-items: center; padding: 8px 16px; border-radius: 12px; color: #94a3b8; }
+        .nav-btn.active { background: #eff6ff; color: #2563eb; }
+        .sync-indicator { position: fixed; top: 16px; right: 16px; padding: 8px 16px; border-radius: 20px; font-size: 12px; z-index: 100; }
+        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; padding: 16px; z-index: 200; }
+        .modal-content { background: white; border-radius: 20px; padding: 24px; width: 100%; max-width: 400px; max-height: 90vh; overflow-y: auto; }
+        .record-item { background: white; border-radius: 12px; padding: 12px; margin-bottom: 8px; border: 1px solid #f1f5f9; }
+        .stat-card { text-align: center; padding: 16px; background: white; border-radius: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .loading { display: flex; align-items: center; justify-content: center; min-height: 200px; color: #94a3b8; }
     </style>
-    
-    <!-- Import Map for Modules -->
-    <script type="importmap">
-    {
-      "imports": {
-        "react": "https://esm.sh/react@18.2.0",
-        "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
-        "lucide-react": "https://esm.sh/lucide-react@0.263.1",
-        "firebase/app": "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js",
-        "firebase/auth": "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js",
-        "firebase/firestore": "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js"
-      }
-    }
-    </script>
 </head>
 <body class="bg-slate-50 text-slate-900 select-none">
-    <div id="root"></div>
+    <!-- 同步指示器 -->
+    <div id="syncIndicator" class="sync-indicator" style="display:none; background:#10b981; color:white;">已同步</div>
 
-    <script type="text/babel" data-type="module">
-        import React, { useState, useEffect, useMemo } from 'react';
-        import { createRoot } from 'react-dom/client';
-        import { initializeApp } from 'firebase/app';
-        import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from 'firebase/auth';
-        import { 
-            getFirestore, collection, doc, setDoc, addDoc, onSnapshot, 
-            query, orderBy, deleteDoc, updateDoc, serverTimestamp, getDoc, runTransaction, where 
-        } from 'firebase/firestore';
-        import { 
-            Users, Wrench, PackagePlus, History, TrendingUp, LogOut, 
-            AlertTriangle, Trash2, Plus, Minus, Search, ArrowRight, ShieldCheck,
-            UserPlus, CheckCircle, XCircle, Lock, Eye, EyeOff, X
-        } from 'lucide-react';
-
-        // --- Configuration (用户配置区) ---
-        // ⚠️⚠️⚠️ 部署前请务必修改此处配置！ ⚠️⚠️⚠️
-        // 请前往 Firebase 控制台 -> 项目设置 -> 您的应用 -> SDK 设置与配置 复制以下内容
-        const firebaseConfig = {
-            apiKey: "AIzaSyBESEcLq8v9ChKerWh2egh_SyLRxlbHVqU",
-            authDomain: "finance-7c50c.firebaseapp.com",
-            databaseURL: "https://finance-7c50c-default-rtdb.firebaseio.com",
-            projectId: "finance-7c50c",
-            storageBucket: "finance-7c50c.firebasestorage.app",
-            messagingSenderId: "790824328676",
-            appId: "1:790824328676:web:e0fc581d972b9ce0c2bbf1",
-            measurementId: "G-R1ZY1W1Y8E"
-        };
-
-        // 检查配置是否已填写，如果未填写则显示提示（防止白屏）
-        if (firebaseConfig.apiKey === "您的API_KEY") {
-            const root = document.getElementById('root');
-            root.innerHTML = `
-                <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;padding:20px;text-align:center;font-family:sans-serif;">
-                    <h2 style="color:#ef4444;font-size:24px;margin-bottom:10px;">⚠️ 配置缺失</h2>
-                    <p style="color:#374151;line-height:1.5;">这是您第一次部署吗？<br/>请使用文本编辑器打开 <strong>index.html</strong> 文件，<br/>找到大约第 65 行的 <code>firebaseConfig</code>，<br/>并填入您的 Firebase 项目信息。</p>
+    <!-- 欢迎页面 -->
+    <div id="welcomePage" class="page active">
+        <div class="min-h-screen bg-slate-900 flex flex-col items-center justify-center p-6">
+            <div class="text-center mb-8">
+                <div class="w-20 h-20 bg-blue-600 rounded-2xl mx-auto flex items-center justify-center shadow-lg mb-4">
+                    <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                    </svg>
                 </div>
-            `;
-            throw new Error("Firebase configuration missing. Please edit index.html.");
-        }
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-
-        console.log('✅ Firebase 初始化成功');
-
-        const BOSS_PIN = "8888"; // 老板密码
-        const UNDO_TIME_LIMIT_MS = 5 * 60 * 1000;
-
-        // --- UI Components ---
-        const Card = ({ children, className = "" }) => (
-            <div className={`bg-white rounded-xl shadow-sm border border-slate-100 p-4 ${className}`}>
-                {children}
+                <h1 class="text-3xl font-bold text-white">许氏轮胎店</h1>
+                <p class="text-slate-400 mt-2">云端记账系统</p>
             </div>
+            <div class="w-full max-w-sm space-y-4">
+                <button onclick="showPage('employeeLoginPage')" class="w-full bg-white p-5 rounded-xl flex items-center justify-between">
+                    <div class="flex items-center gap-4">
+                        <div class="bg-blue-100 p-3 rounded-lg text-blue-600">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                        </div>
+                        <div class="text-left">
+                            <div class="font-bold text-lg">我是员工</div>
+                            <div class="text-sm text-slate-500">记账、查库存</div>
+                        </div>
+                    </div>
+                    <svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                </button>
+                <button onclick="showPage('bossLoginPage')" class="w-full bg-slate-800 text-white p-5 rounded-xl flex items-center justify-between border border-slate-700">
+                    <div class="flex items-center gap-4">
+                        <div class="bg-slate-700 p-3 rounded-lg text-slate-300">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                        </div>
+                        <div class="text-left">
+                            <div class="font-bold text-lg">我是老板</div>
+                            <div class="text-sm text-slate-400">管理、看利润</div>
+                        </div>
+                    </div>
+                    <svg class="w-5 h-5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                </button>
+            </div>
+            <p class="text-slate-500 text-xs mt-8">LeanCloud 云端版 v1.0</p>
+        </div>
+    </div>
+
+    <!-- 员工登录页面 -->
+    <div id="employeeLoginPage" class="page">
+        <div class="min-h-screen bg-slate-50 flex items-center justify-center p-6">
+            <div class="card w-full max-w-sm">
+                <h2 class="text-2xl font-bold text-center mb-6">员工入口</h2>
+                <div class="flex border-b border-slate-100 mb-6">
+                    <button id="empLoginTab" onclick="switchEmpTab('login')" class="flex-1 pb-3 font-bold border-b-2 border-blue-600 text-blue-600">登录</button>
+                    <button id="empRegTab" onclick="switchEmpTab('register')" class="flex-1 pb-3 font-bold border-b-2 border-transparent text-slate-400">注册</button>
+                </div>
+                <div id="empLoginForm">
+                    <div class="mb-4">
+                        <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">姓名</label>
+                        <input type="text" id="empLoginName" class="input" placeholder="输入您的名字">
+                    </div>
+                    <div class="mb-6">
+                        <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">密码</label>
+                        <input type="password" id="empLoginPwd" class="input" placeholder="输入密码">
+                    </div>
+                    <button onclick="employeeLogin()" class="btn btn-primary w-full">登录</button>
+                </div>
+                <div id="empRegForm" style="display:none;">
+                    <div class="mb-4">
+                        <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">姓名</label>
+                        <input type="text" id="empRegName" class="input" placeholder="输入您的名字">
+                    </div>
+                    <div class="mb-6">
+                        <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">设置密码</label>
+                        <input type="password" id="empRegPwd" class="input" placeholder="设置登录密码">
+                    </div>
+                    <button onclick="employeeRegister()" class="btn btn-secondary w-full">提交申请</button>
+                </div>
+                <button onclick="showPage('welcomePage')" class="w-full text-center text-sm text-slate-400 mt-4 p-2">返回选择</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 老板登录页面 -->
+    <div id="bossLoginPage" class="page">
+        <div class="min-h-screen bg-slate-50 flex items-center justify-center p-6">
+            <div class="card w-full max-w-sm">
+                <h2 class="text-2xl font-bold text-center mb-6">老板登录</h2>
+                <div class="mb-6">
+                    <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">管理员密码</label>
+                    <input type="password" id="bossPwd" class="input" placeholder="请输入密码" inputmode="numeric">
+                </div>
+                <button onclick="bossLogin()" class="btn btn-primary w-full">验证身份</button>
+                <button onclick="showPage('welcomePage')" class="w-full text-center text-sm text-slate-400 mt-4 p-2">返回选择</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 员工主页 -->
+    <div id="employeeMainPage" class="page">
+        <header class="bg-slate-900 text-white sticky top-0 z-40 shadow-lg">
+            <div class="max-w-3xl mx-auto px-4 py-4 flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <div class="bg-blue-600 p-2 rounded-lg"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg></div>
+                    <div>
+                        <h1 class="font-bold text-lg">许氏轮胎店</h1>
+                        <p class="text-xs text-slate-400">员工端 · <span id="empName">-</span></p>
+                    </div>
+                </div>
+                <button onclick="logout()" class="text-slate-400 hover:text-white p-2"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg></button>
+            </div>
+        </header>
+        <main class="max-w-3xl mx-auto p-4 pb-safe">
+            <div class="grid grid-cols-2 gap-4 mb-6">
+                <div class="stat-card"><div class="text-xs text-slate-500 uppercase mb-1">今日营业额</div><div id="empRevenue" class="text-2xl font-bold text-blue-600">¥0</div></div>
+                <div class="stat-card"><div class="text-xs text-slate-500 uppercase mb-1">今日单量</div><div id="empOrders" class="text-2xl font-bold text-slate-600">0 单</div></div>
+            </div>
+            <div id="empTodayRecords" class="mb-6"></div>
+        </main>
+        <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 p-2 z-30">
+            <div class="max-w-3xl mx-auto grid grid-cols-3 gap-2">
+                <button onclick="showEmpTab('dashboard')" class="nav-btn active" id="empNavDashboard"><svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg><span class="text-xs">概览</span></button>
+                <button onclick="showEmpTab('operate')" class="nav-btn" id="empNavOperate"><svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg><span class="text-xs">记账</span></button>
+                <button onclick="showEmpTab('history')" class="nav-btn" id="empNavHistory"><svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg><span class="text-xs">记录</span></button>
+            </div>
+        </nav>
+    </div>
+
+    <!-- 员工记账页面 -->
+    <div id="employeeOperatePage" class="page">
+        <header class="bg-slate-900 text-white sticky top-0 z-40 shadow-lg">
+            <div class="max-w-3xl mx-auto px-4 py-4 flex items-center gap-3">
+                <button onclick="showEmpTab('dashboard')" class="p-2"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg></button>
+                <h1 class="font-bold text-lg">记账</h1>
+            </div>
+        </header>
+        <main class="max-w-3xl mx-auto p-4 pb-safe">
+            <div class="flex p-1 bg-slate-200 rounded-xl mb-4">
+                <button onclick="switchOperateTab('sale')" id="opTabSale" class="flex-1 py-2 font-bold rounded-lg bg-white shadow text-blue-600">换胎</button>
+                <button onclick="switchOperateTab('service')" id="opTabService" class="flex-1 py-2 font-bold rounded-lg text-slate-500">补胎</button>
+            </div>
+            <div id="saleForm" class="card">
+                <div class="mb-4">
+                    <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">选择轮胎</label>
+                    <select id="saleSelect" class="input" onchange="updateSaleInfo()">
+                        <option value="">-- 请选择 --</option>
+                    </select>
+                </div>
+                <div id="saleStockInfo" class="bg-blue-50 text-blue-800 text-xs p-2 rounded mb-4" style="display:none;"></div>
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-2">数量</label><input type="number" id="saleQty" class="input" placeholder="条数" oninput="calcSaleTotal()"></div>
+                    <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-2">单价</label><input type="number" id="salePrice" class="input" placeholder="元/条" oninput="calcSaleTotal()"></div>
+                </div>
+                <div class="bg-slate-50 p-3 rounded flex justify-between mb-4"><span class="text-slate-500">总计:</span><span id="saleTotal" class="font-bold text-lg">¥0</span></div>
+                <button onclick="submitSale()" class="btn btn-primary w-full">确认销售</button>
+            </div>
+            <div id="serviceForm" class="card" style="display:none;">
+                <div class="mb-4">
+                    <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">服务类型</label>
+                    <select id="serviceType" class="input">
+                        <option value="补胎">补胎</option>
+                        <option value="动平衡">动平衡</option>
+                        <option value="四轮定位">四轮定位</option>
+                        <option value="充气">充气</option>
+                    </select>
+                </div>
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-2">数量</label><input type="number" id="serviceQty" class="input" placeholder="数量"></div>
+                    <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-2">总价</label><input type="number" id="servicePrice" class="input" placeholder="元"></div>
+                </div>
+                <button onclick="submitService()" class="btn btn-primary w-full">确认记录</button>
+            </div>
+        </main>
+    </div>
+
+    <!-- 员工历史记录页面 -->
+    <div id="employeeHistoryPage" class="page">
+        <header class="bg-slate-900 text-white sticky top-0 z-40 shadow-lg">
+            <div class="max-w-3xl mx-auto px-4 py-4 flex items-center gap-3">
+                <button onclick="showEmpTab('dashboard')" class="p-2"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg></button>
+                <h1 class="font-bold text-lg">历史记录</h1>
+            </div>
+        </header>
+        <main class="max-w-3xl mx-auto p-4 pb-safe">
+            <div id="empHistoryList"></div>
+        </main>
+    </div>
+
+    <!-- 老板主页 -->
+    <div id="bossMainPage" class="page">
+        <header class="bg-slate-900 text-white sticky top-0 z-40 shadow-lg">
+            <div class="max-w-3xl mx-auto px-4 py-4 flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <div class="bg-blue-600 p-2 rounded-lg"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg></div>
+                    <div>
+                        <h1 class="font-bold text-lg">许氏轮胎店</h1>
+                        <p class="text-xs text-slate-400">老板端</p>
+                    </div>
+                </div>
+                <button onclick="logout()" class="text-slate-400 hover:text-white p-2"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg></button>
+            </div>
+        </header>
+        <main class="max-w-3xl mx-auto p-4 pb-safe">
+            <!-- 员工审核 -->
+            <div id="pendingStaff" class="card border-2 border-blue-200 bg-blue-50 mb-6" style="display:none;">
+                <div class="flex items-center gap-2 mb-3 text-blue-800 font-bold"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path></svg><span>新员工审核</span></div>
+                <div id="pendingList"></div>
+            </div>
+            <div class="grid grid-cols-2 gap-4 mb-6">
+                <div class="stat-card"><div class="text-xs text-slate-500 uppercase mb-1">今日营业额</div><div id="bossRevenue" class="text-2xl font-bold text-blue-600">¥0</div></div>
+                <div class="stat-card"><div class="text-xs text-slate-500 uppercase mb-1">今日单量</div><div id="bossOrders" class="text-2xl font-bold text-slate-600">0 单</div></div>
+                <div class="stat-card col-span-2"><div class="text-xs text-slate-500 uppercase mb-1">今日毛利</div><div id="bossProfit" class="text-2xl font-bold text-emerald-600">¥0</div></div>
+            </div>
+            <!-- 库存预警 -->
+            <div id="lowStockAlert" class="card border-2 border-orange-200 bg-orange-50 mb-6" style="display:none;">
+                <div class="flex items-center gap-2 mb-3 text-orange-800 font-bold"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg><span>库存预警</span></div>
+                <div id="lowStockList"></div>
+            </div>
+            <h3 class="font-bold text-slate-700 mb-3">今日记录</h3>
+            <div id="bossTodayRecords"></div>
+        </main>
+        <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 p-2 z-30">
+            <div class="max-w-3xl mx-auto grid grid-cols-3 gap-2">
+                <button onclick="showBossTab('dashboard')" class="nav-btn active" id="bossNavDashboard"><svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg><span class="text-xs">概览</span></button>
+                <button onclick="showBossTab('operate')" class="nav-btn" id="bossNavOperate"><svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg><span class="text-xs">记账</span></button>
+                <button onclick="showBossTab('inventory')" class="nav-btn" id="bossNavInventory"><svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg><span class="text-xs">仓库</span></button>
+            </div>
+        </nav>
+    </div>
+
+    <!-- 老板记账页面 -->
+    <div id="bossOperatePage" class="page">
+        <header class="bg-slate-900 text-white sticky top-0 z-40 shadow-lg">
+            <div class="max-w-3xl mx-auto px-4 py-4 flex items-center gap-3">
+                <button onclick="showBossTab('dashboard')" class="p-2"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg></button>
+                <h1 class="font-bold text-lg">记账</h1>
+            </div>
+        </header>
+        <main class="max-w-3xl mx-auto p-4 pb-safe">
+            <div class="flex p-1 bg-slate-200 rounded-xl mb-4">
+                <button onclick="switchBossOperateTab('sale')" id="bossOpTabSale" class="flex-1 py-2 font-bold rounded-lg bg-white shadow text-blue-600">换胎</button>
+                <button onclick="switchBossOperateTab('service')" id="bossOpTabService" class="flex-1 py-2 font-bold rounded-lg text-slate-500">补胎</button>
+            </div>
+            <div id="bossSaleForm" class="card">
+                <div class="mb-4">
+                    <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">选择轮胎</label>
+                    <select id="bossSaleSelect" class="input" onchange="updateBossSaleInfo()">
+                        <option value="">-- 请选择 --</option>
+                    </select>
+                </div>
+                <div id="bossSaleStockInfo" class="bg-blue-50 text-blue-800 text-xs p-2 rounded mb-4" style="display:none;"></div>
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-2">数量</label><input type="number" id="bossSaleQty" class="input" placeholder="条数" oninput="calcBossSaleTotal()"></div>
+                    <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-2">单价</label><input type="number" id="bossSalePrice" class="input" placeholder="元/条" oninput="calcBossSaleTotal()"></div>
+                </div>
+                <div class="bg-slate-50 p-3 rounded flex justify-between mb-4"><span class="text-slate-500">总计:</span><span id="bossSaleTotal" class="font-bold text-lg">¥0</span></div>
+                <button onclick="submitBossSale()" class="btn btn-primary w-full">确认销售</button>
+            </div>
+            <div id="bossServiceForm" class="card" style="display:none;">
+                <div class="mb-4">
+                    <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">服务类型</label>
+                    <select id="bossServiceType" class="input">
+                        <option value="补胎">补胎</option>
+                        <option value="动平衡">动平衡</option>
+                        <option value="四轮定位">四轮定位</option>
+                        <option value="充气">充气</option>
+                    </select>
+                </div>
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-2">数量</label><input type="number" id="bossServiceQty" class="input" placeholder="数量"></div>
+                    <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-2">总价</label><input type="number" id="bossServicePrice" class="input" placeholder="元"></div>
+                </div>
+                <button onclick="submitBossService()" class="btn btn-primary w-full">确认记录</button>
+            </div>
+        </main>
+    </div>
+
+    <!-- 老板仓库页面 -->
+    <div id="bossInventoryPage" class="page">
+        <header class="bg-slate-900 text-white sticky top-0 z-40 shadow-lg">
+            <div class="max-w-3xl mx-auto px-4 py-4 flex items-center gap-3">
+                <button onclick="showBossTab('dashboard')" class="p-2"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg></button>
+                <h1 class="font-bold text-lg">仓库管理</h1>
+            </div>
+        </header>
+        <main class="max-w-3xl mx-auto p-4 pb-safe">
+            <div class="flex gap-2 mb-4">
+                <div class="relative flex-1">
+                    <svg class="absolute left-3 top-3 w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    <input type="text" id="invSearch" class="input pl-9" placeholder="搜品牌/规格" oninput="filterInventory()">
+                </div>
+                <button onclick="showStockInModal()" class="btn btn-primary"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg></button>
+            </div>
+            <div id="invSummary" class="grid grid-cols-2 gap-4 bg-slate-100 p-3 rounded-xl mb-4">
+                <div class="text-center"><div class="text-xs text-slate-500">总数</div><div id="invTotalQty" class="font-bold text-lg">0</div></div>
+                <div class="text-center"><div class="text-xs text-slate-500">货值</div><div id="invTotalValue" class="font-bold text-lg">¥0</div></div>
+            </div>
+            <div class="bg-white rounded-xl border overflow-hidden">
+                <table class="w-full text-sm">
+                    <thead class="bg-slate-50 text-slate-500"><tr><th class="p-3 text-left">信息</th><th class="p-3 text-right">库存</th><th class="p-3 text-right">成本</th></tr></thead>
+                    <tbody id="invTableBody" class="divide-y"></tbody>
+                </table>
+                <div id="invEmpty" class="p-8 text-center text-slate-400" style="display:none;">暂无数据</div>
+            </div>
+        </main>
+    </div>
+
+    <!-- 入库弹窗 -->
+    <div id="stockInModal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold">入库</h3>
+                <button onclick="hideStockInModal()" class="p-2 text-slate-400"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+            </div>
+            <div class="mb-4"><label class="block text-xs font-semibold text-slate-500 uppercase mb-2">品牌</label><input type="text" id="stockBrand" class="input" placeholder="如：米其林"></div>
+            <div class="mb-4"><label class="block text-xs font-semibold text-slate-500 uppercase mb-2">规格</label><input type="text" id="stockSpec" class="input" placeholder="如：205/55R16"></div>
+            <div class="grid grid-cols-2 gap-4 mb-4">
+                <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-2">数量</label><input type="number" id="stockQty" class="input" placeholder="条数"></div>
+                <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-2">单价</label><input type="number" id="stockCost" class="input" placeholder="进货价"></div>
+            </div>
+            <button onclick="submitStockIn()" class="btn btn-primary w-full">确认入库</button>
+        </div>
+    </div>
+
+    <script>
+    // ==================== LeanCloud 初始化 ====================
+    AV.init({
+        appId: "rp1Ko03EAuMB1QFrYeQGiF25-gzGzoHsz",
+        appKey: "Z1ELb9V5JNTqpGW6i6VnH9rs",
+        serverURL: "https://rp1ko03e.lc-cn-n1-shared.com"
+    });
+
+    console.log('✅ LeanCloud 初始化成功');
+
+    const BOSS_PIN = "8888";
+    let currentUser = null;
+    let inventoryCache = [];
+    let transactionsCache = [];
+
+    // ==================== 页面导航 ====================
+    function showPage(pageId) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
+    }
+
+    function switchEmpTab(tab) {
+        document.getElementById('empLoginTab').className = tab === 'login' ? 'flex-1 pb-3 font-bold border-b-2 border-blue-600 text-blue-600' : 'flex-1 pb-3 font-bold border-b-2 border-transparent text-slate-400';
+        document.getElementById('empRegTab').className = tab === 'register' ? 'flex-1 pb-3 font-bold border-b-2 border-blue-600 text-blue-600' : 'flex-1 pb-3 font-bold border-b-2 border-transparent text-slate-400';
+        document.getElementById('empLoginForm').style.display = tab === 'login' ? 'block' : 'none';
+        document.getElementById('empRegForm').style.display = tab === 'register' ? 'block' : 'none';
+    }
+
+    function showEmpTab(tab) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('[id^="empNav"]').forEach(b => b.classList.remove('active'));
+
+        if (tab === 'dashboard') {
+            document.getElementById('employeeMainPage').classList.add('active');
+            document.getElementById('empNavDashboard').classList.add('active');
+            loadEmpDashboard();
+        } else if (tab === 'operate') {
+            document.getElementById('employeeOperatePage').classList.add('active');
+            document.getElementById('empNavOperate').classList.add('active');
+            loadInventorySelect();
+        } else if (tab === 'history') {
+            document.getElementById('employeeHistoryPage').classList.add('active');
+            document.getElementById('empNavHistory').classList.add('active');
+            loadEmpHistory();
+        }
+    }
+
+    function showBossTab(tab) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('[id^="bossNav"]').forEach(b => b.classList.remove('active'));
+
+        if (tab === 'dashboard') {
+            document.getElementById('bossMainPage').classList.add('active');
+            document.getElementById('bossNavDashboard').classList.add('active');
+            loadBossDashboard();
+        } else if (tab === 'operate') {
+            document.getElementById('bossOperatePage').classList.add('active');
+            document.getElementById('bossNavOperate').classList.add('active');
+            loadBossInventorySelect();
+        } else if (tab === 'inventory') {
+            document.getElementById('bossInventoryPage').classList.add('active');
+            document.getElementById('bossNavInventory').classList.add('active');
+            loadInventory();
+        }
+    }
+
+    function switchOperateTab(tab) {
+        document.getElementById('opTabSale').className = tab === 'sale' ? 'flex-1 py-2 font-bold rounded-lg bg-white shadow text-blue-600' : 'flex-1 py-2 font-bold rounded-lg text-slate-500';
+        document.getElementById('opTabService').className = tab === 'service' ? 'flex-1 py-2 font-bold rounded-lg bg-white shadow text-blue-600' : 'flex-1 py-2 font-bold rounded-lg text-slate-500';
+        document.getElementById('saleForm').style.display = tab === 'sale' ? 'block' : 'none';
+        document.getElementById('serviceForm').style.display = tab === 'service' ? 'block' : 'none';
+    }
+
+    function switchBossOperateTab(tab) {
+        document.getElementById('bossOpTabSale').className = tab === 'sale' ? 'flex-1 py-2 font-bold rounded-lg bg-white shadow text-blue-600' : 'flex-1 py-2 font-bold rounded-lg text-slate-500';
+        document.getElementById('bossOpTabService').className = tab === 'service' ? 'flex-1 py-2 font-bold rounded-lg bg-white shadow text-blue-600' : 'flex-1 py-2 font-bold rounded-lg text-slate-500';
+        document.getElementById('bossSaleForm').style.display = tab === 'sale' ? 'block' : 'none';
+        document.getElementById('bossServiceForm').style.display = tab === 'service' ? 'block' : 'none';
+    }
+
+    // ==================== 用户认证 ====================
+    async function employeeRegister() {
+        const name = document.getElementById('empRegName').value.trim();
+        const pwd = document.getElementById('empRegPwd').value;
+
+        if (!name || !pwd) { alert('请填写完整信息'); return; }
+
+        try {
+            const query = new AV.Query('Employee');
+            query.equalTo('name', name);
+            const existing = await query.first();
+
+            if (existing) { alert('该姓名已注册'); return; }
+
+            const Employee = AV.Object.extend('Employee');
+            const emp = new Employee();
+            emp.set('name', name);
+            emp.set('password', pwd);
+            emp.set('status', 'pending');
+            await emp.save();
+
+            alert('注册成功！请等待老板审核');
+            switchEmpTab('login');
+            document.getElementById('empRegName').value = '';
+            document.getElementById('empRegPwd').value = '';
+        } catch (e) {
+            console.error(e);
+            alert('注册失败: ' + e.message);
+        }
+    }
+
+    async function employeeLogin() {
+        const name = document.getElementById('empLoginName').value.trim();
+        const pwd = document.getElementById('empLoginPwd').value;
+
+        if (!name || !pwd) { alert('请填写完整信息'); return; }
+
+        try {
+            const query = new AV.Query('Employee');
+            query.equalTo('name', name);
+            query.equalTo('password', pwd);
+            const emp = await query.first();
+
+            if (!emp) { alert('用户名或密码错误'); return; }
+
+            const status = emp.get('status');
+            if (status === 'pending') { alert('账号审核中，请等待'); return; }
+            if (status === 'rejected') { alert('账号申请已被拒绝'); return; }
+
+            currentUser = { name, role: 'employee' };
+            localStorage.setItem('tireShopUser', JSON.stringify(currentUser));
+
+            document.getElementById('empName').textContent = name;
+            showPage('employeeMainPage');
+            loadEmpDashboard();
+            showSyncIndicator();
+        } catch (e) {
+            console.error(e);
+            alert('登录失败: ' + e.message);
+        }
+    }
+
+    function bossLogin() {
+        const pwd = document.getElementById('bossPwd').value;
+        if (pwd === BOSS_PIN) {
+            currentUser = { name: 'Boss', role: 'boss' };
+            localStorage.setItem('tireShopUser', JSON.stringify(currentUser));
+            showPage('bossMainPage');
+            loadBossDashboard();
+            showSyncIndicator();
+        } else {
+            alert('密码错误');
+        }
+    }
+
+    function logout() {
+        currentUser = null;
+        localStorage.removeItem('tireShopUser');
+        showPage('welcomePage');
+    }
+
+    // ==================== 数据加载 ====================
+    async function loadInventory() {
+        try {
+            const query = new AV.Query('Inventory');
+            query.limit(1000);
+            const results = await query.find();
+
+            inventoryCache = results.map(r => ({
+                id: r.id,
+                brand: r.get('brand'),
+                spec: r.get('spec'),
+                quantity: r.get('quantity') || 0,
+                avgCost: r.get('avgCost') || 0
+            }));
+
+            renderInventoryTable();
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    function renderInventoryTable() {
+        const search = (document.getElementById('invSearch')?.value || '').toLowerCase();
+        const filtered = inventoryCache.filter(i =>
+            !search || i.brand.toLowerCase().includes(search) || i.spec.toLowerCase().includes(search)
         );
 
-        const Button = ({ onClick, children, variant = "primary", className = "", disabled = false }) => {
-            const baseStyle = "px-4 py-3 rounded-lg font-medium transition-all active:scale-95 disabled:opacity-50 disabled:scale-100 flex items-center justify-center gap-2";
-            const variants = {
-                primary: "bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-200",
-                secondary: "bg-slate-100 text-slate-700 hover:bg-slate-200",
-                danger: "bg-red-50 text-red-600 hover:bg-red-100",
-                success: "bg-emerald-500 text-white hover:bg-emerald-600 shadow-lg shadow-emerald-200",
-                outline: "border border-slate-200 text-slate-600 hover:bg-slate-50",
-            };
-            return (
-                <button onClick={onClick} className={`${baseStyle} ${variants[variant]} ${className}`} disabled={disabled}>
-                    {children}
-                </button>
-            );
-        };
+        const tbody = document.getElementById('invTableBody');
+        const empty = document.getElementById('invEmpty');
 
-        const Input = ({ label, value, onChange, type = "text", placeholder = "", disabled = false, inputMode }) => {
-            const [showPass, setShowPass] = useState(false);
-            const isPassword = type === "password";
-            
-            // Auto-detect input mode for better mobile keyboard
-            const finalInputMode = inputMode || (type === 'number' ? 'decimal' : 'text');
-
-            return (
-                <div className="flex flex-col gap-1 mb-3 relative">
-                    <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">{label}</label>
-                    <div className="relative">
-                        <input
-                            type={isPassword && showPass ? "text" : type}
-                            inputMode={finalInputMode}
-                            value={value}
-                            onChange={(e) => onChange(e.target.value)}
-                            className="w-full px-3 py-3 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 bg-white disabled:bg-slate-50 transition-all text-base"
-                            placeholder={placeholder}
-                            disabled={disabled}
-                            style={{ fontSize: '16px' }} // Prevent iOS zoom on focus
-                        />
-                        {isPassword && (
-                            <button 
-                                type="button"
-                                onClick={() => setShowPass(!showPass)}
-                                className="absolute right-3 top-3 text-slate-400 p-1"
-                            >
-                                {showPass ? <EyeOff size={20}/> : <Eye size={20}/>}
-                            </button>
-                        )}
-                    </div>
-                </div>
-            );
-        };
-
-        const Modal = ({ isOpen, onClose, title, children }) => {
-            if (!isOpen) return null;
-            return (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-                    <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl p-6 relative animate-in zoom-in-95 duration-200 max-h-[90vh] overflow-y-auto">
-                        <div className="flex justify-between items-center mb-4 sticky top-0 bg-white z-10">
-                            <h3 className="text-xl font-bold text-slate-800">{title}</h3>
-                            <button onClick={onClose} className="p-2 hover:bg-slate-100 rounded-full text-slate-400 -mr-2">
-                                <Plus className="w-6 h-6 rotate-45" />
-                            </button>
-                        </div>
-                        {children}
-                    </div>
-                </div>
-            );
-        };
-
-        // --- Main App ---
-        function TireShopApp() {
-            const [user, setUser] = useState(null);
-            const [loading, setLoading] = useState(true);
-            const [bossLocked, setBossLocked] = useState(false);
-            
-            const [inventory, setInventory] = useState([]);
-            const [transactions, setTransactions] = useState([]);
-            const [currentTab, setCurrentTab] = useState('dashboard');
-            const [showLogin, setShowLogin] = useState(true);
-            const [notification, setNotification] = useState(null);
-
-            // Auth & Init
-            useEffect(() => {
-                const initAuth = async () => {
-                    try {
-                        // 默认使用匿名登录
-                        console.log('🔐 正在进行匿名登录...');
-                        await signInAnonymously(auth);
-                        console.log('✅ 匿名登录成功');
-                    } catch (error) {
-                        console.error('❌ 匿名登录失败:', error);
-                        alert('登录失败: ' + error.message + '\n\n请检查:\n1. Firebase Authentication 是否启用了匿名登录\n2. 网络连接是否正常');
-                    }
-                };
-                initAuth();
-
-                return onAuthStateChanged(auth, async (firebaseUser) => {
-                    if (firebaseUser) {
-                        const savedUser = localStorage.getItem('tireShopUser');
-                        if (savedUser) {
-                            const parsedUser = JSON.parse(savedUser);
-                            if (parsedUser.role === 'boss') {
-                                setUser(parsedUser);
-                                setShowLogin(false);
-                                setBossLocked(true); // Auto-lock boss on reload for security
-                            } else {
-                                // Validate employee status
-                                try {
-                                    const userRef = doc(db, 'users', parsedUser.name);
-                                    const userSnap = await getDoc(userRef);
-                                    if (userSnap.exists() && userSnap.data().status === 'approved') {
-                                        setUser(parsedUser);
-                                        setShowLogin(false);
-                                    } else {
-                                        localStorage.removeItem('tireShopUser');
-                                        setShowLogin(true);
-                                    }
-                                } catch (e) {
-                                    localStorage.removeItem('tireShopUser');
-                                    setShowLogin(true);
-                                }
-                            }
-                        } else {
-                            setShowLogin(true);
-                        }
-                    }
-                    setLoading(false);
-                });
-            }, []);
-
-            // Data Listeners
-            useEffect(() => {
-                if (!user || bossLocked) return;
-
-                const invQ = query(collection(db, 'inventory'));
-                const unsubInv = onSnapshot(invQ, (snap) => {
-                    setInventory(snap.docs.map(d => ({ id: d.id, ...d.data() })));
-                });
-
-                const txQ = query(collection(db, 'transactions'));
-                const unsubTx = onSnapshot(txQ, (snap) => {
-                    setTransactions(snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => b.timestamp - a.timestamp));
-                });
-
-                return () => { unsubInv(); unsubTx(); };
-            }, [user, bossLocked]);
-
-            const showNotify = (msg, type = 'success') => {
-                setNotification({ msg, type });
-                setTimeout(() => setNotification(null), 3000);
-            };
-
-            const handleLoginSuccess = (userData) => {
-                setUser(userData);
-                localStorage.setItem('tireShopUser', JSON.stringify(userData));
-                setShowLogin(false);
-                setBossLocked(false);
-                setCurrentTab('dashboard');
-            };
-
-            const handleLogout = () => {
-                setUser(null);
-                localStorage.removeItem('tireShopUser');
-                setShowLogin(true);
-                setBossLocked(false);
-            };
-
-            // Business Logic
-            const handleStockIn = async (brand, spec, qty, costPerUnit) => {
-                try {
-                    const quantity = parseInt(qty);
-                    const cost = parseFloat(costPerUnit);
-                    const cleanBrand = brand.trim();
-                    const cleanSpec = spec.trim();
-                    const docId = `${cleanBrand}_${cleanSpec}`.replace(/[\s/]+/g, '_').toUpperCase();
-                    
-                    const itemRef = doc(db, 'inventory', docId);
-
-                    await runTransaction(db, async (t) => {
-                        const itemDoc = await t.get(itemRef);
-                        let newQty = quantity;
-                        let newAvgCost = cost;
-
-                        if (itemDoc.exists()) {
-                            const d = itemDoc.data();
-                            const currQty = Number(d.quantity) || 0;
-                            const currAvg = Number(d.avgCost) || 0;
-                            newQty = currQty + quantity;
-                            newAvgCost = ((currQty * currAvg) + (quantity * cost)) / newQty;
-                        }
-
-                        t.set(itemRef, { brand: cleanBrand, spec: cleanSpec, quantity: newQty, avgCost: newAvgCost }, { merge: true });
-                        
-                        const txRef = doc(collection(db, 'transactions'));
-                        t.set(txRef, {
-                            type: 'stock_in', brand: cleanBrand, spec: cleanSpec, quantity, cost,
-                            totalCost: quantity * cost, date: new Date().toISOString(), timestamp: Date.now(), operator: user.name
-                        });
-                    });
-                    showNotify(`成功入库 ${quantity} 条`);
-                } catch (e) {
-                    showNotify("入库失败: " + e.message, "error");
-                }
-            };
-
-            const handleSale = async (invId, qty, sellPrice) => {
-                try {
-                    const quantity = parseInt(qty);
-                    const price = parseFloat(sellPrice);
-                    const itemRef = doc(db, 'inventory', invId);
-
-                    await runTransaction(db, async (t) => {
-                        const itemDoc = await t.get(itemRef);
-                        if (!itemDoc.exists()) throw "商品不存在";
-                        const d = itemDoc.data();
-                        const currQty = Number(d.quantity) || 0;
-                        if (currQty < quantity) throw "库存不足";
-
-                        t.update(itemRef, { quantity: currQty - quantity });
-                        
-                        const txRef = doc(collection(db, 'transactions'));
-                        t.set(txRef, {
-                            type: 'sale', inventoryId: invId, brand: d.brand, spec: d.spec, quantity, price,
-                            totalPrice: price * quantity, costAtTime: Number(d.avgCost) || 0,
-                            profit: (price - (Number(d.avgCost) || 0)) * quantity,
-                            date: new Date().toISOString(), timestamp: Date.now(), operator: user.name, employeeId: user.name
-                        });
-                    });
-                    showNotify("销售记录成功！");
-                } catch (e) {
-                    showNotify(typeof e === 'string' ? e : "销售失败", "error");
-                }
-            };
-
-            const handleService = async (serviceName, qty, totalPrice) => {
-                try {
-                    await addDoc(collection(db, 'transactions'), {
-                        type: 'service', serviceName, quantity: parseInt(qty), totalPrice: parseFloat(totalPrice),
-                        profit: parseFloat(totalPrice), date: new Date().toISOString(), timestamp: Date.now(), operator: user.name
-                    });
-                    showNotify("服务记录成功！");
-                } catch (e) {
-                    showNotify("记录失败", "error");
-                }
-            };
-
-            const handleUndo = async (tx) => {
-                if (Date.now() - tx.timestamp > UNDO_TIME_LIMIT_MS && user.role !== 'boss') {
-                    showNotify("已超过5分钟撤回时间，请联系老板", "error");
-                    return;
-                }
-                try {
-                    await runTransaction(db, async (t) => {
-                        if (tx.type === 'sale' && tx.inventoryId) {
-                            const itemRef = doc(db, 'inventory', tx.inventoryId);
-                            const itemDoc = await t.get(itemRef);
-                            if (itemDoc.exists()) t.update(itemRef, { quantity: (Number(itemDoc.data().quantity) || 0) + tx.quantity });
-                        }
-                        if (tx.type === 'stock_in') {
-                            const docId = `${tx.brand}_${tx.spec}`.replace(/[\s/]+/g, '_').toUpperCase();
-                            const itemRef = doc(db, 'inventory', docId);
-                            const itemDoc = await t.get(itemRef);
-                            if (itemDoc.exists()) {
-                                const q = Number(itemDoc.data().quantity) || 0;
-                                if (q < tx.quantity) throw "库存不足以撤销";
-                                t.update(itemRef, { quantity: q - tx.quantity });
-                            }
-                        }
-                        t.delete(doc(db, 'transactions', tx.id));
-                    });
-                    showNotify("记录已撤销");
-                } catch (e) {
-                    showNotify("撤销失败: " + e, "error");
-                }
-            };
-
-            if (loading) return <div className="min-h-screen flex items-center justify-center text-slate-400">系统加载中...</div>;
-            if (bossLocked) return <BossLockScreen onUnlock={(pin) => pin === BOSS_PIN ? (setBossLocked(false), showNotify("解锁成功")) : showNotify("密码错误", "error")} onSwitchUser={handleLogout} />;
-            if (showLogin) return <LoginScreen onLoginSuccess={handleLoginSuccess} showNotify={showNotify} />;
-
-            return (
-                <div className="min-h-screen pb-safe">
-                    {notification && (
-                        <div className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 px-6 py-3 rounded-full shadow-xl text-white font-medium animate-in fade-in slide-in-from-top-4 ${notification.type === 'error' ? 'bg-red-500' : 'bg-emerald-500'} max-w-[90vw] text-center`}>
-                            {notification.msg}
-                        </div>
-                    )}
-                    
-                    <header className="bg-slate-900 text-white sticky top-0 z-40 shadow-lg">
-                        <div className="max-w-3xl mx-auto px-4 py-4 flex justify-between items-center">
-                            <div className="flex items-center gap-3">
-                                <div className="bg-blue-600 p-2 rounded-lg shrink-0"><Users className="w-5 h-5 text-white" /></div>
-                                <div>
-                                    <h1 className="font-bold text-lg leading-tight">许氏轮胎店</h1>
-                                    <p className="text-xs text-slate-400 flex items-center gap-1">
-                                        <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-                                        {user.role === 'boss' ? '老板端' : '员工端'} · {user.name}
-                                    </p>
-                                </div>
-                            </div>
-                            <button onClick={handleLogout} className="text-slate-400 hover:text-white p-2"><LogOut className="w-5 h-5" /></button>
-                        </div>
-                    </header>
-
-                    <main className="max-w-3xl mx-auto p-4 space-y-6">
-                        <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 p-2 md:relative md:bg-transparent md:border-0 md:p-0 z-30 pb-safe">
-                            <div className="max-w-3xl mx-auto grid grid-cols-3 gap-2">
-                                <NavBtn active={currentTab === 'dashboard'} onClick={() => setCurrentTab('dashboard')} icon={TrendingUp} label="概览" />
-                                <NavBtn active={currentTab === 'operate'} onClick={() => setCurrentTab('operate')} icon={Wrench} label="记账" />
-                                {user.role === 'boss' ? (
-                                    <NavBtn active={currentTab === 'inventory'} onClick={() => setCurrentTab('inventory')} icon={PackagePlus} label="仓库" />
-                                ) : (
-                                    <NavBtn active={currentTab === 'history'} onClick={() => setCurrentTab('history')} icon={History} label="记录" />
-                                )}
-                            </div>
-                        </nav>
-
-                        {currentTab === 'dashboard' && <DashboardView user={user} txs={transactions} inv={inventory} showNotify={showNotify} />}
-                        {currentTab === 'operate' && <OperateView user={user} inv={inventory} onSale={handleSale} onService={handleService} />}
-                        {currentTab === 'inventory' && user.role === 'boss' && <InventoryView inv={inventory} onStockIn={handleStockIn} />}
-                        {currentTab === 'history' && <HistoryView user={user} txs={transactions} onUndo={handleUndo} />}
-                    </main>
-                </div>
-            );
+        if (filtered.length === 0) {
+            tbody.innerHTML = '';
+            empty.style.display = 'block';
+        } else {
+            empty.style.display = 'none';
+            tbody.innerHTML = filtered.map(i => `
+                <tr>
+                    <td class="p-3"><div class="font-bold">${i.brand}</div><div class="text-xs text-slate-500">${i.spec}</div></td>
+                    <td class="p-3 text-right font-bold ${i.quantity < 4 ? 'text-red-500' : ''}">${i.quantity}</td>
+                    <td class="p-3 text-right text-slate-500">¥${(i.avgCost || 0).toFixed(0)}</td>
+                </tr>
+            `).join('');
         }
 
-        // --- Views ---
+        const totalQty = filtered.reduce((s, i) => s + (i.quantity || 0), 0);
+        const totalValue = filtered.reduce((s, i) => s + ((i.quantity || 0) * (i.avgCost || 0)), 0);
+        document.getElementById('invTotalQty').textContent = totalQty;
+        document.getElementById('invTotalValue').textContent = '¥' + totalValue.toLocaleString();
+    }
 
-        const LoginScreen = ({ onLoginSuccess, showNotify }) => {
-            const [mode, setMode] = useState(null);
-            const [activeTab, setActiveTab] = useState('login');
-            const [name, setName] = useState("");
-            const [password, setPassword] = useState("");
-            const [loading, setLoading] = useState(false);
+    function filterInventory() {
+        renderInventoryTable();
+    }
 
-            const handleBoss = () => {
-                if (password === BOSS_PIN) onLoginSuccess({ name: 'Boss', role: 'boss' });
-                else showNotify("密码错误", "error");
-            };
+    async function loadInventorySelect() {
+        await loadInventory();
+        const select = document.getElementById('saleSelect');
+        select.innerHTML = '<option value="">-- 请选择 --</option>' +
+            inventoryCache.filter(i => i.quantity > 0).map(i =>
+                `<option value="${i.id}">${i.brand} ${i.spec} (余:${i.quantity})</option>`
+            ).join('');
+    }
 
-            const handleEmpLogin = async () => {
-                if (!name || !password) return;
-                setLoading(true);
-                try {
-                    const snap = await getDoc(doc(db, 'users', name));
-                    if (!snap.exists()) showNotify("账号不存在", "error");
-                    else {
-                        const d = snap.data();
-                        if (d.password !== password) showNotify("密码错误", "error");
-                        else if (d.status === 'pending') showNotify("审核中", "error");
-                        else if (d.status === 'rejected') showNotify("申请已拒绝", "error");
-                        else onLoginSuccess({ name: d.name, role: 'employee' });
-                    }
-                } catch (e) { showNotify("登录失败", "error"); }
-                setLoading(false);
-            };
+    async function loadBossInventorySelect() {
+        await loadInventory();
+        const select = document.getElementById('bossSaleSelect');
+        select.innerHTML = '<option value="">-- 请选择 --</option>' +
+            inventoryCache.filter(i => i.quantity > 0).map(i =>
+                `<option value="${i.id}">${i.brand} ${i.spec} (余:${i.quantity})</option>`
+            ).join('');
+    }
 
-            const handleRegister = async () => {
-                if (!name || !password) return;
-                setLoading(true);
-                try {
-                    const ref = doc(db, 'users', name);
-                    const snap = await getDoc(ref);
-                    if (snap.exists()) showNotify("用户名已存在", "error");
-                    else {
-                        await setDoc(ref, { name, password, role: 'employee', status: 'pending', createdAt: new Date().toISOString() });
-                        showNotify("申请已提交，请等待审核");
-                        setActiveTab('login');
-                    }
-                } catch (e) { showNotify("注册失败", "error"); }
-                setLoading(false);
-            };
+    function updateSaleInfo() {
+        const id = document.getElementById('saleSelect').value;
+        const item = inventoryCache.find(i => i.id === id);
+        const info = document.getElementById('saleStockInfo');
+        if (item) {
+            info.textContent = `当前库存: ${item.quantity} 条`;
+            info.style.display = 'block';
+        } else {
+            info.style.display = 'none';
+        }
+    }
 
-            if (!mode) return (
-                <div className="min-h-screen bg-slate-900 flex flex-col items-center justify-center p-6 space-y-8">
-                    <div className="text-center space-y-2">
-                        <div className="w-16 h-16 bg-blue-600 rounded-2xl mx-auto flex items-center justify-center shadow-lg"><Users className="text-white w-8 h-8"/></div>
-                        <h1 className="text-3xl font-bold text-white">许氏轮胎店</h1>
-                    </div>
-                    <div className="grid gap-4 w-full max-w-sm">
-                        <button onClick={() => setMode('employee')} className="bg-white p-6 rounded-xl flex items-center justify-between group active:scale-95 transition-transform">
-                            <div className="flex items-center gap-4"><div className="bg-blue-100 p-3 rounded-lg text-blue-600"><Wrench /></div><div className="text-left"><div className="font-bold text-lg">我是员工</div><div className="text-sm text-slate-500">记账、查库存</div></div></div><ArrowRight className="text-slate-300"/>
-                        </button>
-                        <button onClick={() => setMode('boss')} className="bg-slate-800 text-white p-6 rounded-xl flex items-center justify-between border border-slate-700 active:scale-95 transition-transform">
-                            <div className="flex items-center gap-4"><div className="bg-slate-700 p-3 rounded-lg text-slate-300"><ShieldCheck /></div><div className="text-left"><div className="font-bold text-lg">我是老板</div><div className="text-sm text-slate-400">管理、看利润</div></div></div><ArrowRight className="text-slate-600"/>
-                        </button>
-                    </div>
-                </div>
-            );
+    function updateBossSaleInfo() {
+        const id = document.getElementById('bossSaleSelect').value;
+        const item = inventoryCache.find(i => i.id === id);
+        const info = document.getElementById('bossSaleStockInfo');
+        if (item) {
+            info.textContent = `当前库存: ${item.quantity} 条`;
+            info.style.display = 'block';
+        } else {
+            info.style.display = 'none';
+        }
+    }
 
-            return (
-                <div className="min-h-screen bg-slate-50 flex items-center justify-center p-6">
-                    <Card className="w-full max-w-sm">
-                        <h2 className="text-2xl font-bold text-slate-800 mb-6 text-center">{mode === 'employee' ? '员工入口' : '老板登录'}</h2>
-                        {mode === 'employee' ? (
-                            <div className="space-y-4">
-                                <div className="flex border-b border-slate-100 mb-4">
-                                    <button onClick={() => setActiveTab('login')} className={`flex-1 pb-2 font-bold border-b-2 transition-colors ${activeTab === 'login' ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-400'}`}>登录</button>
-                                    <button onClick={() => setActiveTab('register')} className={`flex-1 pb-2 font-bold border-b-2 transition-colors ${activeTab === 'register' ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-400'}`}>注册</button>
-                                </div>
-                                <Input label="姓名" value={name} onChange={setName} placeholder="输入您的名字" />
-                                <Input label="登录密码" type="password" value={password} onChange={setPassword} placeholder="设置您的密码" />
-                                {activeTab === 'login' ? (
-                                    <Button onClick={handleEmpLogin} disabled={loading} className="w-full">{loading ? '登录中...' : '登录'}</Button>
-                                ) : (
-                                    <Button onClick={handleRegister} disabled={loading} className="w-full" variant="outline">{loading ? '提交中...' : '提交申请'}</Button>
-                                )}
-                            </div>
-                        ) : (
-                            <div className="space-y-4">
-                                <Input label="管理员密码" type="password" value={password} onChange={setPassword} placeholder="请输入密码" inputMode="numeric" />
-                                <Button onClick={handleBoss} disabled={!password} className="w-full">验证身份</Button>
-                            </div>
-                        )}
-                        <button onClick={() => { setMode(null); setName(""); setPassword(""); }} className="w-full text-center text-sm text-slate-400 mt-4 p-2">返回选择</button>
-                    </Card>
-                </div>
-            );
-        };
+    function calcSaleTotal() {
+        const qty = parseFloat(document.getElementById('saleQty').value) || 0;
+        const price = parseFloat(document.getElementById('salePrice').value) || 0;
+        document.getElementById('saleTotal').textContent = '¥' + (qty * price).toFixed(0);
+    }
 
-        const BossLockScreen = ({ onUnlock, onSwitchUser }) => {
-            const [pin, setPin] = useState("");
-            return (
-                <div className="min-h-screen bg-slate-900 flex flex-col items-center justify-center p-6">
-                    <Card className="w-full max-w-sm text-center">
-                        <div className="bg-slate-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"><Lock className="w-8 h-8 text-slate-600" /></div>
-                        <h2 className="text-2xl font-bold text-slate-800 mb-2">欢迎回来，老板</h2>
-                        <p className="text-slate-500 mb-6">为了安全，请输入密码解锁</p>
-                        <Input type="password" value={pin} onChange={setPin} placeholder="请输入密码" inputMode="numeric" />
-                        <Button onClick={() => onUnlock(pin)} className="w-full mb-4">解锁</Button>
-                        <button onClick={onSwitchUser} className="text-sm text-slate-400 p-2">切换账号</button>
-                    </Card>
-                </div>
-            );
-        };
+    function calcBossSaleTotal() {
+        const qty = parseFloat(document.getElementById('bossSaleQty').value) || 0;
+        const price = parseFloat(document.getElementById('bossSalePrice').value) || 0;
+        document.getElementById('bossSaleTotal').textContent = '¥' + (qty * price).toFixed(0);
+    }
 
-        const StaffManager = ({ showNotify }) => {
-            const [pending, setPending] = useState([]);
-            useEffect(() => {
-                return onSnapshot(query(collection(db, 'users'), where("status", "==", "pending")), 
-                (snap) => setPending(snap.docs.map(d => d.data())));
-            }, []);
-            const handle = async (name, ok) => {
-                await updateDoc(doc(db, 'users', name), { status: ok ? 'approved' : 'rejected' });
-                showNotify(ok ? `已批准 ${name}` : `已拒绝 ${name}`);
-            };
-            if (!pending.length) return null;
-            return (
-                <Card className="border-blue-200 bg-blue-50 mb-6">
-                    <div className="flex items-center gap-2 mb-3 text-blue-800 font-bold"><UserPlus size={20}/><h3>新员工审核 ({pending.length})</h3></div>
-                    <div className="space-y-2">{pending.map(u => (
-                        <div key={u.name} className="flex justify-between bg-white p-3 rounded-lg shadow-sm">
-                            <span className="font-bold">{u.name}</span>
-                            <div className="flex gap-2"><button onClick={() => handle(u.name, true)} className="text-emerald-500 p-2"><CheckCircle/></button><button onClick={() => handle(u.name, false)} className="text-red-500 p-2"><XCircle/></button></div>
+    async function loadTransactions() {
+        try {
+            const query = new AV.Query('Transaction');
+            query.descending('createdAt');
+            query.limit(500);
+            const results = await query.find();
+
+            transactionsCache = results.map(r => ({
+                id: r.id,
+                type: r.get('type'),
+                brand: r.get('brand'),
+                spec: r.get('spec'),
+                serviceName: r.get('serviceName'),
+                quantity: r.get('quantity'),
+                price: r.get('price'),
+                totalPrice: r.get('totalPrice'),
+                totalCost: r.get('totalCost'),
+                profit: r.get('profit'),
+                operator: r.get('operator'),
+                date: r.createdAt
+            }));
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    async function loadEmpDashboard() {
+        await loadTransactions();
+
+        const today = new Date().toDateString();
+        const todayTx = transactionsCache.filter(t =>
+            new Date(t.date).toDateString() === today &&
+            t.operator === currentUser.name &&
+            (t.type === 'sale' || t.type === 'service')
+        );
+
+        const revenue = todayTx.reduce((s, t) => s + (t.totalPrice || 0), 0);
+        const orders = todayTx.length;
+
+        document.getElementById('empRevenue').textContent = '¥' + revenue;
+        document.getElementById('empOrders').textContent = orders + ' 单';
+
+        document.getElementById('empTodayRecords').innerHTML = todayTx.length === 0
+            ? '<div class="text-center py-8 text-slate-400">暂无今日记录</div>'
+            : todayTx.map(t => renderTxItem(t, false)).join('');
+    }
+
+    async function loadEmpHistory() {
+        await loadTransactions();
+
+        const myTx = transactionsCache.filter(t => t.operator === currentUser.name);
+
+        document.getElementById('empHistoryList').innerHTML = myTx.length === 0
+            ? '<div class="text-center py-8 text-slate-400">暂无记录</div>'
+            : myTx.map(t => renderTxItem(t, false)).join('');
+    }
+
+    async function loadBossDashboard() {
+        await loadTransactions();
+        await loadInventory();
+        await loadPendingStaff();
+
+        const today = new Date().toDateString();
+        const todayTx = transactionsCache.filter(t =>
+            new Date(t.date).toDateString() === today &&
+            (t.type === 'sale' || t.type === 'service')
+        );
+
+        const revenue = todayTx.reduce((s, t) => s + (t.totalPrice || 0), 0);
+        const profit = todayTx.reduce((s, t) => s + (t.profit || 0), 0);
+        const orders = todayTx.length;
+
+        document.getElementById('bossRevenue').textContent = '¥' + revenue;
+        document.getElementById('bossProfit').textContent = '¥' + profit.toFixed(0);
+        document.getElementById('bossOrders').textContent = orders + ' 单';
+
+        // 库存预警
+        const lowStock = inventoryCache.filter(i => i.quantity < 4);
+        if (lowStock.length > 0) {
+            document.getElementById('lowStockAlert').style.display = 'block';
+            document.getElementById('lowStockList').innerHTML = lowStock.map(i =>
+                `<div class="flex justify-between text-sm bg-white/50 p-2 rounded mb-1"><span>${i.brand} ${i.spec}</span><span class="font-bold text-red-600">余 ${i.quantity}</span></div>`
+            ).join('');
+        } else {
+            document.getElementById('lowStockAlert').style.display = 'none';
+        }
+
+        document.getElementById('bossTodayRecords').innerHTML = todayTx.length === 0
+            ? '<div class="text-center py-8 text-slate-400">暂无今日记录</div>'
+            : todayTx.map(t => renderTxItem(t, true)).join('');
+    }
+
+    async function loadPendingStaff() {
+        try {
+            const query = new AV.Query('Employee');
+            query.equalTo('status', 'pending');
+            const results = await query.find();
+
+            if (results.length > 0) {
+                document.getElementById('pendingStaff').style.display = 'block';
+                document.getElementById('pendingList').innerHTML = results.map(r => `
+                    <div class="flex justify-between bg-white p-3 rounded-lg shadow-sm mb-2">
+                        <span class="font-bold">${r.get('name')}</span>
+                        <div class="flex gap-2">
+                            <button onclick="approveStaff('${r.id}')" class="text-emerald-500 p-1"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button>
+                            <button onclick="rejectStaff('${r.id}')" class="text-red-500 p-1"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button>
                         </div>
-                    ))}</div>
-                </Card>
-            );
-        };
-
-        const DashboardView = ({ user, txs, inv, showNotify }) => {
-            const today = new Date().toDateString();
-            const todayTx = txs.filter(t => new Date(t.date).toDateString() === today);
-            const stats = useMemo(() => {
-                let r = 0, p = 0, c = 0;
-                todayTx.forEach(t => {
-                    if (user.role !== 'boss' && t.operator !== user.name) return;
-                    if (t.type === 'sale' || t.type === 'service') { r += (t.totalPrice||0); c += (t.quantity||0); if (user.role === 'boss') p += (t.profit||0); }
-                });
-                return { r, p, c };
-            }, [todayTx, user]);
-            const lowStock = inv.filter(i => (Number(i.quantity)||0) < 4);
-
-            return (
-                <div className="space-y-6">
-                    {user.role === 'boss' && <StaffManager showNotify={showNotify} />}
-                    <div className="grid grid-cols-2 gap-4">
-                        <StatCard label="今日营业额" value={`¥${stats.r}`} color="blue" />
-                        <StatCard label="今日单量" value={`${stats.c} 单`} color="slate" />
-                        {user.role === 'boss' && <StatCard label="今日毛利" value={`¥${stats.p}`} color="emerald" fullWidth />}
                     </div>
-                    {user.role === 'boss' && lowStock.length > 0 && (
-                        <Card className="border-orange-200 bg-orange-50">
-                            <div className="flex gap-2 mb-2 text-orange-800 font-bold"><AlertTriangle size={20}/><h3>库存预警</h3></div>
-                            <div className="space-y-2">{lowStock.map(i => <div key={i.id} className="flex justify-between text-sm bg-white/50 p-2 rounded"><span>{i.brand} {i.spec}</span><span className="font-bold text-red-600">余 {i.quantity}</span></div>)}</div>
-                        </Card>
-                    )}
-                    <div>
-                        <h3 className="font-bold text-slate-700 mb-3 flex justify-between items-center"><span>今日记录</span><span className="text-xs font-normal text-slate-400 bg-slate-100 px-2 py-1 rounded-full">{today}</span></h3>
-                        <TxList txs={todayTx.filter(t => user.role === 'boss' || t.operator === user.name)} showProfit={user.role === 'boss'} />
-                    </div>
-                </div>
-            );
+                `).join('');
+            } else {
+                document.getElementById('pendingStaff').style.display = 'none';
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    async function approveStaff(id) {
+        try {
+            const emp = AV.Object.createWithoutData('Employee', id);
+            emp.set('status', 'approved');
+            await emp.save();
+            alert('已批准');
+            loadPendingStaff();
+        } catch (e) {
+            alert('操作失败');
+        }
+    }
+
+    async function rejectStaff(id) {
+        try {
+            const emp = AV.Object.createWithoutData('Employee', id);
+            emp.set('status', 'rejected');
+            await emp.save();
+            alert('已拒绝');
+            loadPendingStaff();
+        } catch (e) {
+            alert('操作失败');
+        }
+    }
+
+    function renderTxItem(t, showProfit) {
+        const typeColors = {
+            'stock_in': 'bg-purple-100 text-purple-600',
+            'sale': 'bg-blue-100 text-blue-600',
+            'service': 'bg-emerald-100 text-emerald-600'
+        };
+        const typeIcons = {
+            'stock_in': '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>',
+            'sale': '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path>',
+            'service': '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>'
         };
 
-        const OperateView = ({ user, inv, onSale, onService }) => {
-            const [tab, setTab] = useState('sale');
-            const [sid, setSid] = useState("");
-            const [sq, setSq] = useState("");
-            const [sp, setSp] = useState("");
-            const [st, setSt] = useState("补胎");
-            const [svq, setSvq] = useState("");
-            const [svp, setSvp] = useState("");
-            const item = inv.find(i => i.id === sid);
+        const title = t.type === 'stock_in' ? `进货: ${t.brand}` : t.type === 'sale' ? `销售: ${t.brand}` : t.serviceName;
+        const detail = t.spec ? `${t.spec} ` : '';
+        const time = new Date(t.date).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
 
-            return (
-                <div className="space-y-4">
-                    <div className="flex p-1 bg-slate-200 rounded-xl">
-                        <button onClick={() => setTab('sale')} className={`flex-1 py-2 font-bold rounded-lg ${tab === 'sale' ? 'bg-white shadow text-blue-600' : 'text-slate-500'}`}>换胎</button>
-                        <button onClick={() => setTab('service')} className={`flex-1 py-2 font-bold rounded-lg ${tab === 'service' ? 'bg-white shadow text-blue-600' : 'text-slate-500'}`}>补胎</button>
-                    </div>
-                    <Card>
-                        {tab === 'sale' ? (
-                            <div className="space-y-4">
-                                <div className="flex flex-col gap-1">
-                                    <label className="text-xs font-semibold text-slate-500 uppercase">选择轮胎</label>
-                                    <select className="w-full p-3 border border-slate-200 rounded-lg bg-white h-12 text-base" value={sid} onChange={e => setSid(e.target.value)} style={{fontSize:'16px'}}>
-                                        <option value="">-- 请选择 --</option>
-                                        {inv.map(i => <option key={i.id} value={i.id} disabled={i.quantity<=0}>{i.brand} {i.spec} (余:{i.quantity})</option>)}
-                                    </select>
-                                </div>
-                                {item && <div className="bg-blue-50 text-blue-800 text-xs p-2 rounded">当前库存: {item.quantity}</div>}
-                                <div className="grid grid-cols-2 gap-4"><Input label="数量" type="number" value={sq} onChange={setSq} /><Input label="单价" type="number" value={sp} onChange={setSp} /></div>
-                                <div className="bg-slate-50 p-3 rounded flex justify-between"><span className="text-slate-500">总计:</span><span className="font-bold text-lg">¥{((parseFloat(sq)||0)*(parseFloat(sp)||0)).toFixed(0)}</span></div>
-                                <Button onClick={() => { onSale(sid, sq, sp); setSid(""); setSq(""); setSp(""); }} disabled={!sid || !sq || !sp}>确认销售</Button>
-                            </div>
-                        ) : (
-                            <div className="space-y-4">
-                                <div className="flex flex-col gap-1"><label className="text-xs font-semibold text-slate-500 uppercase">服务类型</label><select className="w-full p-3 border border-slate-200 rounded-lg bg-white h-12 text-base" value={st} onChange={e => setSt(e.target.value)} style={{fontSize:'16px'}}>{["补胎","动平衡","四轮定位","充气"].map(o=><option key={o} value={o}>{o}</option>)}</select></div>
-                                <Input label="数量" type="number" value={svq} onChange={setSvq} /><Input label="总价" type="number" value={svp} onChange={setSvp} />
-                                <Button onClick={() => { onService(st, svq, svp); setSvq(""); setSvp(""); }} disabled={!svq || !svp}>确认记录</Button>
-                            </div>
-                        )}
-                    </Card>
+        return `
+            <div class="record-item flex justify-between items-center">
+                <div class="flex gap-3 items-center flex-1 min-w-0">
+                    <div class="p-2 rounded-lg ${typeColors[t.type]}"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">${typeIcons[t.type]}</svg></div>
+                    <div class="min-w-0"><div class="font-bold text-sm truncate">${title}</div><div class="text-xs text-slate-500">${detail}x${t.quantity} · ${time} · ${t.operator}</div></div>
                 </div>
-            );
-        };
-
-        const InventoryView = ({ inv, onStockIn }) => {
-            const [open, setOpen] = useState(false);
-            const [search, setSearch] = useState("");
-            const [brand, setBrand] = useState("");
-            const [spec, setSpec] = useState("");
-            const [qty, setQty] = useState("");
-            const [cost, setCost] = useState("");
-
-            const handle = async () => {
-                if (brand && spec && qty && cost) {
-                    await onStockIn(brand, spec, qty, cost);
-                    setOpen(false); setBrand(""); setSpec(""); setQty(""); setCost(""); setSearch("");
-                }
-            };
-            const norm = s => (s||"").toLowerCase().replace(/[\s/]/g, "");
-            const raw = search.toLowerCase().trim();
-            const clean = norm(search);
-            const list = inv.filter(i => !search || (i.brand||"").toLowerCase().includes(raw) || (i.spec||"").toLowerCase().includes(raw) || norm(i.spec).includes(clean));
-            const totalQ = list.reduce((s, i) => s + (Number(i.quantity)||0), 0);
-            const totalV = list.reduce((s, i) => s + ((Number(i.quantity)||0)*(Number(i.avgCost)||0)), 0);
-
-            return (
-                <div className="space-y-4">
-                    <div className="flex gap-2"><div className="relative flex-1"><Search className="absolute left-3 top-3 text-slate-400 w-4 h-4"/><input className="w-full pl-9 p-3 border rounded-lg h-12 text-base" placeholder="搜品牌/规格" value={search} onChange={e=>setSearch(e.target.value)} style={{fontSize:'16px'}}/>{search && <button onClick={()=>setSearch('')} className="absolute right-3 top-3 text-slate-400"><X size={16}/></button>}</div><Button onClick={()=>setOpen(true)}><Plus size={20}/></Button></div>
-                    {(search || list.length > 0) && <div className="grid grid-cols-2 gap-4 bg-slate-100 p-3 rounded-xl"><div className="text-center"><div className="text-xs text-slate-500">总数</div><div className="font-bold text-lg">{totalQ}</div></div><div className="text-center"><div className="text-xs text-slate-500">货值</div><div className="font-bold text-lg">¥{totalV.toLocaleString()}</div></div></div>}
-                    <div className="bg-white rounded-xl border overflow-hidden">
-                        <table className="w-full text-sm"><thead className="bg-slate-50 text-slate-500"><tr><th className="p-3 text-left">信息</th><th className="p-3 text-right">库存</th><th className="p-3 text-right">成本</th></tr></thead>
-                        <tbody className="divide-y">{list.map(i => <tr key={i.id}><td className="p-3"><div className="font-bold">{i.brand}</div><div className="text-xs text-slate-500">{i.spec}</div></td><td className={`p-3 text-right font-bold ${(Number(i.quantity)||0)<4?'text-red-500':''}`}>{i.quantity}</td><td className="p-3 text-right text-slate-500">¥{(i.avgCost||0).toFixed(0)}</td></tr>)}</tbody></table>
-                        {!list.length && <div className="p-8 text-center text-slate-400">暂无数据</div>}
-                    </div>
-                    <Modal isOpen={open} onClose={()=>setOpen(false)} title="入库"><Input label="品牌" value={brand} onChange={setBrand}/><Input label="规格" value={spec} onChange={setSpec}/><div className="grid grid-cols-2 gap-4"><Input label="数量" type="number" value={qty} onChange={setQty}/><Input label="单价" type="number" value={cost} onChange={setCost}/></div><Button onClick={handle} className="w-full mt-4" disabled={!brand||!spec||!qty||!cost}>确认入库</Button></Modal>
+                <div class="text-right">
+                    <div class="font-bold">¥${t.type === 'stock_in' ? t.totalCost : t.totalPrice}</div>
+                    ${showProfit && t.profit ? `<div class="text-xs text-emerald-600">赚 ¥${t.profit.toFixed(0)}</div>` : ''}
                 </div>
-            );
-        };
+            </div>
+        `;
+    }
 
-        const HistoryView = ({ user, txs, onUndo }) => {
-            return (
-                <div className="space-y-4">
-                    <h3 className="font-bold text-slate-700">历史记录</h3>
-                    <TxList txs={user.role === 'boss' ? txs : txs.filter(t => t.operator === user.name)} showProfit={user.role === 'boss'} onUndo={onUndo} user={user} />
-                </div>
-            );
-        };
+    // ==================== 业务操作 ====================
+    async function submitSale() {
+        const id = document.getElementById('saleSelect').value;
+        const qty = parseInt(document.getElementById('saleQty').value);
+        const price = parseFloat(document.getElementById('salePrice').value);
 
-        const TxList = ({ txs, showProfit, onUndo, user }) => {
-            if (!txs.length) return <div className="text-center py-8 text-slate-400">暂无记录</div>;
-            return (
-                <div className="space-y-3">
-                    {txs.map(t => {
-                        const canUndo = onUndo && (user.role === 'boss' || (Date.now() - t.timestamp < UNDO_TIME_LIMIT_MS));
-                        return (
-                            <div key={t.id} className="bg-white p-3 rounded-xl border flex justify-between items-center">
-                                <div className="flex gap-3 items-center flex-1 min-w-0">
-                                    <div className={`p-2 rounded-lg shrink-0 ${t.type==='stock_in'?'bg-purple-100 text-purple-600':t.type==='sale'?'bg-blue-100 text-blue-600':'bg-emerald-100 text-emerald-600'}`}>{t.type==='stock_in'?<PackagePlus size={20}/>:t.type==='sale'?<Minus size={20}/>:<Wrench size={20}/>}</div>
-                                    <div className="min-w-0 truncate"><div className="font-bold text-sm truncate">{t.type==='stock_in'?`进货: ${t.brand}`:t.type==='sale'?`销售: ${t.brand}`:t.serviceName}</div><div className="text-xs text-slate-500 truncate">{t.spec && <span>{t.spec} </span>} {t.quantity && <span>x{t.quantity}</span>} <span className="ml-1">{new Date(t.date).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})} · {t.operator}</span></div></div>
-                                </div>
-                                <div className="text-right shrink-0 ml-2">
-                                    <div className="font-bold">¥{t.type==='stock_in'?t.totalCost:t.totalPrice}</div>
-                                    {showProfit && t.profit!=null && <div className="text-xs text-emerald-600 font-medium">赚 ¥{t.profit.toFixed(0)}</div>}
-                                    {canUndo && <button onClick={()=>{if(confirm("确定撤销?"))onUndo(t)}} className="text-xs text-red-400 mt-1 flex items-center gap-1 justify-end p-1 -mr-1"><Trash2 size={12}/>撤销</button>}
-                                </div>
-                            </div>
-                        )
-                    })}
-                </div>
-            );
-        };
+        if (!id || !qty || !price) { alert('请填写完整信息'); return; }
 
-        const NavBtn = ({ active, onClick, icon: Icon, label }) => (
-            <button onClick={onClick} className={`flex flex-col items-center justify-center p-2 rounded-xl active:bg-slate-100 transition-colors ${active ? 'text-blue-600 bg-blue-50' : 'text-slate-400'}`}><Icon className={`w-6 h-6 mb-1 ${active?'fill-current':''}`}/><span className="text-xs font-medium">{label}</span></button>
-        );
-        const StatCard = ({ label, value, color, fullWidth }) => (
-            <Card className={`text-center ${fullWidth?'col-span-2':''}`}><div className="text-xs font-semibold text-slate-400 uppercase mb-1">{label}</div><div className={`text-2xl font-bold text-${color}-600`}>{value}</div></Card>
-        );
+        const item = inventoryCache.find(i => i.id === id);
+        if (!item) { alert('商品不存在'); return; }
+        if (item.quantity < qty) { alert('库存不足'); return; }
 
-        const root = createRoot(document.getElementById('root'));
-        root.render(<TireShopApp />);
+        try {
+            // 更新库存
+            const inv = AV.Object.createWithoutData('Inventory', id);
+            inv.set('quantity', item.quantity - qty);
+            await inv.save();
+
+            // 添加交易记录
+            const Transaction = AV.Object.extend('Transaction');
+            const tx = new Transaction();
+            tx.set('type', 'sale');
+            tx.set('inventoryId', id);
+            tx.set('brand', item.brand);
+            tx.set('spec', item.spec);
+            tx.set('quantity', qty);
+            tx.set('price', price);
+            tx.set('totalPrice', qty * price);
+            tx.set('costAtTime', item.avgCost);
+            tx.set('profit', (price - item.avgCost) * qty);
+            tx.set('operator', currentUser.name);
+            await tx.save();
+
+            alert('销售记录成功！');
+            document.getElementById('saleSelect').value = '';
+            document.getElementById('saleQty').value = '';
+            document.getElementById('salePrice').value = '';
+            document.getElementById('saleTotal').textContent = '¥0';
+            document.getElementById('saleStockInfo').style.display = 'none';
+
+            showSyncIndicator();
+            loadInventorySelect();
+        } catch (e) {
+            console.error(e);
+            alert('操作失败: ' + e.message);
+        }
+    }
+
+    async function submitService() {
+        const type = document.getElementById('serviceType').value;
+        const qty = parseInt(document.getElementById('serviceQty').value);
+        const price = parseFloat(document.getElementById('servicePrice').value);
+
+        if (!qty || !price) { alert('请填写完整信息'); return; }
+
+        try {
+            const Transaction = AV.Object.extend('Transaction');
+            const tx = new Transaction();
+            tx.set('type', 'service');
+            tx.set('serviceName', type);
+            tx.set('quantity', qty);
+            tx.set('totalPrice', price);
+            tx.set('profit', price);
+            tx.set('operator', currentUser.name);
+            await tx.save();
+
+            alert('服务记录成功！');
+            document.getElementById('serviceQty').value = '';
+            document.getElementById('servicePrice').value = '';
+
+            showSyncIndicator();
+        } catch (e) {
+            console.error(e);
+            alert('操作失败: ' + e.message);
+        }
+    }
+
+    async function submitBossSale() {
+        const id = document.getElementById('bossSaleSelect').value;
+        const qty = parseInt(document.getElementById('bossSaleQty').value);
+        const price = parseFloat(document.getElementById('bossSalePrice').value);
+
+        if (!id || !qty || !price) { alert('请填写完整信息'); return; }
+
+        const item = inventoryCache.find(i => i.id === id);
+        if (!item) { alert('商品不存在'); return; }
+        if (item.quantity < qty) { alert('库存不足'); return; }
+
+        try {
+            const inv = AV.Object.createWithoutData('Inventory', id);
+            inv.set('quantity', item.quantity - qty);
+            await inv.save();
+
+            const Transaction = AV.Object.extend('Transaction');
+            const tx = new Transaction();
+            tx.set('type', 'sale');
+            tx.set('inventoryId', id);
+            tx.set('brand', item.brand);
+            tx.set('spec', item.spec);
+            tx.set('quantity', qty);
+            tx.set('price', price);
+            tx.set('totalPrice', qty * price);
+            tx.set('costAtTime', item.avgCost);
+            tx.set('profit', (price - item.avgCost) * qty);
+            tx.set('operator', currentUser.name);
+            await tx.save();
+
+            alert('销售记录成功！');
+            document.getElementById('bossSaleSelect').value = '';
+            document.getElementById('bossSaleQty').value = '';
+            document.getElementById('bossSalePrice').value = '';
+            document.getElementById('bossSaleTotal').textContent = '¥0';
+            document.getElementById('bossSaleStockInfo').style.display = 'none';
+
+            showSyncIndicator();
+            loadBossInventorySelect();
+        } catch (e) {
+            console.error(e);
+            alert('操作失败: ' + e.message);
+        }
+    }
+
+    async function submitBossService() {
+        const type = document.getElementById('bossServiceType').value;
+        const qty = parseInt(document.getElementById('bossServiceQty').value);
+        const price = parseFloat(document.getElementById('bossServicePrice').value);
+
+        if (!qty || !price) { alert('请填写完整信息'); return; }
+
+        try {
+            const Transaction = AV.Object.extend('Transaction');
+            const tx = new Transaction();
+            tx.set('type', 'service');
+            tx.set('serviceName', type);
+            tx.set('quantity', qty);
+            tx.set('totalPrice', price);
+            tx.set('profit', price);
+            tx.set('operator', currentUser.name);
+            await tx.save();
+
+            alert('服务记录成功！');
+            document.getElementById('bossServiceQty').value = '';
+            document.getElementById('bossServicePrice').value = '';
+
+            showSyncIndicator();
+        } catch (e) {
+            console.error(e);
+            alert('操作失败: ' + e.message);
+        }
+    }
+
+    // ==================== 入库 ====================
+    function showStockInModal() {
+        document.getElementById('stockInModal').style.display = 'flex';
+    }
+
+    function hideStockInModal() {
+        document.getElementById('stockInModal').style.display = 'none';
+        document.getElementById('stockBrand').value = '';
+        document.getElementById('stockSpec').value = '';
+        document.getElementById('stockQty').value = '';
+        document.getElementById('stockCost').value = '';
+    }
+
+    async function submitStockIn() {
+        const brand = document.getElementById('stockBrand').value.trim();
+        const spec = document.getElementById('stockSpec').value.trim();
+        const qty = parseInt(document.getElementById('stockQty').value);
+        const cost = parseFloat(document.getElementById('stockCost').value);
+
+        if (!brand || !spec || !qty || !cost) { alert('请填写完整信息'); return; }
+
+        try {
+            // 查找是否已存在
+            const query = new AV.Query('Inventory');
+            query.equalTo('brand', brand);
+            query.equalTo('spec', spec);
+            let inv = await query.first();
+
+            if (inv) {
+                // 更新现有库存
+                const currQty = inv.get('quantity') || 0;
+                const currAvg = inv.get('avgCost') || 0;
+                const newQty = currQty + qty;
+                const newAvg = ((currQty * currAvg) + (qty * cost)) / newQty;
+
+                inv.set('quantity', newQty);
+                inv.set('avgCost', newAvg);
+            } else {
+                // 创建新库存
+                const Inventory = AV.Object.extend('Inventory');
+                inv = new Inventory();
+                inv.set('brand', brand);
+                inv.set('spec', spec);
+                inv.set('quantity', qty);
+                inv.set('avgCost', cost);
+            }
+            await inv.save();
+
+            // 添加入库记录
+            const Transaction = AV.Object.extend('Transaction');
+            const tx = new Transaction();
+            tx.set('type', 'stock_in');
+            tx.set('brand', brand);
+            tx.set('spec', spec);
+            tx.set('quantity', qty);
+            tx.set('totalCost', qty * cost);
+            tx.set('operator', currentUser.name);
+            await tx.save();
+
+            alert(`成功入库 ${qty} 条`);
+            hideStockInModal();
+            showSyncIndicator();
+            loadInventory();
+        } catch (e) {
+            console.error(e);
+            alert('入库失败: ' + e.message);
+        }
+    }
+
+    // ==================== 同步指示器 ====================
+    function showSyncIndicator() {
+        const indicator = document.getElementById('syncIndicator');
+        indicator.style.display = 'block';
+        setTimeout(() => { indicator.style.display = 'none'; }, 2000);
+    }
+
+    // ==================== 初始化 ====================
+    window.onload = function() {
+        // 检查自动登录
+        const saved = localStorage.getItem('tireShopUser');
+        if (saved) {
+            currentUser = JSON.parse(saved);
+            if (currentUser.role === 'boss') {
+                showPage('bossMainPage');
+                loadBossDashboard();
+            } else {
+                document.getElementById('empName').textContent = currentUser.name;
+                showPage('employeeMainPage');
+                loadEmpDashboard();
+            }
+        }
+    };
     </script>
 </body>
 </html>
