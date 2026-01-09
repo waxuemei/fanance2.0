@@ -81,9 +81,8 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
-        
-        // 使用固定的应用ID，确保多端数据一致
-        const appId = 'xu-tire-shop-v1'; 
+
+        console.log('✅ Firebase 初始化成功');
 
         const BOSS_PIN = "8888"; // 老板密码
         const UNDO_TIME_LIMIT_MS = 5 * 60 * 1000;
@@ -178,8 +177,15 @@
             // Auth & Init
             useEffect(() => {
                 const initAuth = async () => {
-                    // 默认使用匿名登录，如果需要更高级的权限控制建议在 Firebase 控制台开启 Email/Password 登录
-                    await signInAnonymously(auth);
+                    try {
+                        // 默认使用匿名登录
+                        console.log('🔐 正在进行匿名登录...');
+                        await signInAnonymously(auth);
+                        console.log('✅ 匿名登录成功');
+                    } catch (error) {
+                        console.error('❌ 匿名登录失败:', error);
+                        alert('登录失败: ' + error.message + '\n\n请检查:\n1. Firebase Authentication 是否启用了匿名登录\n2. 网络连接是否正常');
+                    }
                 };
                 initAuth();
 
@@ -195,7 +201,7 @@
                             } else {
                                 // Validate employee status
                                 try {
-                                    const userRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', parsedUser.name);
+                                    const userRef = doc(db, 'users', parsedUser.name);
                                     const userSnap = await getDoc(userRef);
                                     if (userSnap.exists() && userSnap.data().status === 'approved') {
                                         setUser(parsedUser);
@@ -221,12 +227,12 @@
             useEffect(() => {
                 if (!user || bossLocked) return;
 
-                const invQ = query(collection(db, 'artifacts', appId, 'public', 'data', 'inventory'));
+                const invQ = query(collection(db, 'inventory'));
                 const unsubInv = onSnapshot(invQ, (snap) => {
                     setInventory(snap.docs.map(d => ({ id: d.id, ...d.data() })));
                 });
 
-                const txQ = query(collection(db, 'artifacts', appId, 'public', 'data', 'transactions'));
+                const txQ = query(collection(db, 'transactions'));
                 const unsubTx = onSnapshot(txQ, (snap) => {
                     setTransactions(snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => b.timestamp - a.timestamp));
                 });
@@ -263,7 +269,7 @@
                     const cleanSpec = spec.trim();
                     const docId = `${cleanBrand}_${cleanSpec}`.replace(/[\s/]+/g, '_').toUpperCase();
                     
-                    const itemRef = doc(db, 'artifacts', appId, 'public', 'data', 'inventory', docId);
+                    const itemRef = doc(db, 'inventory', docId);
 
                     await runTransaction(db, async (t) => {
                         const itemDoc = await t.get(itemRef);
@@ -280,7 +286,7 @@
 
                         t.set(itemRef, { brand: cleanBrand, spec: cleanSpec, quantity: newQty, avgCost: newAvgCost }, { merge: true });
                         
-                        const txRef = doc(collection(db, 'artifacts', appId, 'public', 'data', 'transactions'));
+                        const txRef = doc(collection(db, 'transactions'));
                         t.set(txRef, {
                             type: 'stock_in', brand: cleanBrand, spec: cleanSpec, quantity, cost,
                             totalCost: quantity * cost, date: new Date().toISOString(), timestamp: Date.now(), operator: user.name
@@ -296,7 +302,7 @@
                 try {
                     const quantity = parseInt(qty);
                     const price = parseFloat(sellPrice);
-                    const itemRef = doc(db, 'artifacts', appId, 'public', 'data', 'inventory', invId);
+                    const itemRef = doc(db, 'inventory', invId);
 
                     await runTransaction(db, async (t) => {
                         const itemDoc = await t.get(itemRef);
@@ -307,7 +313,7 @@
 
                         t.update(itemRef, { quantity: currQty - quantity });
                         
-                        const txRef = doc(collection(db, 'artifacts', appId, 'public', 'data', 'transactions'));
+                        const txRef = doc(collection(db, 'transactions'));
                         t.set(txRef, {
                             type: 'sale', inventoryId: invId, brand: d.brand, spec: d.spec, quantity, price,
                             totalPrice: price * quantity, costAtTime: Number(d.avgCost) || 0,
@@ -323,7 +329,7 @@
 
             const handleService = async (serviceName, qty, totalPrice) => {
                 try {
-                    await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'transactions'), {
+                    await addDoc(collection(db, 'transactions'), {
                         type: 'service', serviceName, quantity: parseInt(qty), totalPrice: parseFloat(totalPrice),
                         profit: parseFloat(totalPrice), date: new Date().toISOString(), timestamp: Date.now(), operator: user.name
                     });
@@ -341,13 +347,13 @@
                 try {
                     await runTransaction(db, async (t) => {
                         if (tx.type === 'sale' && tx.inventoryId) {
-                            const itemRef = doc(db, 'artifacts', appId, 'public', 'data', 'inventory', tx.inventoryId);
+                            const itemRef = doc(db, 'inventory', tx.inventoryId);
                             const itemDoc = await t.get(itemRef);
                             if (itemDoc.exists()) t.update(itemRef, { quantity: (Number(itemDoc.data().quantity) || 0) + tx.quantity });
                         }
                         if (tx.type === 'stock_in') {
                             const docId = `${tx.brand}_${tx.spec}`.replace(/[\s/]+/g, '_').toUpperCase();
-                            const itemRef = doc(db, 'artifacts', appId, 'public', 'data', 'inventory', docId);
+                            const itemRef = doc(db, 'inventory', docId);
                             const itemDoc = await t.get(itemRef);
                             if (itemDoc.exists()) {
                                 const q = Number(itemDoc.data().quantity) || 0;
@@ -355,7 +361,7 @@
                                 t.update(itemRef, { quantity: q - tx.quantity });
                             }
                         }
-                        t.delete(doc(db, 'artifacts', appId, 'public', 'data', 'transactions', tx.id));
+                        t.delete(doc(db, 'transactions', tx.id));
                     });
                     showNotify("记录已撤销");
                 } catch (e) {
@@ -431,7 +437,7 @@
                 if (!name || !password) return;
                 setLoading(true);
                 try {
-                    const snap = await getDoc(doc(db, 'artifacts', appId, 'public', 'data', 'users', name));
+                    const snap = await getDoc(doc(db, 'users', name));
                     if (!snap.exists()) showNotify("账号不存在", "error");
                     else {
                         const d = snap.data();
@@ -448,7 +454,7 @@
                 if (!name || !password) return;
                 setLoading(true);
                 try {
-                    const ref = doc(db, 'artifacts', appId, 'public', 'data', 'users', name);
+                    const ref = doc(db, 'users', name);
                     const snap = await getDoc(ref);
                     if (snap.exists()) showNotify("用户名已存在", "error");
                     else {
@@ -526,11 +532,11 @@
         const StaffManager = ({ showNotify }) => {
             const [pending, setPending] = useState([]);
             useEffect(() => {
-                return onSnapshot(query(collection(db, 'artifacts', appId, 'public', 'data', 'users'), where("status", "==", "pending")), 
+                return onSnapshot(query(collection(db, 'users'), where("status", "==", "pending")), 
                 (snap) => setPending(snap.docs.map(d => d.data())));
             }, []);
             const handle = async (name, ok) => {
-                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'users', name), { status: ok ? 'approved' : 'rejected' });
+                await updateDoc(doc(db, 'users', name), { status: ok ? 'approved' : 'rejected' });
                 showNotify(ok ? `已批准 ${name}` : `已拒绝 ${name}`);
             };
             if (!pending.length) return null;
