@@ -75,7 +75,7 @@
                     <svg class="w-5 h-5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                 </button>
             </div>
-            <p class="text-slate-500 text-xs mt-8">LeanCloud 云端版 v1.0</p>
+            <p class="text-slate-500 text-xs mt-8">LeanCloud 云端版 v1.1</p>
         </div>
     </div>
 
@@ -444,9 +444,16 @@
         if (!name || !pwd) { alert('请填写完整信息'); return; }
 
         try {
-            const query = new AV.Query('Employee');
-            query.equalTo('name', name);
-            const existing = await query.first();
+            // 检查是否已存在（处理类不存在的情况）
+            let existing = null;
+            try {
+                const query = new AV.Query('Employee');
+                query.equalTo('name', name);
+                existing = await query.first();
+            } catch (queryError) {
+                // 类不存在时，existing为null
+                if (queryError.code !== 101) throw queryError;
+            }
 
             if (existing) { alert('该姓名已注册'); return; }
 
@@ -474,10 +481,16 @@
         if (!name || !pwd) { alert('请填写完整信息'); return; }
 
         try {
-            const query = new AV.Query('Employee');
-            query.equalTo('name', name);
-            query.equalTo('password', pwd);
-            const emp = await query.first();
+            let emp = null;
+            try {
+                const query = new AV.Query('Employee');
+                query.equalTo('name', name);
+                query.equalTo('password', pwd);
+                emp = await query.first();
+            } catch (queryError) {
+                // 类不存在时，emp为null
+                if (queryError.code !== 101) throw queryError;
+            }
 
             if (!emp) { alert('用户名或密码错误'); return; }
 
@@ -534,7 +547,14 @@
 
             renderInventoryTable();
         } catch (e) {
-            console.error(e);
+            // 如果类不存在（404错误），初始化为空数组
+            if (e.code === 101) {
+                console.log('Inventory类尚不存在，将在首次入库时创建');
+                inventoryCache = [];
+                renderInventoryTable();
+            } else {
+                console.error(e);
+            }
         }
     }
 
@@ -647,7 +667,13 @@
                 date: r.createdAt
             }));
         } catch (e) {
-            console.error(e);
+            // 如果类不存在（404错误），初始化为空数组
+            if (e.code === 101) {
+                console.log('Transaction类尚不存在，将在首次记录时创建');
+                transactionsCache = [];
+            } else {
+                console.error(e);
+            }
         }
     }
 
@@ -721,7 +747,18 @@
         try {
             const query = new AV.Query('Employee');
             query.equalTo('status', 'pending');
-            const results = await query.find();
+            let results = [];
+            try {
+                results = await query.find();
+            } catch (queryError) {
+                // 类不存在时，结果为空
+                if (queryError.code === 101) {
+                    console.log('Employee类尚不存在');
+                    results = [];
+                } else {
+                    throw queryError;
+                }
+            }
 
             if (results.length > 0) {
                 document.getElementById('pendingStaff').style.display = 'block';
@@ -969,11 +1006,17 @@
         if (!brand || !spec || !qty || !cost) { alert('请填写完整信息'); return; }
 
         try {
-            // 查找是否已存在
-            const query = new AV.Query('Inventory');
-            query.equalTo('brand', brand);
-            query.equalTo('spec', spec);
-            let inv = await query.first();
+            // 查找是否已存在（处理类不存在的情况）
+            let inv = null;
+            try {
+                const query = new AV.Query('Inventory');
+                query.equalTo('brand', brand);
+                query.equalTo('spec', spec);
+                inv = await query.first();
+            } catch (queryError) {
+                // 类不存在时，inv保持为null，后面会创建新记录
+                console.log('Inventory类尚不存在，将创建新记录');
+            }
 
             if (inv) {
                 // 更新现有库存
