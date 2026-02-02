@@ -23,14 +23,25 @@
         .input { width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: 12px; font-size: 16px; outline: none; transition: all 0.2s; }
         .input:focus { border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
         .card { background: white; border-radius: 16px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-        .nav-btn { display: flex; flex-direction: column; align-items: center; padding: 8px 16px; border-radius: 12px; color: #94a3b8; }
+        .nav-btn { display: flex; flex-direction: column; align-items: center; padding: 8px 4px; border-radius: 12px; color: #94a3b8; }
         .nav-btn.active { background: #eff6ff; color: #2563eb; }
         .sync-indicator { position: fixed; top: 16px; right: 16px; padding: 8px 16px; border-radius: 20px; font-size: 12px; z-index: 100; }
         .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; padding: 16px; z-index: 200; }
-        .modal-content { background: white; border-radius: 20px; padding: 24px; width: 100%; max-width: 400px; max-height: 90vh; overflow-y: auto; }
+        .modal-content { background: white; border-radius: 20px; padding: 24px; width: 100%; max-width: 400px; max-height: 90vh; overflow-y: auto; display: flex; flex-direction: column; }
         .record-item { background: white; border-radius: 12px; padding: 12px; margin-bottom: 8px; border: 1px solid #f1f5f9; }
         .stat-card { text-align: center; padding: 16px; background: white; border-radius: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
         .loading { display: flex; align-items: center; justify-content: center; min-height: 200px; color: #94a3b8; }
+        .search-select-trigger { border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; background: #fff; }
+        .search-list-item { padding: 12px; border-bottom: 1px solid #f1f5f9; cursor: pointer; }
+        .search-list-item:last-child { border-bottom: none; }
+        .search-list-item:active { background-color: #f8fafc; }
+        /* 日志样式 */
+        .log-item { padding: 10px 0; border-bottom: 1px solid #f1f5f9; font-size: 14px; }
+        .log-item:last-child { border-bottom: none; }
+        .log-date { color: #94a3b8; font-size: 12px; margin-bottom: 2px; }
+        .log-content { color: #334155; }
+        .tag-in { color: #059669; font-weight: bold; background: #d1fae5; padding: 2px 6px; border-radius: 4px; font-size: 11px; margin-right: 4px;}
+        .tag-out { color: #2563eb; font-weight: bold; background: #dbeafe; padding: 2px 6px; border-radius: 4px; font-size: 11px; margin-right: 4px;}
     </style>
 </head>
 <body class="bg-slate-50 text-slate-900 select-none">
@@ -47,7 +58,7 @@
                     </svg>
                 </div>
                 <h1 class="text-3xl font-bold text-white">许氏轮胎店</h1>
-                <p class="text-slate-400 mt-2">云端记账系统</p>
+                <p class="text-slate-400 mt-2">云端记账系统 v2.2</p>
             </div>
             <div class="w-full max-w-sm space-y-4">
                 <button onclick="showPage('employeeLoginPage')" class="w-full bg-white p-5 rounded-xl flex items-center justify-between">
@@ -75,7 +86,6 @@
                     <svg class="w-5 h-5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                 </button>
             </div>
-            <p class="text-slate-500 text-xs mt-8">LeanCloud 云端版 v1.4</p>
         </div>
     </div>
 
@@ -151,10 +161,12 @@
             </div>
             <div id="empTodayRecords" class="mb-6"></div>
         </main>
+        <!-- 员工底部导航栏 -->
         <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 p-2 z-30">
-            <div class="max-w-3xl mx-auto grid grid-cols-4 gap-2">
+            <div class="max-w-3xl mx-auto grid grid-cols-5 gap-1">
                 <button onclick="showEmpTab('dashboard')" class="nav-btn active" id="empNavDashboard"><svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg><span class="text-xs">概览</span></button>
                 <button onclick="showEmpTab('operate')" class="nav-btn" id="empNavOperate"><svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg><span class="text-xs">记账</span></button>
+                <button onclick="showEmpTab('inventory')" class="nav-btn" id="empNavInventory"><svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg><span class="text-xs">仓库</span></button>
                 <button onclick="showEmpTab('report')" class="nav-btn" id="empNavReport"><svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg><span class="text-xs">报表</span></button>
                 <button onclick="showEmpTab('history')" class="nav-btn" id="empNavHistory"><svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg><span class="text-xs">记录</span></button>
             </div>
@@ -178,9 +190,11 @@
             <div id="saleForm" class="card">
                 <div class="mb-4">
                     <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">选择轮胎</label>
-                    <select id="saleSelect" class="input" onchange="updateSaleInfo()">
-                        <option value="">-- 请选择 --</option>
-                    </select>
+                    <div onclick="showTireSelectModal()" class="search-select-trigger group">
+                        <span id="selectedTireDisplay" class="text-slate-400">点击搜索/选择轮胎...</span>
+                        <svg class="w-5 h-5 text-slate-400 group-hover:text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    </div>
+                    <input type="hidden" id="saleSelect">
                 </div>
                 <div id="saleStockInfo" class="bg-blue-50 text-blue-800 text-xs p-2 rounded mb-4" style="display:none;"></div>
                 <div class="grid grid-cols-2 gap-4 mb-4">
@@ -220,6 +234,29 @@
                     <input type="number" id="otherPrice" class="input" placeholder="元">
                 </div>
                 <button onclick="submitOther()" class="btn btn-primary w-full">确认记录</button>
+            </div>
+        </main>
+    </div>
+
+    <!-- 员工仓库查询页面 -->
+    <div id="employeeInventoryPage" class="page">
+        <header class="bg-slate-900 text-white sticky top-0 z-40 shadow-lg">
+            <div class="max-w-3xl mx-auto px-4 py-4 flex items-center gap-3">
+                <button onclick="showEmpTab('dashboard')" class="p-2"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg></button>
+                <h1 class="font-bold text-lg">仓库查询</h1>
+            </div>
+        </header>
+        <main class="max-w-3xl mx-auto p-4 pb-safe">
+            <div class="relative flex-1 mb-4">
+                <svg class="absolute left-3 top-3 w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                <input type="text" id="empInvSearch" class="input pl-9" placeholder="搜品牌/规格" oninput="filterEmpInventory()">
+            </div>
+            <div class="bg-white rounded-xl border overflow-hidden">
+                <table class="w-full text-sm">
+                    <thead class="bg-slate-50 text-slate-500"><tr><th class="p-3 text-left">信息</th><th class="p-3 text-right">库存</th><th class="p-3 text-right">进价</th></tr></thead>
+                    <tbody id="empInvTableBody" class="divide-y"></tbody>
+                </table>
+                <div id="empInvEmpty" class="p-8 text-center text-slate-400" style="display:none;">暂无数据</div>
             </div>
         </main>
     </div>
@@ -376,9 +413,15 @@
     <!-- 老板仓库页面 -->
     <div id="bossInventoryPage" class="page">
         <header class="bg-slate-900 text-white sticky top-0 z-40 shadow-lg">
-            <div class="max-w-3xl mx-auto px-4 py-4 flex items-center gap-3">
-                <button onclick="showBossTab('dashboard')" class="p-2"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg></button>
-                <h1 class="font-bold text-lg">仓库管理</h1>
+            <div class="max-w-3xl mx-auto px-4 py-4 flex items-center justify-between gap-3">
+                <div class="flex items-center gap-2">
+                    <button onclick="showBossTab('dashboard')" class="p-2"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg></button>
+                    <h1 class="font-bold text-lg">仓库管理</h1>
+                </div>
+                <button onclick="showInventoryLog()" class="text-sm bg-slate-800 px-3 py-1 rounded-lg border border-slate-700 hover:bg-slate-700 flex items-center gap-1">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+                    日志
+                </button>
             </div>
         </header>
         <main class="max-w-3xl mx-auto p-4 pb-safe">
@@ -408,18 +451,24 @@
         <header class="bg-slate-900 text-white sticky top-0 z-40 shadow-lg">
             <div class="max-w-3xl mx-auto px-4 py-4 flex items-center gap-3">
                 <button onclick="showBossTab('dashboard')" class="p-2"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg></button>
-                <h1 class="font-bold text-lg">日期报表</h1>
+                <h1 class="font-bold text-lg">业绩报表</h1>
             </div>
         </header>
         <main class="max-w-3xl mx-auto p-4 pb-safe">
+            <!-- 报表类型切换 -->
+            <div class="flex p-1 bg-slate-200 rounded-xl mb-4">
+                <button onclick="switchReportType('day')" id="reportTypeDay" class="flex-1 py-1.5 text-sm font-bold rounded-lg bg-white shadow text-blue-600 transition-all">日报</button>
+                <button onclick="switchReportType('month')" id="reportTypeMonth" class="flex-1 py-1.5 text-sm font-bold rounded-lg text-slate-500 transition-all">月报</button>
+            </div>
+
             <!-- 日期选择 -->
             <div class="card mb-4">
                 <div class="flex gap-2 items-end">
                     <div class="flex-1">
-                        <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">选择日期</label>
+                        <label class="block text-xs font-semibold text-slate-500 uppercase mb-2" id="reportDateLabel">选择日期</label>
                         <input type="date" id="bossReportDate" class="input" onchange="loadBossReport()">
                     </div>
-                    <button onclick="setBossReportToday()" class="btn btn-secondary">今天</button>
+                    <button onclick="setBossReportToday()" class="btn btn-secondary">当前</button>
                 </div>
             </div>
             <!-- 统计数据 -->
@@ -505,6 +554,36 @@
         </div>
     </div>
 
+    <!-- 轮胎选择器弹窗 -->
+    <div id="tireSelectModal" class="modal" style="display:none; align-items: flex-end;">
+        <div class="modal-content" style="max-height: 80vh; border-bottom-left-radius: 0; border-bottom-right-radius: 0;">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold">选择轮胎</h3>
+                <button onclick="closeTireSelectModal()" class="p-2 text-slate-400"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+            </div>
+            <div class="relative mb-4">
+                <svg class="absolute left-3 top-3 w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                <input type="text" id="tireSearchInput" class="input pl-10" placeholder="搜索品牌或规格..." oninput="filterTireSelect()">
+            </div>
+            <div id="tireSelectList" class="overflow-y-auto flex-1 -mx-4">
+                <!-- 列表项将在这里生成 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 仓库日志弹窗 (新增功能) -->
+    <div id="inventoryLogModal" class="modal" style="display:none;">
+        <div class="modal-content" style="max-height: 80vh;">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold">轮胎出入库日志</h3>
+                <button onclick="closeInventoryLogModal()" class="p-2 text-slate-400"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+            </div>
+            <div id="inventoryLogList" class="overflow-y-auto">
+                <div class="text-center text-slate-400 py-8">加载中...</div>
+            </div>
+        </div>
+    </div>
+
     <script>
     // ==================== LeanCloud 初始化 ====================
     AV.init({
@@ -519,6 +598,7 @@
     let currentUser = null;
     let inventoryCache = [];
     let transactionsCache = [];
+    let reportType = 'day'; // 'day' or 'month'
 
     // ==================== 页面导航 ====================
     function showPage(pageId) {
@@ -544,7 +624,7 @@
         } else if (tab === 'operate') {
             document.getElementById('employeeOperatePage').classList.add('active');
             document.getElementById('empNavOperate').classList.add('active');
-            loadInventorySelect();
+            loadInventorySelect(); 
         } else if (tab === 'report') {
             document.getElementById('employeeReportPage').classList.add('active');
             document.getElementById('empNavReport').classList.add('active');
@@ -553,6 +633,10 @@
             document.getElementById('employeeHistoryPage').classList.add('active');
             document.getElementById('empNavHistory').classList.add('active');
             loadEmpHistory();
+        } else if (tab === 'inventory') {
+            document.getElementById('employeeInventoryPage').classList.add('active');
+            document.getElementById('empNavInventory').classList.add('active');
+            loadEmpInventory(); 
         }
     }
 
@@ -605,14 +689,12 @@
         if (!name || !pwd) { alert('请填写完整信息'); return; }
 
         try {
-            // 检查是否已存在（处理类不存在的情况）
             let existing = null;
             try {
                 const query = new AV.Query('Employee');
                 query.equalTo('name', name);
                 existing = await query.first();
             } catch (queryError) {
-                // 类不存在时，existing为null
                 if (queryError.code !== 101) throw queryError;
             }
 
@@ -649,7 +731,6 @@
                 query.equalTo('password', pwd);
                 emp = await query.first();
             } catch (queryError) {
-                // 类不存在时，emp为null
                 if (queryError.code !== 101) throw queryError;
             }
 
@@ -708,7 +789,6 @@
 
             renderInventoryTable();
         } catch (e) {
-            // 如果类不存在（404错误），初始化为空数组
             if (e.code === 101) {
                 console.log('Inventory类尚不存在，将在首次入库时创建');
                 inventoryCache = [];
@@ -752,13 +832,59 @@
         renderInventoryTable();
     }
 
+    // 员工库存查询功能
+    async function loadEmpInventory() {
+        try {
+            if (inventoryCache.length === 0) {
+               await loadInventory();
+            } else {
+                const query = new AV.Query('Inventory');
+                query.limit(1000);
+                const results = await query.find();
+                inventoryCache = results.map(r => ({
+                    id: r.id,
+                    brand: r.get('brand'),
+                    spec: r.get('spec'),
+                    quantity: r.get('quantity') || 0,
+                    avgCost: r.get('avgCost') || 0
+                }));
+            }
+            renderEmpInventoryTable();
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    function renderEmpInventoryTable() {
+        const search = (document.getElementById('empInvSearch')?.value || '').toLowerCase();
+        const filtered = inventoryCache.filter(i =>
+            !search || i.brand.toLowerCase().includes(search) || i.spec.toLowerCase().includes(search)
+        );
+
+        const tbody = document.getElementById('empInvTableBody');
+        const empty = document.getElementById('empInvEmpty');
+
+        if (filtered.length === 0) {
+            tbody.innerHTML = '';
+            empty.style.display = 'block';
+        } else {
+            empty.style.display = 'none';
+            tbody.innerHTML = filtered.map(i => `
+                <tr class="hover:bg-slate-50">
+                    <td class="p-3"><div class="font-bold">${i.brand}</div><div class="text-xs text-slate-500">${i.spec}</div></td>
+                    <td class="p-3 text-right font-bold ${i.quantity < 4 ? 'text-red-500' : ''}">${i.quantity}</td>
+                    <td class="p-3 text-right text-slate-500">¥${(i.avgCost || 0).toFixed(0)}</td>
+                </tr>
+            `).join('');
+        }
+    }
+
+    function filterEmpInventory() {
+        renderEmpInventoryTable();
+    }
+
     async function loadInventorySelect() {
         await loadInventory();
-        const select = document.getElementById('saleSelect');
-        select.innerHTML = '<option value="">-- 请选择 --</option>' +
-            inventoryCache.filter(i => i.quantity > 0).map(i =>
-                `<option value="${i.id}">${i.brand} ${i.spec} (余:${i.quantity})</option>`
-            ).join('');
     }
 
     async function loadBossInventorySelect() {
@@ -810,7 +936,8 @@
         try {
             const query = new AV.Query('Transaction');
             query.descending('createdAt');
-            query.limit(500);
+            // 增加限制以适应月报数据量
+            query.limit(2000); 
             const results = await query.find();
 
             transactionsCache = results.map(r => ({
@@ -831,9 +958,7 @@
                 date: r.createdAt
             }));
         } catch (e) {
-            // 如果类不存在（404错误），初始化为空数组
             if (e.code === 101) {
-                console.log('Transaction类尚不存在，将在首次记录时创建');
                 transactionsCache = [];
             } else {
                 console.error(e);
@@ -915,9 +1040,7 @@
             try {
                 results = await query.find();
             } catch (queryError) {
-                // 类不存在时，结果为空
                 if (queryError.code === 101) {
-                    console.log('Employee类尚不存在');
                     results = [];
                 } else {
                     throw queryError;
@@ -1052,6 +1175,9 @@
 
             alert('销售记录成功！');
             document.getElementById('saleSelect').value = '';
+            document.getElementById('selectedTireDisplay').textContent = '点击搜索/选择轮胎...';
+            document.getElementById('selectedTireDisplay').className = 'text-slate-400';
+            
             document.getElementById('saleQty').value = '';
             document.getElementById('salePrice').value = '';
             document.getElementById('saleTotal').textContent = '¥0';
@@ -1252,7 +1378,6 @@
         if (!brand || !spec || !qty || !cost) { alert('请填写完整信息'); return; }
 
         try {
-            // 查找是否已存在（处理类不存在的情况）
             let inv = null;
             try {
                 const query = new AV.Query('Inventory');
@@ -1260,12 +1385,10 @@
                 query.equalTo('spec', spec);
                 inv = await query.first();
             } catch (queryError) {
-                // 类不存在时，inv保持为null，后面会创建新记录
                 console.log('Inventory类尚不存在，将创建新记录');
             }
 
             if (inv) {
-                // 更新现有库存
                 const currQty = inv.get('quantity') || 0;
                 const currAvg = inv.get('avgCost') || 0;
                 const newQty = currQty + qty;
@@ -1274,7 +1397,6 @@
                 inv.set('quantity', newQty);
                 inv.set('avgCost', newAvg);
             } else {
-                // 创建新库存
                 const Inventory = AV.Object.extend('Inventory');
                 inv = new Inventory();
                 inv.set('brand', brand);
@@ -1284,7 +1406,6 @@
             }
             await inv.save();
 
-            // 添加入库记录
             const Transaction = AV.Object.extend('Transaction');
             const tx = new Transaction();
             tx.set('type', 'stock_in');
@@ -1399,7 +1520,6 @@
         document.getElementById('editTxPrice').value = tx.type === 'service' ? tx.totalPrice : tx.price;
         updateEditTxTotal();
 
-        // 添加输入监听
         document.getElementById('editTxQty').oninput = updateEditTxTotal;
         document.getElementById('editTxPrice').oninput = updateEditTxTotal;
 
@@ -1418,7 +1538,7 @@
 
         let total;
         if (type === 'service') {
-            total = price; // 服务类型，价格就是总价
+            total = price; 
         } else {
             total = qty * price;
         }
@@ -1446,7 +1566,6 @@
             } else if (type === 'sale') {
                 tx.set('price', price);
                 tx.set('totalPrice', qty * price);
-                // 重新计算利润
                 const costAtTime = editingTx.costAtTime || 0;
                 tx.set('profit', (price - costAtTime) * qty);
             } else if (type === 'stock_in') {
@@ -1455,7 +1574,6 @@
 
             await tx.save();
 
-            // 如果是销售记录，可能需要调整库存
             if (type === 'sale' && editingTx.inventoryId) {
                 const qtyDiff = qty - editingTx.quantity;
                 if (qtyDiff !== 0) {
@@ -1472,7 +1590,6 @@
             hideEditTxModal();
             showSyncIndicator();
 
-            // 刷新显示
             if (currentUser.role === 'boss') {
                 loadBossDashboard();
             } else {
@@ -1491,7 +1608,6 @@
         const type = document.getElementById('editTxType').value;
 
         try {
-            // 如果是销售记录，恢复库存
             if (type === 'sale' && editingTx && editingTx.inventoryId) {
                 const invItem = inventoryCache.find(i => i.id === editingTx.inventoryId);
                 if (invItem) {
@@ -1501,7 +1617,6 @@
                 }
             }
 
-            // 删除交易记录
             const tx = AV.Object.createWithoutData('Transaction', id);
             await tx.destroy();
 
@@ -1509,7 +1624,6 @@
             hideEditTxModal();
             showSyncIndicator();
 
-            // 刷新显示
             if (currentUser.role === 'boss') {
                 loadBossDashboard();
             } else {
@@ -1521,11 +1635,137 @@
         }
     }
 
-    // ==================== 报表功能 ====================
+    // ==================== 轮胎选择搜索逻辑 ====================
+    function showTireSelectModal() {
+        document.getElementById('tireSearchInput').value = '';
+        renderTireSelectList(inventoryCache.filter(i => i.quantity > 0));
+        document.getElementById('tireSelectModal').style.display = 'flex';
+        setTimeout(() => document.getElementById('tireSearchInput').focus(), 100);
+    }
+
+    function closeTireSelectModal() {
+        document.getElementById('tireSelectModal').style.display = 'none';
+    }
+
+    function renderTireSelectList(list) {
+        const container = document.getElementById('tireSelectList');
+        if (list.length === 0) {
+            container.innerHTML = '<div class="p-8 text-center text-slate-400">未找到匹配轮胎</div>';
+            return;
+        }
+
+        container.innerHTML = list.map(i => `
+            <div class="search-list-item flex justify-between items-center" onclick="selectTire('${i.id}')">
+                <div>
+                    <div class="font-bold text-slate-800">${i.brand}</div>
+                    <div class="text-sm text-slate-500">${i.spec}</div>
+                </div>
+                <div class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-lg">余 ${i.quantity}</div>
+            </div>
+        `).join('');
+    }
+
+    function filterTireSelect() {
+        const keyword = document.getElementById('tireSearchInput').value.toLowerCase();
+        const filtered = inventoryCache.filter(i => 
+            i.quantity > 0 && 
+            (i.brand.toLowerCase().includes(keyword) || i.spec.toLowerCase().includes(keyword))
+        );
+        renderTireSelectList(filtered);
+    }
+
+    function selectTire(id) {
+        const item = inventoryCache.find(i => i.id === id);
+        if (item) {
+            document.getElementById('saleSelect').value = id;
+            document.getElementById('selectedTireDisplay').textContent = `${item.brand} - ${item.spec}`;
+            document.getElementById('selectedTireDisplay').className = 'text-slate-800 font-bold';
+            
+            // 更新库存显示逻辑
+            const info = document.getElementById('saleStockInfo');
+            info.textContent = `当前库存: ${item.quantity} 条`;
+            info.style.display = 'block';
+        }
+        closeTireSelectModal();
+    }
+
+    // ==================== 仓库日志功能 (新增) ====================
+    function showInventoryLog() {
+        document.getElementById('inventoryLogModal').style.display = 'flex';
+        renderInventoryLog();
+    }
+
+    function closeInventoryLogModal() {
+        document.getElementById('inventoryLogModal').style.display = 'none';
+    }
+
+    async function renderInventoryLog() {
+        if (transactionsCache.length === 0) await loadTransactions();
+
+        // 筛选 入库 和 销售 记录
+        const logs = transactionsCache.filter(t => t.type === 'stock_in' || t.type === 'sale');
+        
+        const container = document.getElementById('inventoryLogList');
+        if (logs.length === 0) {
+            container.innerHTML = '<div class="text-center text-slate-400 py-8">暂无出入库记录</div>';
+            return;
+        }
+
+        container.innerHTML = logs.map(t => {
+            const date = new Date(t.date);
+            // 格式: 2026.2.2
+            const dateStr = `${date.getFullYear()}.${date.getMonth() + 1}.${date.getDate()}`;
+            
+            let actionHtml = '';
+            if (t.type === 'stock_in') {
+                actionHtml = `<span class="tag-in">增加</span> ${t.brand} ${t.spec} x${t.quantity}`;
+            } else {
+                // 销售即为使用
+                actionHtml = `<span class="tag-out">使用</span> ${t.brand} ${t.spec} x${t.quantity}`;
+            }
+
+            return `
+                <div class="log-item">
+                    <div class="log-date">${dateStr}</div>
+                    <div class="log-content">${actionHtml}</div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    // ==================== 报表功能 (升级：支持月报) ====================
     function setBossReportToday() {
-        const today = new Date().toISOString().slice(0, 10);
-        document.getElementById('bossReportDate').value = today;
+        if (reportType === 'day') {
+            const today = new Date().toISOString().slice(0, 10);
+            document.getElementById('bossReportDate').value = today;
+        } else {
+            const todayMonth = new Date().toISOString().slice(0, 7);
+            document.getElementById('bossReportDate').value = todayMonth;
+        }
         loadBossReport();
+    }
+
+    function switchReportType(type) {
+        reportType = type;
+        const btnDay = document.getElementById('reportTypeDay');
+        const btnMonth = document.getElementById('reportTypeMonth');
+        const input = document.getElementById('bossReportDate');
+        const label = document.getElementById('reportDateLabel');
+
+        if (type === 'day') {
+            btnDay.className = 'flex-1 py-1.5 text-sm font-bold rounded-lg bg-white shadow text-blue-600 transition-all';
+            btnDay.style.color = '#2563eb';
+            btnMonth.className = 'flex-1 py-1.5 text-sm font-bold rounded-lg text-slate-500 transition-all';
+            input.type = 'date';
+            label.textContent = '选择日期';
+        } else {
+            btnMonth.className = 'flex-1 py-1.5 text-sm font-bold rounded-lg bg-white shadow text-blue-600 transition-all';
+            btnMonth.style.color = '#2563eb';
+            btnDay.className = 'flex-1 py-1.5 text-sm font-bold rounded-lg text-slate-500 transition-all';
+            input.type = 'month'; // 切换为月份选择器
+            label.textContent = '选择月份';
+        }
+        setBossReportToday();
     }
 
     async function loadBossReport() {
@@ -1534,24 +1774,32 @@
         const dateStr = document.getElementById('bossReportDate').value;
         if (!dateStr) return;
 
-        // 过滤指定日期的交易记录
-        const dayTx = transactionsCache.filter(t => {
-            const txDate = new Date(t.date).toISOString().slice(0, 10);
-            return txDate === dateStr && (t.type === 'sale' || t.type === 'service' || t.type === 'other');
-        });
+        let filteredTx = [];
 
-        // 计算统计数据
-        const revenue = dayTx.reduce((s, t) => s + (t.totalPrice || 0), 0);
-        const profit = dayTx.reduce((s, t) => s + (t.profit || 0), 0);
-        const orders = dayTx.length;
+        if (reportType === 'day') {
+            // 日报模式：匹配 YYYY-MM-DD
+            filteredTx = transactionsCache.filter(t => {
+                const txDate = new Date(t.date).toISOString().slice(0, 10);
+                return txDate === dateStr && (t.type === 'sale' || t.type === 'service' || t.type === 'other');
+            });
+        } else {
+            // 月报模式：匹配 YYYY-MM
+            filteredTx = transactionsCache.filter(t => {
+                const txMonth = new Date(t.date).toISOString().slice(0, 7);
+                return txMonth === dateStr && (t.type === 'sale' || t.type === 'service' || t.type === 'other');
+            });
+        }
+
+        const revenue = filteredTx.reduce((s, t) => s + (t.totalPrice || 0), 0);
+        const profit = filteredTx.reduce((s, t) => s + (t.profit || 0), 0);
+        const orders = filteredTx.length;
 
         document.getElementById('reportRevenue').textContent = '¥' + revenue;
         document.getElementById('reportProfit').textContent = '¥' + profit.toFixed(0);
         document.getElementById('reportOrders').textContent = orders;
 
-        // 按员工分组统计
         const byEmployee = {};
-        dayTx.forEach(t => {
+        filteredTx.forEach(t => {
             const emp = t.operator || '未知';
             if (!byEmployee[emp]) {
                 byEmployee[emp] = { revenue: 0, profit: 0, orders: 0 };
@@ -1561,8 +1809,7 @@
             byEmployee[emp].orders += 1;
         });
 
-        // 渲染员工业绩
-        const empList = Object.entries(byEmployee);
+        const empList = Object.entries(byEmployee).sort((a,b) => b[1].revenue - a[1].revenue); // 按营业额排序
         if (empList.length === 0) {
             document.getElementById('reportByEmployee').innerHTML = '<div class="text-slate-400 text-center py-4">暂无数据</div>';
         } else {
@@ -1580,11 +1827,10 @@
             `).join('');
         }
 
-        // 渲染详细记录
-        if (dayTx.length === 0) {
-            document.getElementById('reportRecords').innerHTML = '<div class="text-center py-8 text-slate-400">该日期暂无记录</div>';
+        if (filteredTx.length === 0) {
+            document.getElementById('reportRecords').innerHTML = '<div class="text-center py-8 text-slate-400">该时段暂无记录</div>';
         } else {
-            document.getElementById('reportRecords').innerHTML = dayTx.map(t => renderTxItem(t, true, false)).join('');
+            document.getElementById('reportRecords').innerHTML = filteredTx.map(t => renderTxItem(t, true, false)).join('');
         }
     }
 
@@ -1600,7 +1846,6 @@
         const dateStr = document.getElementById('empReportDate').value;
         if (!dateStr) return;
 
-        // 过滤指定日期且属于当前员工的交易记录
         const dayTx = transactionsCache.filter(t => {
             const txDate = new Date(t.date).toISOString().slice(0, 10);
             return txDate === dateStr &&
@@ -1608,14 +1853,12 @@
                    (t.type === 'sale' || t.type === 'service' || t.type === 'other');
         });
 
-        // 计算统计数据
         const revenue = dayTx.reduce((s, t) => s + (t.totalPrice || 0), 0);
         const orders = dayTx.length;
 
         document.getElementById('empReportRevenue').textContent = '¥' + revenue;
         document.getElementById('empReportOrders').textContent = orders;
 
-        // 渲染详细记录
         if (dayTx.length === 0) {
             document.getElementById('empReportRecords').innerHTML = '<div class="text-center py-8 text-slate-400">该日期暂无记录</div>';
         } else {
@@ -1632,7 +1875,6 @@
 
     // ==================== 初始化 ====================
     window.onload = function() {
-        // 检查自动登录
         const saved = localStorage.getItem('tireShopUser');
         if (saved) {
             currentUser = JSON.parse(saved);
