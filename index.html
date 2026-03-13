@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>许氏轮胎店</title>
+    <title>璁告皬杞儙搴?/title>
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- LeanCloud SDK -->
     <script src="https://cdn.jsdelivr.net/npm/leancloud-storage@4.15.2/dist/av-min.js"></script>
@@ -35,7 +35,7 @@
         .search-list-item { padding: 12px; border-bottom: 1px solid #f1f5f9; cursor: pointer; }
         .search-list-item:last-child { border-bottom: none; }
         .search-list-item:active { background-color: #f8fafc; }
-        /* 日志样式 */
+        /* 鏃ュ織鏍峰紡 */
         .log-item { padding: 10px 0; border-bottom: 1px solid #f1f5f9; font-size: 14px; }
         .log-item:last-child { border-bottom: none; }
         .log-date { color: #94a3b8; font-size: 12px; margin-bottom: 2px; }
@@ -45,10 +45,10 @@
     </style>
 </head>
 <body class="bg-slate-50 text-slate-900 select-none">
-    <!-- 同步指示器 -->
-    <div id="syncIndicator" class="sync-indicator" style="display:none; background:#10b981; color:white;">已同步</div>
+    <!-- 鍚屾鎸囩ず鍣?-->
+    <div id="syncIndicator" class="sync-indicator" style="display:none; background:#10b981; color:white;">宸插悓姝?/div>
 
-    <!-- 欢迎页面 -->
+    <!-- 娆㈣繋椤甸潰 -->
     <div id="welcomePage" class="page active">
         <div class="min-h-screen bg-slate-900 flex flex-col items-center justify-center p-6">
             <div class="text-center mb-8">
@@ -57,8 +57,8 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
                     </svg>
                 </div>
-                <h1 class="text-3xl font-bold text-white">许氏轮胎店</h1>
-                <p class="text-slate-400 mt-2">云端记账系统 v2.2</p>
+                <h1 class="text-3xl font-bold text-white">璁告皬杞儙搴?/h1>
+                <p class="text-slate-400 mt-2">浜戠璁拌处绯荤粺 v2.2</p>
             </div>
             <div class="w-full max-w-sm space-y-4">
                 <button onclick="showPage('employeeLoginPage')" class="w-full bg-white p-5 rounded-xl flex items-center justify-between">
@@ -67,8 +67,8 @@
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                         </div>
                         <div class="text-left">
-                            <div class="font-bold text-lg">我是员工</div>
-                            <div class="text-sm text-slate-500">记账、查库存</div>
+                            <div class="font-bold text-lg">鎴戞槸鍛樺伐</div>
+                            <div class="text-sm text-slate-500">璁拌处銆佹煡搴撳瓨</div>
                         </div>
                     </div>
                     <svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
@@ -79,8 +79,8 @@
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
                         </div>
                         <div class="text-left">
-                            <div class="font-bold text-lg">我是老板</div>
-                            <div class="text-sm text-slate-400">管理、看利润</div>
+                            <div class="font-bold text-lg">鎴戞槸鑰佹澘</div>
+                            <div class="text-sm text-slate-400">绠＄悊銆佺湅鍒╂鼎</div>
                         </div>
                     </div>
                     <svg class="w-5 h-5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
@@ -89,66 +89,66 @@
         </div>
     </div>
 
-    <!-- 员工登录页面 -->
+    <!-- 鍛樺伐鐧诲綍椤甸潰 -->
     <div id="employeeLoginPage" class="page">
         <div class="min-h-screen bg-slate-50 flex items-center justify-center p-6">
             <div class="card w-full max-w-sm">
-                <h2 class="text-2xl font-bold text-center mb-6">员工入口</h2>
+                <h2 class="text-2xl font-bold text-center mb-6">鍛樺伐鍏ュ彛</h2>
                 <div class="flex border-b border-slate-100 mb-6">
-                    <button id="empLoginTab" onclick="switchEmpTab('login')" class="flex-1 pb-3 font-bold border-b-2 border-blue-600 text-blue-600">登录</button>
-                    <button id="empRegTab" onclick="switchEmpTab('register')" class="flex-1 pb-3 font-bold border-b-2 border-transparent text-slate-400">注册</button>
+                    <button id="empLoginTab" onclick="switchEmpTab('login')" class="flex-1 pb-3 font-bold border-b-2 border-blue-600 text-blue-600">鐧诲綍</button>
+                    <button id="empRegTab" onclick="switchEmpTab('register')" class="flex-1 pb-3 font-bold border-b-2 border-transparent text-slate-400">娉ㄥ唽</button>
                 </div>
                 <div id="empLoginForm">
                     <div class="mb-4">
-                        <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">姓名</label>
-                        <input type="text" id="empLoginName" class="input" placeholder="输入您的名字">
+                        <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">濮撳悕</label>
+                        <input type="text" id="empLoginName" class="input" placeholder="杈撳叆鎮ㄧ殑鍚嶅瓧">
                     </div>
                     <div class="mb-6">
-                        <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">密码</label>
-                        <input type="password" id="empLoginPwd" class="input" placeholder="输入密码">
+                        <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">瀵嗙爜</label>
+                        <input type="password" id="empLoginPwd" class="input" placeholder="杈撳叆瀵嗙爜">
                     </div>
-                    <button onclick="employeeLogin()" class="btn btn-primary w-full">登录</button>
+                    <button onclick="employeeLogin()" class="btn btn-primary w-full">鐧诲綍</button>
                 </div>
                 <div id="empRegForm" style="display:none;">
                     <div class="mb-4">
-                        <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">姓名</label>
-                        <input type="text" id="empRegName" class="input" placeholder="输入您的名字">
+                        <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">濮撳悕</label>
+                        <input type="text" id="empRegName" class="input" placeholder="杈撳叆鎮ㄧ殑鍚嶅瓧">
                     </div>
                     <div class="mb-6">
-                        <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">设置密码</label>
-                        <input type="password" id="empRegPwd" class="input" placeholder="设置登录密码">
+                        <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">璁剧疆瀵嗙爜</label>
+                        <input type="password" id="empRegPwd" class="input" placeholder="璁剧疆鐧诲綍瀵嗙爜">
                     </div>
-                    <button onclick="employeeRegister()" class="btn btn-secondary w-full">提交申请</button>
+                    <button onclick="employeeRegister()" class="btn btn-secondary w-full">鎻愪氦鐢宠</button>
                 </div>
-                <button onclick="showPage('welcomePage')" class="w-full text-center text-sm text-slate-400 mt-4 p-2">返回选择</button>
+                <button onclick="showPage('welcomePage')" class="w-full text-center text-sm text-slate-400 mt-4 p-2">杩斿洖閫夋嫨</button>
             </div>
         </div>
     </div>
 
-    <!-- 老板登录页面 -->
+    <!-- 鑰佹澘鐧诲綍椤甸潰 -->
     <div id="bossLoginPage" class="page">
         <div class="min-h-screen bg-slate-50 flex items-center justify-center p-6">
             <div class="card w-full max-w-sm">
-                <h2 class="text-2xl font-bold text-center mb-6">老板登录</h2>
+                <h2 class="text-2xl font-bold text-center mb-6">鑰佹澘鐧诲綍</h2>
                 <div class="mb-6">
-                    <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">管理员密码</label>
-                    <input type="password" id="bossPwd" class="input" placeholder="请输入密码" inputmode="numeric">
+                    <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">绠＄悊鍛樺瘑鐮?/label>
+                    <input type="password" id="bossPwd" class="input" placeholder="璇疯緭鍏ュ瘑鐮? inputmode="numeric">
                 </div>
-                <button onclick="bossLogin()" class="btn btn-primary w-full">验证身份</button>
-                <button onclick="showPage('welcomePage')" class="w-full text-center text-sm text-slate-400 mt-4 p-2">返回选择</button>
+                <button onclick="bossLogin()" class="btn btn-primary w-full">楠岃瘉韬唤</button>
+                <button onclick="showPage('welcomePage')" class="w-full text-center text-sm text-slate-400 mt-4 p-2">杩斿洖閫夋嫨</button>
             </div>
         </div>
     </div>
 
-    <!-- 员工主页 -->
+    <!-- 鍛樺伐涓婚〉 -->
     <div id="employeeMainPage" class="page">
         <header class="bg-slate-900 text-white sticky top-0 z-40 shadow-lg">
             <div class="max-w-3xl mx-auto px-4 py-4 flex justify-between items-center">
                 <div class="flex items-center gap-3">
                     <div class="bg-blue-600 p-2 rounded-lg"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg></div>
                     <div>
-                        <h1 class="font-bold text-lg">许氏轮胎店</h1>
-                        <p class="text-xs text-slate-400">员工端 · <span id="empName">-</span></p>
+                        <h1 class="font-bold text-lg">璁告皬杞儙搴?/h1>
+                        <p class="text-xs text-slate-400">鍛樺伐绔?路 <span id="empName">-</span></p>
                     </div>
                 </div>
                 <button onclick="logout()" class="text-slate-400 hover:text-white p-2"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg></button>
@@ -156,117 +156,117 @@
         </header>
         <main class="max-w-3xl mx-auto p-4 pb-safe">
             <div class="grid grid-cols-2 gap-4 mb-6">
-                <div class="stat-card"><div class="text-xs text-slate-500 uppercase mb-1">今日营业额</div><div id="empRevenue" class="text-2xl font-bold text-blue-600">¥0</div></div>
-                <div class="stat-card"><div class="text-xs text-slate-500 uppercase mb-1">今日单量</div><div id="empOrders" class="text-2xl font-bold text-slate-600">0 单</div></div>
+                <div class="stat-card"><div class="text-xs text-slate-500 uppercase mb-1">浠婃棩钀ヤ笟棰?/div><div id="empRevenue" class="text-2xl font-bold text-blue-600">楼0</div></div>
+                <div class="stat-card"><div class="text-xs text-slate-500 uppercase mb-1">浠婃棩鍗曢噺</div><div id="empOrders" class="text-2xl font-bold text-slate-600">0 鍗?/div></div>
             </div>
             <div id="empTodayRecords" class="mb-6"></div>
         </main>
-        <!-- 员工底部导航栏 -->
+        <!-- 鍛樺伐搴曢儴瀵艰埅鏍?-->
         <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 p-2 z-30">
             <div class="max-w-3xl mx-auto grid grid-cols-5 gap-1">
-                <button onclick="showEmpTab('dashboard')" class="nav-btn active" id="empNavDashboard"><svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg><span class="text-xs">概览</span></button>
-                <button onclick="showEmpTab('operate')" class="nav-btn" id="empNavOperate"><svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg><span class="text-xs">记账</span></button>
-                <button onclick="showEmpTab('inventory')" class="nav-btn" id="empNavInventory"><svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg><span class="text-xs">仓库</span></button>
-                <button onclick="showEmpTab('report')" class="nav-btn" id="empNavReport"><svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg><span class="text-xs">报表</span></button>
-                <button onclick="showEmpTab('history')" class="nav-btn" id="empNavHistory"><svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg><span class="text-xs">记录</span></button>
+                <button onclick="showEmpTab('dashboard')" class="nav-btn active" id="empNavDashboard"><svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg><span class="text-xs">姒傝</span></button>
+                <button onclick="showEmpTab('operate')" class="nav-btn" id="empNavOperate"><svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg><span class="text-xs">璁拌处</span></button>
+                <button onclick="showEmpTab('inventory')" class="nav-btn" id="empNavInventory"><svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg><span class="text-xs">浠撳簱</span></button>
+                <button onclick="showEmpTab('report')" class="nav-btn" id="empNavReport"><svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg><span class="text-xs">鎶ヨ〃</span></button>
+                <button onclick="showEmpTab('history')" class="nav-btn" id="empNavHistory"><svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg><span class="text-xs">璁板綍</span></button>
             </div>
         </nav>
     </div>
 
-    <!-- 员工记账页面 -->
+    <!-- 鍛樺伐璁拌处椤甸潰 -->
     <div id="employeeOperatePage" class="page">
         <header class="bg-slate-900 text-white sticky top-0 z-40 shadow-lg">
             <div class="max-w-3xl mx-auto px-4 py-4 flex items-center gap-3">
                 <button onclick="showEmpTab('dashboard')" class="p-2"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg></button>
-                <h1 class="font-bold text-lg">记账</h1>
+                <h1 class="font-bold text-lg">璁拌处</h1>
             </div>
         </header>
         <main class="max-w-3xl mx-auto p-4 pb-safe">
             <div class="flex p-1 bg-slate-200 rounded-xl mb-4">
-                <button onclick="switchOperateTab('sale')" id="opTabSale" class="flex-1 py-2 font-bold rounded-lg bg-white shadow text-blue-600">换胎</button>
-                <button onclick="switchOperateTab('service')" id="opTabService" class="flex-1 py-2 font-bold rounded-lg text-slate-500">补胎</button>
-                <button onclick="switchOperateTab('other')" id="opTabOther" class="flex-1 py-2 font-bold rounded-lg text-slate-500">其他</button>
+                <button onclick="switchOperateTab('sale')" id="opTabSale" class="flex-1 py-2 font-bold rounded-lg bg-white shadow text-blue-600">鎹㈣儙</button>
+                <button onclick="switchOperateTab('service')" id="opTabService" class="flex-1 py-2 font-bold rounded-lg text-slate-500">琛ヨ儙</button>
+                <button onclick="switchOperateTab('other')" id="opTabOther" class="flex-1 py-2 font-bold rounded-lg text-slate-500">鍏朵粬</button>
             </div>
             <div id="saleForm" class="card">
                 <div class="mb-4">
-                    <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">选择轮胎</label>
+                    <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">閫夋嫨杞儙</label>
                     <div onclick="showTireSelectModal()" class="search-select-trigger group">
-                        <span id="selectedTireDisplay" class="text-slate-400">点击搜索/选择轮胎...</span>
+                        <span id="selectedTireDisplay" class="text-slate-400">鐐瑰嚮鎼滅储/閫夋嫨杞儙...</span>
                         <svg class="w-5 h-5 text-slate-400 group-hover:text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                     </div>
                     <input type="hidden" id="saleSelect">
                 </div>
                 <div id="saleStockInfo" class="bg-blue-50 text-blue-800 text-xs p-2 rounded mb-4" style="display:none;"></div>
                 <div class="grid grid-cols-2 gap-4 mb-4">
-                    <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-2">数量</label><input type="number" id="saleQty" class="input" placeholder="条数" oninput="calcSaleTotal()"></div>
-                    <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-2">单价</label><input type="number" id="salePrice" class="input" placeholder="元/条" oninput="calcSaleTotal()"></div>
+                    <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-2">鏁伴噺</label><input type="number" id="saleQty" class="input" placeholder="鏉℃暟" oninput="calcSaleTotal()"></div>
+                    <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-2">鍗曚环</label><input type="number" id="salePrice" class="input" placeholder="鍏?鏉? oninput="calcSaleTotal()"></div>
                 </div>
-                <div class="bg-slate-50 p-3 rounded flex justify-between mb-4"><span class="text-slate-500">总计:</span><span id="saleTotal" class="font-bold text-lg">¥0</span></div>
-                <button onclick="submitSale()" class="btn btn-primary w-full">确认销售</button>
+                <div class="bg-slate-50 p-3 rounded flex justify-between mb-4"><span class="text-slate-500">鎬昏:</span><span id="saleTotal" class="font-bold text-lg">楼0</span></div>
+                <button onclick="submitSale()" class="btn btn-primary w-full">纭閿€鍞?/button>
             </div>
             <div id="serviceForm" class="card" style="display:none;">
                 <div class="mb-4">
-                    <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">服务类型</label>
+                    <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">鏈嶅姟绫诲瀷</label>
                     <select id="serviceType" class="input">
-                        <option value="补胎">补胎</option>
-                        <option value="动平衡">动平衡</option>
-                        <option value="四轮定位">四轮定位</option>
-                        <option value="充气">充气</option>
+                        <option value="琛ヨ儙">琛ヨ儙</option>
+                        <option value="鍔ㄥ钩琛?>鍔ㄥ钩琛?/option>
+                        <option value="鍥涜疆瀹氫綅">鍥涜疆瀹氫綅</option>
+                        <option value="鍏呮皵">鍏呮皵</option>
                     </select>
                 </div>
                 <div class="grid grid-cols-2 gap-4 mb-4">
-                    <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-2">数量</label><input type="number" id="serviceQty" class="input" placeholder="数量"></div>
-                    <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-2">总价</label><input type="number" id="servicePrice" class="input" placeholder="元"></div>
+                    <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-2">鏁伴噺</label><input type="number" id="serviceQty" class="input" placeholder="鏁伴噺"></div>
+                    <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-2">鎬讳环</label><input type="number" id="servicePrice" class="input" placeholder="鍏?></div>
                 </div>
-                <button onclick="submitService()" class="btn btn-primary w-full">确认记录</button>
+                <button onclick="submitService()" class="btn btn-primary w-full">纭璁板綍</button>
             </div>
             <div id="otherForm" class="card" style="display:none;">
                 <div class="mb-4">
-                    <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">业务名称</label>
-                    <input type="text" id="otherName" class="input" placeholder="如：换电瓶、换机油等">
+                    <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">涓氬姟鍚嶇О</label>
+                    <input type="text" id="otherName" class="input" placeholder="濡傦細鎹㈢數鐡躲€佹崲鏈烘补绛?>
                 </div>
                 <div class="mb-4">
-                    <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">业务描述（可选）</label>
-                    <input type="text" id="otherDesc" class="input" placeholder="备注说明">
+                    <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">涓氬姟鎻忚堪锛堝彲閫夛級</label>
+                    <input type="text" id="otherDesc" class="input" placeholder="澶囨敞璇存槑">
                 </div>
                 <div class="mb-4">
-                    <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">收款金额</label>
-                    <input type="number" id="otherPrice" class="input" placeholder="元">
+                    <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">鏀舵閲戦</label>
+                    <input type="number" id="otherPrice" class="input" placeholder="鍏?>
                 </div>
-                <button onclick="submitOther()" class="btn btn-primary w-full">确认记录</button>
+                <button onclick="submitOther()" class="btn btn-primary w-full">纭璁板綍</button>
             </div>
         </main>
     </div>
 
-    <!-- 员工仓库查询页面 -->
+    <!-- 鍛樺伐浠撳簱鏌ヨ椤甸潰 -->
     <div id="employeeInventoryPage" class="page">
         <header class="bg-slate-900 text-white sticky top-0 z-40 shadow-lg">
             <div class="max-w-3xl mx-auto px-4 py-4 flex items-center gap-3">
                 <button onclick="showEmpTab('dashboard')" class="p-2"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg></button>
-                <h1 class="font-bold text-lg">仓库查询</h1>
+                <h1 class="font-bold text-lg">浠撳簱鏌ヨ</h1>
             </div>
         </header>
         <main class="max-w-3xl mx-auto p-4 pb-safe">
             <div class="relative flex-1 mb-4">
                 <svg class="absolute left-3 top-3 w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                <input type="text" id="empInvSearch" class="input pl-9" placeholder="搜品牌/规格" oninput="filterEmpInventory()">
+                <input type="text" id="empInvSearch" class="input pl-9" placeholder="鎼滃搧鐗?瑙勬牸" oninput="filterEmpInventory()">
             </div>
             <div class="bg-white rounded-xl border overflow-hidden">
                 <table class="w-full text-sm">
-                    <thead class="bg-slate-50 text-slate-500"><tr><th class="p-3 text-left">信息</th><th class="p-3 text-right">库存</th><th class="p-3 text-right">进价</th></tr></thead>
+                    <thead class="bg-slate-50 text-slate-500"><tr><th class="p-3 text-left">淇℃伅</th><th class="p-3 text-right">搴撳瓨</th><th class="p-3 text-right">杩涗环</th></tr></thead>
                     <tbody id="empInvTableBody" class="divide-y"></tbody>
                 </table>
-                <div id="empInvEmpty" class="p-8 text-center text-slate-400" style="display:none;">暂无数据</div>
+                <div id="empInvEmpty" class="p-8 text-center text-slate-400" style="display:none;">鏆傛棤鏁版嵁</div>
             </div>
         </main>
     </div>
 
-    <!-- 员工历史记录页面 -->
+    <!-- 鍛樺伐鍘嗗彶璁板綍椤甸潰 -->
     <div id="employeeHistoryPage" class="page">
         <header class="bg-slate-900 text-white sticky top-0 z-40 shadow-lg">
             <div class="max-w-3xl mx-auto px-4 py-4 flex items-center gap-3">
                 <button onclick="showEmpTab('dashboard')" class="p-2"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg></button>
-                <h1 class="font-bold text-lg">历史记录</h1>
+                <h1 class="font-bold text-lg">鍘嗗彶璁板綍</h1>
             </div>
         </header>
         <main class="max-w-3xl mx-auto p-4 pb-safe">
@@ -274,153 +274,155 @@
         </main>
     </div>
 
-    <!-- 员工报表页面 -->
+    <!-- 鍛樺伐鎶ヨ〃椤甸潰 -->
     <div id="employeeReportPage" class="page">
         <header class="bg-slate-900 text-white sticky top-0 z-40 shadow-lg">
             <div class="max-w-3xl mx-auto px-4 py-4 flex items-center gap-3">
                 <button onclick="showEmpTab('dashboard')" class="p-2"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg></button>
-                <h1 class="font-bold text-lg">我的报表</h1>
+                <h1 class="font-bold text-lg">鎴戠殑鎶ヨ〃</h1>
             </div>
         </header>
         <main class="max-w-3xl mx-auto p-4 pb-safe">
-            <!-- 日期选择 -->
+            <!-- 鏃ユ湡閫夋嫨 -->
             <div class="card mb-4">
                 <div class="flex gap-2 items-end">
                     <div class="flex-1">
-                        <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">选择日期</label>
+                        <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">閫夋嫨鏃ユ湡</label>
                         <input type="date" id="empReportDate" class="input" onchange="loadEmpReport()">
                     </div>
-                    <button onclick="setEmpReportToday()" class="btn btn-secondary">今天</button>
+                    <button onclick="setEmpReportToday()" class="btn btn-secondary">浠婂ぉ</button>
                 </div>
             </div>
-            <!-- 统计数据 -->
+            <!-- 缁熻鏁版嵁 -->
             <div class="grid grid-cols-2 gap-3 mb-4">
-                <div class="stat-card"><div class="text-xs text-slate-500 mb-1">营业额</div><div id="empReportRevenue" class="text-xl font-bold text-blue-600">¥0</div></div>
-                <div class="stat-card"><div class="text-xs text-slate-500 mb-1">单量</div><div id="empReportOrders" class="text-xl font-bold text-slate-600">0</div></div>
+                <div class="stat-card"><div class="text-xs text-slate-500 mb-1">钀ヤ笟棰?/div><div id="empReportRevenue" class="text-xl font-bold text-blue-600">楼0</div></div>
+                <div class="stat-card"><div class="text-xs text-slate-500 mb-1">鍗曢噺</div><div id="empReportOrders" class="text-xl font-bold text-slate-600">0</div></div>
             </div>
-            <!-- 详细记录 -->
-            <h3 class="font-bold text-slate-700 mb-3">详细记录</h3>
+            <!-- 璇︾粏璁板綍 -->
+            <h3 class="font-bold text-slate-700 mb-3">璇︾粏璁板綍</h3>
             <div id="empReportRecords"></div>
         </main>
     </div>
 
-    <!-- 老板主页 -->
+    <!-- 鑰佹澘涓婚〉 -->
     <div id="bossMainPage" class="page">
         <header class="bg-slate-900 text-white sticky top-0 z-40 shadow-lg">
             <div class="max-w-3xl mx-auto px-4 py-4 flex justify-between items-center">
                 <div class="flex items-center gap-3">
                     <div class="bg-blue-600 p-2 rounded-lg"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg></div>
                     <div>
-                        <h1 class="font-bold text-lg">许氏轮胎店</h1>
-                        <p class="text-xs text-slate-400">老板端</p>
+                        <h1 class="font-bold text-lg">璁告皬杞儙搴?/h1>
+                        <p class="text-xs text-slate-400">鑰佹澘绔?/p>
                     </div>
                 </div>
                 <button onclick="logout()" class="text-slate-400 hover:text-white p-2"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg></button>
             </div>
         </header>
         <main class="max-w-3xl mx-auto p-4 pb-safe">
-            <!-- 员工审核 -->
+            <!-- 鍛樺伐瀹℃牳 -->
             <div id="pendingStaff" class="card border-2 border-blue-200 bg-blue-50 mb-6" style="display:none;">
-                <div class="flex items-center gap-2 mb-3 text-blue-800 font-bold"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path></svg><span>新员工审核</span></div>
+                <div class="flex items-center gap-2 mb-3 text-blue-800 font-bold"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path></svg><span>鏂板憳宸ュ鏍?/span></div>
                 <div id="pendingList"></div>
             </div>
             <div class="grid grid-cols-2 gap-4 mb-6">
-                <div class="stat-card"><div class="text-xs text-slate-500 uppercase mb-1">今日营业额</div><div id="bossRevenue" class="text-2xl font-bold text-blue-600">¥0</div></div>
-                <div class="stat-card"><div class="text-xs text-slate-500 uppercase mb-1">今日单量</div><div id="bossOrders" class="text-2xl font-bold text-slate-600">0 单</div></div>
-                <div class="stat-card col-span-2"><div class="text-xs text-slate-500 uppercase mb-1">今日毛利</div><div id="bossProfit" class="text-2xl font-bold text-emerald-600">¥0</div></div>
+                <div class="stat-card"><div class="text-xs text-slate-500 uppercase mb-1">浠婃棩钀ヤ笟棰?/div><div id="bossRevenue" class="text-2xl font-bold text-blue-600">楼0</div></div>
+                <div class="stat-card"><div class="text-xs text-slate-500 uppercase mb-1">浠婃棩鍗曢噺</div><div id="bossOrders" class="text-2xl font-bold text-slate-600">0 鍗?/div></div>
+                <div class="stat-card col-span-2"><div class="text-xs text-slate-500 uppercase mb-1">浠婃棩姣涘埄</div><div id="bossProfit" class="text-2xl font-bold text-emerald-600">楼0</div></div>
             </div>
-            <!-- 库存预警 -->
+            <!-- 搴撳瓨棰勮 -->
             <div id="lowStockAlert" class="card border-2 border-orange-200 bg-orange-50 mb-6" style="display:none;">
-                <div class="flex items-center gap-2 mb-3 text-orange-800 font-bold"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg><span>库存预警</span></div>
+                <div class="flex items-center gap-2 mb-3 text-orange-800 font-bold"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg><span>搴撳瓨棰勮</span></div>
                 <div id="lowStockList"></div>
             </div>
-            <h3 class="font-bold text-slate-700 mb-3">今日记录</h3>
+            <h3 class="font-bold text-slate-700 mb-3">浠婃棩璁板綍</h3>
             <div id="bossTodayRecords"></div>
         </main>
         <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 p-2 z-30">
             <div class="max-w-3xl mx-auto grid grid-cols-4 gap-2">
-                <button onclick="showBossTab('dashboard')" class="nav-btn active" id="bossNavDashboard"><svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg><span class="text-xs">概览</span></button>
-                <button onclick="showBossTab('operate')" class="nav-btn" id="bossNavOperate"><svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg><span class="text-xs">记账</span></button>
-                <button onclick="showBossTab('report')" class="nav-btn" id="bossNavReport"><svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg><span class="text-xs">报表</span></button>
-                <button onclick="showBossTab('inventory')" class="nav-btn" id="bossNavInventory"><svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg><span class="text-xs">仓库</span></button>
+                <button onclick="showBossTab('dashboard')" class="nav-btn active" id="bossNavDashboard"><svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg><span class="text-xs">姒傝</span></button>
+                <button onclick="showBossTab('operate')" class="nav-btn" id="bossNavOperate"><svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg><span class="text-xs">璁拌处</span></button>
+                <button onclick="showBossTab('report')" class="nav-btn" id="bossNavReport"><svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg><span class="text-xs">鎶ヨ〃</span></button>
+                <button onclick="showBossTab('inventory')" class="nav-btn" id="bossNavInventory"><svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg><span class="text-xs">浠撳簱</span></button>
             </div>
         </nav>
     </div>
 
-    <!-- 老板记账页面 -->
+    <!-- 鑰佹澘璁拌处椤甸潰 -->
     <div id="bossOperatePage" class="page">
         <header class="bg-slate-900 text-white sticky top-0 z-40 shadow-lg">
             <div class="max-w-3xl mx-auto px-4 py-4 flex items-center gap-3">
                 <button onclick="showBossTab('dashboard')" class="p-2"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg></button>
-                <h1 class="font-bold text-lg">记账</h1>
+                <h1 class="font-bold text-lg">璁拌处</h1>
             </div>
         </header>
         <main class="max-w-3xl mx-auto p-4 pb-safe">
             <div class="flex p-1 bg-slate-200 rounded-xl mb-4">
-                <button onclick="switchBossOperateTab('sale')" id="bossOpTabSale" class="flex-1 py-2 font-bold rounded-lg bg-white shadow text-blue-600">换胎</button>
-                <button onclick="switchBossOperateTab('service')" id="bossOpTabService" class="flex-1 py-2 font-bold rounded-lg text-slate-500">补胎</button>
-                <button onclick="switchBossOperateTab('other')" id="bossOpTabOther" class="flex-1 py-2 font-bold rounded-lg text-slate-500">其他</button>
+                <button onclick="switchBossOperateTab('sale')" id="bossOpTabSale" class="flex-1 py-2 font-bold rounded-lg bg-white shadow text-blue-600">鎹㈣儙</button>
+                <button onclick="switchBossOperateTab('service')" id="bossOpTabService" class="flex-1 py-2 font-bold rounded-lg text-slate-500">琛ヨ儙</button>
+                <button onclick="switchBossOperateTab('other')" id="bossOpTabOther" class="flex-1 py-2 font-bold rounded-lg text-slate-500">鍏朵粬</button>
             </div>
             <div id="bossSaleForm" class="card">
                 <div class="mb-4">
-                    <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">选择轮胎</label>
-                    <select id="bossSaleSelect" class="input" onchange="updateBossSaleInfo()">
-                        <option value="">-- 请选择 --</option>
-                    </select>
+                    <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">閫夋嫨杞儙</label>
+                                        <div onclick="showBossTireSelectModal()" class="search-select-trigger group">
+                        <span id="selectedBossTireDisplay" class="text-slate-400">点击搜索/选择轮胎...</span>
+                        <svg class="w-5 h-5 text-slate-400 group-hover:text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    </div>
+                    <input type="hidden" id="bossSaleSelect">
                 </div>
                 <div id="bossSaleStockInfo" class="bg-blue-50 text-blue-800 text-xs p-2 rounded mb-4" style="display:none;"></div>
                 <div class="grid grid-cols-2 gap-4 mb-4">
-                    <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-2">数量</label><input type="number" id="bossSaleQty" class="input" placeholder="条数" oninput="calcBossSaleTotal()"></div>
-                    <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-2">单价</label><input type="number" id="bossSalePrice" class="input" placeholder="元/条" oninput="calcBossSaleTotal()"></div>
+                    <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-2">鏁伴噺</label><input type="number" id="bossSaleQty" class="input" placeholder="鏉℃暟" oninput="calcBossSaleTotal()"></div>
+                    <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-2">鍗曚环</label><input type="number" id="bossSalePrice" class="input" placeholder="鍏?鏉? oninput="calcBossSaleTotal()"></div>
                 </div>
-                <div class="bg-slate-50 p-3 rounded flex justify-between mb-4"><span class="text-slate-500">总计:</span><span id="bossSaleTotal" class="font-bold text-lg">¥0</span></div>
-                <button onclick="submitBossSale()" class="btn btn-primary w-full">确认销售</button>
+                <div class="bg-slate-50 p-3 rounded flex justify-between mb-4"><span class="text-slate-500">鎬昏:</span><span id="bossSaleTotal" class="font-bold text-lg">楼0</span></div>
+                <button onclick="submitBossSale()" class="btn btn-primary w-full">纭閿€鍞?/button>
             </div>
             <div id="bossServiceForm" class="card" style="display:none;">
                 <div class="mb-4">
-                    <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">服务类型</label>
+                    <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">鏈嶅姟绫诲瀷</label>
                     <select id="bossServiceType" class="input">
-                        <option value="补胎">补胎</option>
-                        <option value="动平衡">动平衡</option>
-                        <option value="四轮定位">四轮定位</option>
-                        <option value="充气">充气</option>
+                        <option value="琛ヨ儙">琛ヨ儙</option>
+                        <option value="鍔ㄥ钩琛?>鍔ㄥ钩琛?/option>
+                        <option value="鍥涜疆瀹氫綅">鍥涜疆瀹氫綅</option>
+                        <option value="鍏呮皵">鍏呮皵</option>
                     </select>
                 </div>
                 <div class="grid grid-cols-2 gap-4 mb-4">
-                    <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-2">数量</label><input type="number" id="bossServiceQty" class="input" placeholder="数量"></div>
-                    <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-2">总价</label><input type="number" id="bossServicePrice" class="input" placeholder="元"></div>
+                    <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-2">鏁伴噺</label><input type="number" id="bossServiceQty" class="input" placeholder="鏁伴噺"></div>
+                    <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-2">鎬讳环</label><input type="number" id="bossServicePrice" class="input" placeholder="鍏?></div>
                 </div>
-                <button onclick="submitBossService()" class="btn btn-primary w-full">确认记录</button>
+                <button onclick="submitBossService()" class="btn btn-primary w-full">纭璁板綍</button>
             </div>
             <div id="bossOtherForm" class="card" style="display:none;">
                 <div class="mb-4">
-                    <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">业务名称</label>
-                    <input type="text" id="bossOtherName" class="input" placeholder="如：换电瓶、换机油等">
+                    <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">涓氬姟鍚嶇О</label>
+                    <input type="text" id="bossOtherName" class="input" placeholder="濡傦細鎹㈢數鐡躲€佹崲鏈烘补绛?>
                 </div>
                 <div class="mb-4">
-                    <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">业务描述（可选）</label>
-                    <input type="text" id="bossOtherDesc" class="input" placeholder="备注说明">
+                    <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">涓氬姟鎻忚堪锛堝彲閫夛級</label>
+                    <input type="text" id="bossOtherDesc" class="input" placeholder="澶囨敞璇存槑">
                 </div>
                 <div class="mb-4">
-                    <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">收款金额</label>
-                    <input type="number" id="bossOtherPrice" class="input" placeholder="元">
+                    <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">鏀舵閲戦</label>
+                    <input type="number" id="bossOtherPrice" class="input" placeholder="鍏?>
                 </div>
-                <button onclick="submitBossOther()" class="btn btn-primary w-full">确认记录</button>
+                <button onclick="submitBossOther()" class="btn btn-primary w-full">纭璁板綍</button>
             </div>
         </main>
     </div>
 
-    <!-- 老板仓库页面 -->
+    <!-- 鑰佹澘浠撳簱椤甸潰 -->
     <div id="bossInventoryPage" class="page">
         <header class="bg-slate-900 text-white sticky top-0 z-40 shadow-lg">
             <div class="max-w-3xl mx-auto px-4 py-4 flex items-center justify-between gap-3">
                 <div class="flex items-center gap-2">
                     <button onclick="showBossTab('dashboard')" class="p-2"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg></button>
-                    <h1 class="font-bold text-lg">仓库管理</h1>
+                    <h1 class="font-bold text-lg">浠撳簱绠＄悊</h1>
                 </div>
                 <button onclick="showInventoryLog()" class="text-sm bg-slate-800 px-3 py-1 rounded-lg border border-slate-700 hover:bg-slate-700 flex items-center gap-1">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
-                    日志
+                    鏃ュ織
                 </button>
             </div>
         </header>
@@ -428,171 +430,188 @@
             <div class="flex gap-2 mb-4">
                 <div class="relative flex-1">
                     <svg class="absolute left-3 top-3 w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                    <input type="text" id="invSearch" class="input pl-9" placeholder="搜品牌/规格" oninput="filterInventory()">
+                    <input type="text" id="invSearch" class="input pl-9" placeholder="鎼滃搧鐗?瑙勬牸" oninput="filterInventory()">
                 </div>
                 <button onclick="showStockInModal()" class="btn btn-primary"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg></button>
             </div>
             <div id="invSummary" class="grid grid-cols-2 gap-4 bg-slate-100 p-3 rounded-xl mb-4">
-                <div class="text-center"><div class="text-xs text-slate-500">总数</div><div id="invTotalQty" class="font-bold text-lg">0</div></div>
-                <div class="text-center"><div class="text-xs text-slate-500">货值</div><div id="invTotalValue" class="font-bold text-lg">¥0</div></div>
+                <div class="text-center"><div class="text-xs text-slate-500">鎬绘暟</div><div id="invTotalQty" class="font-bold text-lg">0</div></div>
+                <div class="text-center"><div class="text-xs text-slate-500">璐у€?/div><div id="invTotalValue" class="font-bold text-lg">楼0</div></div>
             </div>
             <div class="bg-white rounded-xl border overflow-hidden">
                 <table class="w-full text-sm">
-                    <thead class="bg-slate-50 text-slate-500"><tr><th class="p-3 text-left">信息</th><th class="p-3 text-right">库存</th><th class="p-3 text-right">成本</th></tr></thead>
+                    <thead class="bg-slate-50 text-slate-500"><tr><th class="p-3 text-left">淇℃伅</th><th class="p-3 text-right">搴撳瓨</th><th class="p-3 text-right">鎴愭湰</th></tr></thead>
                     <tbody id="invTableBody" class="divide-y"></tbody>
                 </table>
-                <div id="invEmpty" class="p-8 text-center text-slate-400" style="display:none;">暂无数据</div>
+                <div id="invEmpty" class="p-8 text-center text-slate-400" style="display:none;">鏆傛棤鏁版嵁</div>
             </div>
         </main>
     </div>
 
-    <!-- 老板报表页面 -->
+    <!-- 鑰佹澘鎶ヨ〃椤甸潰 -->
     <div id="bossReportPage" class="page">
         <header class="bg-slate-900 text-white sticky top-0 z-40 shadow-lg">
             <div class="max-w-3xl mx-auto px-4 py-4 flex items-center gap-3">
                 <button onclick="showBossTab('dashboard')" class="p-2"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg></button>
-                <h1 class="font-bold text-lg">业绩报表</h1>
+                <h1 class="font-bold text-lg">涓氱哗鎶ヨ〃</h1>
             </div>
         </header>
         <main class="max-w-3xl mx-auto p-4 pb-safe">
-            <!-- 报表类型切换 -->
+            <!-- 鎶ヨ〃绫诲瀷鍒囨崲 -->
             <div class="flex p-1 bg-slate-200 rounded-xl mb-4">
-                <button onclick="switchReportType('day')" id="reportTypeDay" class="flex-1 py-1.5 text-sm font-bold rounded-lg bg-white shadow text-blue-600 transition-all">日报</button>
-                <button onclick="switchReportType('month')" id="reportTypeMonth" class="flex-1 py-1.5 text-sm font-bold rounded-lg text-slate-500 transition-all">月报</button>
+                <button onclick="switchReportType('day')" id="reportTypeDay" class="flex-1 py-1.5 text-sm font-bold rounded-lg bg-white shadow text-blue-600 transition-all">鏃ユ姤</button>
+                <button onclick="switchReportType('month')" id="reportTypeMonth" class="flex-1 py-1.5 text-sm font-bold rounded-lg text-slate-500 transition-all">鏈堟姤</button>
             </div>
 
-            <!-- 日期选择 -->
+            <!-- 鏃ユ湡閫夋嫨 -->
             <div class="card mb-4">
                 <div class="flex gap-2 items-end">
                     <div class="flex-1">
-                        <label class="block text-xs font-semibold text-slate-500 uppercase mb-2" id="reportDateLabel">选择日期</label>
+                        <label class="block text-xs font-semibold text-slate-500 uppercase mb-2" id="reportDateLabel">閫夋嫨鏃ユ湡</label>
                         <input type="date" id="bossReportDate" class="input" onchange="loadBossReport()">
                     </div>
-                    <button onclick="setBossReportToday()" class="btn btn-secondary">当前</button>
+                    <button onclick="setBossReportToday()" class="btn btn-secondary">褰撳墠</button>
                 </div>
             </div>
-            <!-- 统计数据 -->
+            <!-- 缁熻鏁版嵁 -->
             <div class="grid grid-cols-3 gap-3 mb-4">
-                <div class="stat-card"><div class="text-xs text-slate-500 mb-1">营业额</div><div id="reportRevenue" class="text-xl font-bold text-blue-600">¥0</div></div>
-                <div class="stat-card"><div class="text-xs text-slate-500 mb-1">毛利</div><div id="reportProfit" class="text-xl font-bold text-emerald-600">¥0</div></div>
-                <div class="stat-card"><div class="text-xs text-slate-500 mb-1">单量</div><div id="reportOrders" class="text-xl font-bold text-slate-600">0</div></div>
+                <div class="stat-card"><div class="text-xs text-slate-500 mb-1">钀ヤ笟棰?/div><div id="reportRevenue" class="text-xl font-bold text-blue-600">楼0</div></div>
+                <div class="stat-card"><div class="text-xs text-slate-500 mb-1">姣涘埄</div><div id="reportProfit" class="text-xl font-bold text-emerald-600">楼0</div></div>
+                <div class="stat-card"><div class="text-xs text-slate-500 mb-1">鍗曢噺</div><div id="reportOrders" class="text-xl font-bold text-slate-600">0</div></div>
             </div>
-            <!-- 员工业绩 -->
+            <!-- 鍛樺伐涓氱哗 -->
             <div class="card mb-4">
-                <h3 class="font-bold text-slate-700 mb-3">员工业绩</h3>
+                <h3 class="font-bold text-slate-700 mb-3">鍛樺伐涓氱哗</h3>
                 <div id="reportByEmployee"></div>
             </div>
-            <!-- 详细记录 -->
-            <h3 class="font-bold text-slate-700 mb-3">详细记录</h3>
+            <!-- 璇︾粏璁板綍 -->
+            <h3 class="font-bold text-slate-700 mb-3">璇︾粏璁板綍</h3>
             <div id="reportRecords"></div>
         </main>
     </div>
 
-    <!-- 入库弹窗 -->
+    <!-- 鍏ュ簱寮圭獥 -->
     <div id="stockInModal" class="modal" style="display:none;">
         <div class="modal-content">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="text-xl font-bold">入库</h3>
+                <h3 class="text-xl font-bold">鍏ュ簱</h3>
                 <button onclick="hideStockInModal()" class="p-2 text-slate-400"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
             </div>
-            <div class="mb-4"><label class="block text-xs font-semibold text-slate-500 uppercase mb-2">品牌</label><input type="text" id="stockBrand" class="input" placeholder="如：米其林"></div>
-            <div class="mb-4"><label class="block text-xs font-semibold text-slate-500 uppercase mb-2">规格</label><input type="text" id="stockSpec" class="input" placeholder="如：205/55R16"></div>
+            <div class="mb-4"><label class="block text-xs font-semibold text-slate-500 uppercase mb-2">鍝佺墝</label><input type="text" id="stockBrand" class="input" placeholder="濡傦細绫冲叾鏋?></div>
+            <div class="mb-4"><label class="block text-xs font-semibold text-slate-500 uppercase mb-2">瑙勬牸</label><input type="text" id="stockSpec" class="input" placeholder="濡傦細205/55R16"></div>
             <div class="grid grid-cols-2 gap-4 mb-4">
-                <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-2">数量</label><input type="number" id="stockQty" class="input" placeholder="条数"></div>
-                <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-2">单价</label><input type="number" id="stockCost" class="input" placeholder="进货价"></div>
+                <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-2">鏁伴噺</label><input type="number" id="stockQty" class="input" placeholder="鏉℃暟"></div>
+                <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-2">鍗曚环</label><input type="number" id="stockCost" class="input" placeholder="杩涜揣浠?></div>
             </div>
-            <button onclick="submitStockIn()" class="btn btn-primary w-full">确认入库</button>
+            <button onclick="submitStockIn()" class="btn btn-primary w-full">纭鍏ュ簱</button>
         </div>
     </div>
 
-    <!-- 编辑库存弹窗 -->
+    <!-- 缂栬緫搴撳瓨寮圭獥 -->
     <div id="editInventoryModal" class="modal" style="display:none;">
         <div class="modal-content">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="text-xl font-bold">编辑库存</h3>
+                <h3 class="text-xl font-bold">缂栬緫搴撳瓨</h3>
                 <button onclick="hideEditInventoryModal()" class="p-2 text-slate-400"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
             </div>
             <input type="hidden" id="editInvId">
-            <div class="mb-4"><label class="block text-xs font-semibold text-slate-500 uppercase mb-2">品牌</label><input type="text" id="editInvBrand" class="input"></div>
-            <div class="mb-4"><label class="block text-xs font-semibold text-slate-500 uppercase mb-2">规格</label><input type="text" id="editInvSpec" class="input"></div>
+            <div class="mb-4"><label class="block text-xs font-semibold text-slate-500 uppercase mb-2">鍝佺墝</label><input type="text" id="editInvBrand" class="input"></div>
+            <div class="mb-4"><label class="block text-xs font-semibold text-slate-500 uppercase mb-2">瑙勬牸</label><input type="text" id="editInvSpec" class="input"></div>
             <div class="grid grid-cols-2 gap-4 mb-4">
-                <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-2">库存数量</label><input type="number" id="editInvQty" class="input"></div>
-                <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-2">成本单价</label><input type="number" id="editInvCost" class="input"></div>
+                <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-2">搴撳瓨鏁伴噺</label><input type="number" id="editInvQty" class="input"></div>
+                <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-2">鎴愭湰鍗曚环</label><input type="number" id="editInvCost" class="input"></div>
             </div>
             <div class="flex gap-2">
-                <button onclick="saveEditInventory()" class="btn btn-primary flex-1">保存修改</button>
-                <button onclick="deleteInventory()" class="btn btn-danger flex-1">删除</button>
+                <button onclick="saveEditInventory()" class="btn btn-primary flex-1">淇濆瓨淇敼</button>
+                <button onclick="deleteInventory()" class="btn btn-danger flex-1">鍒犻櫎</button>
             </div>
         </div>
     </div>
 
-    <!-- 编辑交易记录弹窗 -->
+    <!-- 缂栬緫浜ゆ槗璁板綍寮圭獥 -->
     <div id="editTxModal" class="modal" style="display:none;">
         <div class="modal-content">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="text-xl font-bold">编辑记录</h3>
+                <h3 class="text-xl font-bold">缂栬緫璁板綍</h3>
                 <button onclick="hideEditTxModal()" class="p-2 text-slate-400"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
             </div>
             <input type="hidden" id="editTxId">
             <input type="hidden" id="editTxType">
             <div id="editTxSaleFields">
-                <div class="mb-4"><label class="block text-xs font-semibold text-slate-500 uppercase mb-2">品牌</label><input type="text" id="editTxBrand" class="input" readonly></div>
-                <div class="mb-4"><label class="block text-xs font-semibold text-slate-500 uppercase mb-2">规格</label><input type="text" id="editTxSpec" class="input" readonly></div>
+                <div class="mb-4"><label class="block text-xs font-semibold text-slate-500 uppercase mb-2">鍝佺墝</label><input type="text" id="editTxBrand" class="input" readonly></div>
+                <div class="mb-4"><label class="block text-xs font-semibold text-slate-500 uppercase mb-2">瑙勬牸</label><input type="text" id="editTxSpec" class="input" readonly></div>
             </div>
             <div id="editTxServiceFields" style="display:none;">
-                <div class="mb-4"><label class="block text-xs font-semibold text-slate-500 uppercase mb-2">服务类型</label><input type="text" id="editTxServiceName" class="input" readonly></div>
+                <div class="mb-4"><label class="block text-xs font-semibold text-slate-500 uppercase mb-2">鏈嶅姟绫诲瀷</label><input type="text" id="editTxServiceName" class="input" readonly></div>
             </div>
             <div class="grid grid-cols-2 gap-4 mb-4">
-                <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-2">数量</label><input type="number" id="editTxQty" class="input"></div>
-                <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-2" id="editTxPriceLabel">单价</label><input type="number" id="editTxPrice" class="input"></div>
+                <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-2">鏁伴噺</label><input type="number" id="editTxQty" class="input"></div>
+                <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-2" id="editTxPriceLabel">鍗曚环</label><input type="number" id="editTxPrice" class="input"></div>
             </div>
-            <div class="bg-slate-50 p-3 rounded flex justify-between mb-4"><span class="text-slate-500">总计:</span><span id="editTxTotal" class="font-bold text-lg">¥0</span></div>
+            <div class="bg-slate-50 p-3 rounded flex justify-between mb-4"><span class="text-slate-500">鎬昏:</span><span id="editTxTotal" class="font-bold text-lg">楼0</span></div>
             <div class="flex gap-2">
-                <button onclick="saveEditTx()" class="btn btn-primary flex-1">保存修改</button>
-                <button onclick="deleteTx()" class="btn btn-danger flex-1">删除记录</button>
+                <button onclick="saveEditTx()" class="btn btn-primary flex-1">淇濆瓨淇敼</button>
+                <button onclick="deleteTx()" class="btn btn-danger flex-1">鍒犻櫎璁板綍</button>
             </div>
         </div>
     </div>
 
-    <!-- 轮胎选择器弹窗 -->
+    <!-- 杞儙閫夋嫨鍣ㄥ脊绐?-->
     <div id="tireSelectModal" class="modal" style="display:none; align-items: flex-end;">
         <div class="modal-content" style="max-height: 80vh; border-bottom-left-radius: 0; border-bottom-right-radius: 0;">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="text-xl font-bold">选择轮胎</h3>
+                <h3 class="text-xl font-bold">閫夋嫨杞儙</h3>
                 <button onclick="closeTireSelectModal()" class="p-2 text-slate-400"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
             </div>
             <div class="relative mb-4">
                 <svg class="absolute left-3 top-3 w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                <input type="text" id="tireSearchInput" class="input pl-10" placeholder="搜索品牌或规格..." oninput="filterTireSelect()">
+                <input type="text" id="tireSearchInput" class="input pl-10" placeholder="鎼滅储鍝佺墝鎴栬鏍?.." oninput="filterTireSelect()">
             </div>
             <div id="tireSelectList" class="overflow-y-auto flex-1 -mx-4">
-                <!-- 列表项将在这里生成 -->
+                <!-- 鍒楄〃椤瑰皢鍦ㄨ繖閲岀敓鎴?-->
             </div>
         </div>
     </div>
 
-    <!-- 仓库日志弹窗 (新增功能) -->
+    <!-- 浠撳簱鏃ュ織寮圭獥 (鏂板鍔熻兘) -->
+    
+    <!-- 老板端轮胎选择器弹窗 -->
+    <div id="bossTireSelectModal" class="modal" style="display:none; align-items: flex-end;">
+        <div class="modal-content" style="max-height: 80vh; border-bottom-left-radius: 0; border-bottom-right-radius: 0;">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold">选择轮胎</h3>
+                <button onclick="closeBossTireSelectModal()" class="p-2 text-slate-400"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+            </div>
+            <div class="relative mb-4">
+                <svg class="absolute left-3 top-3 w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                <input type="text" id="bossTireSearchInput" class="input pl-10" placeholder="搜索品牌或规格..." oninput="filterBossTireSelect()">
+            </div>
+            <div id="bossTireSelectList" class="overflow-y-auto flex-1 -mx-4">
+                <!-- 列表项将在这里生成 -->
+            </div>
+        </div>
+    </div>
     <div id="inventoryLogModal" class="modal" style="display:none;">
         <div class="modal-content" style="max-height: 80vh;">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="text-xl font-bold">轮胎出入库日志</h3>
+                <h3 class="text-xl font-bold">杞儙鍑哄叆搴撴棩蹇?/h3>
                 <button onclick="closeInventoryLogModal()" class="p-2 text-slate-400"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
             </div>
             <div id="inventoryLogList" class="overflow-y-auto">
-                <div class="text-center text-slate-400 py-8">加载中...</div>
+                <div class="text-center text-slate-400 py-8">鍔犺浇涓?..</div>
             </div>
         </div>
     </div>
 
     <script>
-    // ==================== LeanCloud 初始化 ====================
+    // ==================== LeanCloud 鍒濆鍖?====================
     AV.init({
         appId: "rp1Ko03EAuMB1QFrYeQGiF25-gzGzoHsz",
         appKey: "Z1ELb9V5JNTqpGW6i6VnH9rs",
         serverURL: "https://rp1ko03e.lc-cn-n1-shared.com"
     });
 
-    console.log('✅ LeanCloud 初始化成功');
+    console.log('鉁?LeanCloud 鍒濆鍖栨垚鍔?);
 
     const BOSS_PIN = "8888";
     let currentUser = null;
@@ -600,7 +619,7 @@
     let transactionsCache = [];
     let reportType = 'day'; // 'day' or 'month'
 
-    // ==================== 页面导航 ====================
+    // ==================== 椤甸潰瀵艰埅 ====================
     function showPage(pageId) {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
         document.getElementById(pageId).classList.add('active');
@@ -681,12 +700,12 @@
         document.getElementById('bossOtherForm').style.display = tab === 'other' ? 'block' : 'none';
     }
 
-    // ==================== 用户认证 ====================
+    // ==================== 鐢ㄦ埛璁よ瘉 ====================
     async function employeeRegister() {
         const name = document.getElementById('empRegName').value.trim();
         const pwd = document.getElementById('empRegPwd').value;
 
-        if (!name || !pwd) { alert('请填写完整信息'); return; }
+        if (!name || !pwd) { alert('璇峰～鍐欏畬鏁翠俊鎭?); return; }
 
         try {
             let existing = null;
@@ -698,7 +717,7 @@
                 if (queryError.code !== 101) throw queryError;
             }
 
-            if (existing) { alert('该姓名已注册'); return; }
+            if (existing) { alert('璇ュ鍚嶅凡娉ㄥ唽'); return; }
 
             const Employee = AV.Object.extend('Employee');
             const emp = new Employee();
@@ -707,13 +726,13 @@
             emp.set('status', 'pending');
             await emp.save();
 
-            alert('注册成功！请等待老板审核');
+            alert('娉ㄥ唽鎴愬姛锛佽绛夊緟鑰佹澘瀹℃牳');
             switchEmpTab('login');
             document.getElementById('empRegName').value = '';
             document.getElementById('empRegPwd').value = '';
         } catch (e) {
             console.error(e);
-            alert('注册失败: ' + e.message);
+            alert('娉ㄥ唽澶辫触: ' + e.message);
         }
     }
 
@@ -721,7 +740,7 @@
         const name = document.getElementById('empLoginName').value.trim();
         const pwd = document.getElementById('empLoginPwd').value;
 
-        if (!name || !pwd) { alert('请填写完整信息'); return; }
+        if (!name || !pwd) { alert('璇峰～鍐欏畬鏁翠俊鎭?); return; }
 
         try {
             let emp = null;
@@ -734,11 +753,11 @@
                 if (queryError.code !== 101) throw queryError;
             }
 
-            if (!emp) { alert('用户名或密码错误'); return; }
+            if (!emp) { alert('鐢ㄦ埛鍚嶆垨瀵嗙爜閿欒'); return; }
 
             const status = emp.get('status');
-            if (status === 'pending') { alert('账号审核中，请等待'); return; }
-            if (status === 'rejected') { alert('账号申请已被拒绝'); return; }
+            if (status === 'pending') { alert('璐﹀彿瀹℃牳涓紝璇风瓑寰?); return; }
+            if (status === 'rejected') { alert('璐﹀彿鐢宠宸茶鎷掔粷'); return; }
 
             currentUser = { name, role: 'employee' };
             localStorage.setItem('tireShopUser', JSON.stringify(currentUser));
@@ -749,7 +768,7 @@
             showSyncIndicator();
         } catch (e) {
             console.error(e);
-            alert('登录失败: ' + e.message);
+            alert('鐧诲綍澶辫触: ' + e.message);
         }
     }
 
@@ -762,7 +781,7 @@
             loadBossDashboard();
             showSyncIndicator();
         } else {
-            alert('密码错误');
+            alert('瀵嗙爜閿欒');
         }
     }
 
@@ -772,7 +791,7 @@
         showPage('welcomePage');
     }
 
-    // ==================== 数据加载 ====================
+    // ==================== 鏁版嵁鍔犺浇 ====================
     async function loadInventory() {
         try {
             const query = new AV.Query('Inventory');
@@ -790,7 +809,7 @@
             renderInventoryTable();
         } catch (e) {
             if (e.code === 101) {
-                console.log('Inventory类尚不存在，将在首次入库时创建');
+                console.log('Inventory绫诲皻涓嶅瓨鍦紝灏嗗湪棣栨鍏ュ簱鏃跺垱寤?);
                 inventoryCache = [];
                 renderInventoryTable();
             } else {
@@ -817,7 +836,7 @@
                 <tr onclick="showEditInventoryModal('${i.id}')" class="cursor-pointer hover:bg-slate-50">
                     <td class="p-3"><div class="font-bold">${i.brand}</div><div class="text-xs text-slate-500">${i.spec}</div></td>
                     <td class="p-3 text-right font-bold ${i.quantity < 4 ? 'text-red-500' : ''}">${i.quantity}</td>
-                    <td class="p-3 text-right text-slate-500">¥${(i.avgCost || 0).toFixed(0)}</td>
+                    <td class="p-3 text-right text-slate-500">楼${(i.avgCost || 0).toFixed(0)}</td>
                 </tr>
             `).join('');
         }
@@ -825,14 +844,14 @@
         const totalQty = filtered.reduce((s, i) => s + (i.quantity || 0), 0);
         const totalValue = filtered.reduce((s, i) => s + ((i.quantity || 0) * (i.avgCost || 0)), 0);
         document.getElementById('invTotalQty').textContent = totalQty;
-        document.getElementById('invTotalValue').textContent = '¥' + totalValue.toLocaleString();
+        document.getElementById('invTotalValue').textContent = '楼' + totalValue.toLocaleString();
     }
 
     function filterInventory() {
         renderInventoryTable();
     }
 
-    // 员工库存查询功能
+    // 鍛樺伐搴撳瓨鏌ヨ鍔熻兘
     async function loadEmpInventory() {
         try {
             if (inventoryCache.length === 0) {
@@ -873,7 +892,7 @@
                 <tr class="hover:bg-slate-50">
                     <td class="p-3"><div class="font-bold">${i.brand}</div><div class="text-xs text-slate-500">${i.spec}</div></td>
                     <td class="p-3 text-right font-bold ${i.quantity < 4 ? 'text-red-500' : ''}">${i.quantity}</td>
-                    <td class="p-3 text-right text-slate-500">¥${(i.avgCost || 0).toFixed(0)}</td>
+                    <td class="p-3 text-right text-slate-500">楼${(i.avgCost || 0).toFixed(0)}</td>
                 </tr>
             `).join('');
         }
@@ -889,11 +908,6 @@
 
     async function loadBossInventorySelect() {
         await loadInventory();
-        const select = document.getElementById('bossSaleSelect');
-        select.innerHTML = '<option value="">-- 请选择 --</option>' +
-            inventoryCache.filter(i => i.quantity > 0).map(i =>
-                `<option value="${i.id}">${i.brand} ${i.spec} (余:${i.quantity})</option>`
-            ).join('');
     }
 
     function updateSaleInfo() {
@@ -901,7 +915,7 @@
         const item = inventoryCache.find(i => i.id === id);
         const info = document.getElementById('saleStockInfo');
         if (item) {
-            info.textContent = `当前库存: ${item.quantity} 条`;
+            info.textContent = `褰撳墠搴撳瓨: ${item.quantity} 鏉;
             info.style.display = 'block';
         } else {
             info.style.display = 'none';
@@ -913,7 +927,7 @@
         const item = inventoryCache.find(i => i.id === id);
         const info = document.getElementById('bossSaleStockInfo');
         if (item) {
-            info.textContent = `当前库存: ${item.quantity} 条`;
+            info.textContent = `褰撳墠搴撳瓨: ${item.quantity} 鏉;
             info.style.display = 'block';
         } else {
             info.style.display = 'none';
@@ -923,20 +937,20 @@
     function calcSaleTotal() {
         const qty = parseFloat(document.getElementById('saleQty').value) || 0;
         const price = parseFloat(document.getElementById('salePrice').value) || 0;
-        document.getElementById('saleTotal').textContent = '¥' + (qty * price).toFixed(0);
+        document.getElementById('saleTotal').textContent = '楼' + (qty * price).toFixed(0);
     }
 
     function calcBossSaleTotal() {
         const qty = parseFloat(document.getElementById('bossSaleQty').value) || 0;
         const price = parseFloat(document.getElementById('bossSalePrice').value) || 0;
-        document.getElementById('bossSaleTotal').textContent = '¥' + (qty * price).toFixed(0);
+        document.getElementById('bossSaleTotal').textContent = '楼' + (qty * price).toFixed(0);
     }
 
     async function loadTransactions() {
         try {
             const query = new AV.Query('Transaction');
             query.descending('createdAt');
-            // 增加限制以适应月报数据量
+            // 澧炲姞闄愬埗浠ラ€傚簲鏈堟姤鏁版嵁閲?
             query.limit(2000); 
             const results = await query.find();
 
@@ -979,11 +993,11 @@
         const revenue = todayTx.reduce((s, t) => s + (t.totalPrice || 0), 0);
         const orders = todayTx.length;
 
-        document.getElementById('empRevenue').textContent = '¥' + revenue;
-        document.getElementById('empOrders').textContent = orders + ' 单';
+        document.getElementById('empRevenue').textContent = '楼' + revenue;
+        document.getElementById('empOrders').textContent = orders + ' 鍗?;
 
         document.getElementById('empTodayRecords').innerHTML = todayTx.length === 0
-            ? '<div class="text-center py-8 text-slate-400">暂无今日记录</div>'
+            ? '<div class="text-center py-8 text-slate-400">鏆傛棤浠婃棩璁板綍</div>'
             : todayTx.map(t => renderTxItem(t, false, true)).join('');
     }
 
@@ -993,7 +1007,7 @@
         const myTx = transactionsCache.filter(t => t.operator === currentUser.name);
 
         document.getElementById('empHistoryList').innerHTML = myTx.length === 0
-            ? '<div class="text-center py-8 text-slate-400">暂无记录</div>'
+            ? '<div class="text-center py-8 text-slate-400">鏆傛棤璁板綍</div>'
             : myTx.map(t => renderTxItem(t, false, true)).join('');
     }
 
@@ -1012,23 +1026,23 @@
         const profit = todayTx.reduce((s, t) => s + (t.profit || 0), 0);
         const orders = todayTx.length;
 
-        document.getElementById('bossRevenue').textContent = '¥' + revenue;
-        document.getElementById('bossProfit').textContent = '¥' + profit.toFixed(0);
-        document.getElementById('bossOrders').textContent = orders + ' 单';
+        document.getElementById('bossRevenue').textContent = '楼' + revenue;
+        document.getElementById('bossProfit').textContent = '楼' + profit.toFixed(0);
+        document.getElementById('bossOrders').textContent = orders + ' 鍗?;
 
-        // 库存预警
+        // 搴撳瓨棰勮
         const lowStock = inventoryCache.filter(i => i.quantity < 4);
         if (lowStock.length > 0) {
             document.getElementById('lowStockAlert').style.display = 'block';
             document.getElementById('lowStockList').innerHTML = lowStock.map(i =>
-                `<div class="flex justify-between text-sm bg-white/50 p-2 rounded mb-1"><span>${i.brand} ${i.spec}</span><span class="font-bold text-red-600">余 ${i.quantity}</span></div>`
+                `<div class="flex justify-between text-sm bg-white/50 p-2 rounded mb-1"><span>${i.brand} ${i.spec}</span><span class="font-bold text-red-600">浣?${i.quantity}</span></div>`
             ).join('');
         } else {
             document.getElementById('lowStockAlert').style.display = 'none';
         }
 
         document.getElementById('bossTodayRecords').innerHTML = todayTx.length === 0
-            ? '<div class="text-center py-8 text-slate-400">暂无今日记录</div>'
+            ? '<div class="text-center py-8 text-slate-400">鏆傛棤浠婃棩璁板綍</div>'
             : todayTx.map(t => renderTxItem(t, true, true)).join('');
     }
 
@@ -1071,10 +1085,10 @@
             const emp = AV.Object.createWithoutData('Employee', id);
             emp.set('status', 'approved');
             await emp.save();
-            alert('已批准');
+            alert('宸叉壒鍑?);
             loadPendingStaff();
         } catch (e) {
-            alert('操作失败');
+            alert('鎿嶄綔澶辫触');
         }
     }
 
@@ -1083,10 +1097,10 @@
             const emp = AV.Object.createWithoutData('Employee', id);
             emp.set('status', 'rejected');
             await emp.save();
-            alert('已拒绝');
+            alert('宸叉嫆缁?);
             loadPendingStaff();
         } catch (e) {
-            alert('操作失败');
+            alert('鎿嶄綔澶辫触');
         }
     }
 
@@ -1106,10 +1120,10 @@
 
         let title, detail;
         if (t.type === 'stock_in') {
-            title = `进货: ${t.brand}`;
+            title = `杩涜揣: ${t.brand}`;
             detail = t.spec ? `${t.spec} ` : '';
         } else if (t.type === 'sale') {
-            title = `销售: ${t.brand}`;
+            title = `閿€鍞? ${t.brand}`;
             detail = t.spec ? `${t.spec} ` : '';
         } else if (t.type === 'other') {
             title = t.serviceName;
@@ -1121,18 +1135,18 @@
         const time = new Date(t.date).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
         const clickHandler = canEdit ? `onclick="showEditTxModal('${t.id}')"` : '';
         const cursorClass = canEdit ? 'cursor-pointer hover:bg-slate-50' : '';
-        const qtyDisplay = (t.type === 'other' || t.type === 'service') ? '' : `x${t.quantity} · `;
+        const qtyDisplay = (t.type === 'other' || t.type === 'service') ? '' : `x${t.quantity} 路 `;
 
         return `
             <div class="record-item flex justify-between items-center ${cursorClass}" ${clickHandler}>
                 <div class="flex gap-3 items-center flex-1 min-w-0">
                     <div class="p-2 rounded-lg ${typeColors[t.type] || 'bg-slate-100 text-slate-600'}"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">${typeIcons[t.type] || typeIcons['service']}</svg></div>
-                    <div class="min-w-0"><div class="font-bold text-sm truncate">${title}</div><div class="text-xs text-slate-500">${detail}${qtyDisplay}${time} · ${t.operator}</div></div>
+                    <div class="min-w-0"><div class="font-bold text-sm truncate">${title}</div><div class="text-xs text-slate-500">${detail}${qtyDisplay}${time} 路 ${t.operator}</div></div>
                 </div>
                 <div class="text-right flex items-center gap-2">
                     <div>
-                        <div class="font-bold">¥${t.type === 'stock_in' ? t.totalCost : t.totalPrice}</div>
-                        ${showProfit && t.profit ? `<div class="text-xs text-emerald-600">赚 ¥${t.profit.toFixed(0)}</div>` : ''}
+                        <div class="font-bold">楼${t.type === 'stock_in' ? t.totalCost : t.totalPrice}</div>
+                        ${showProfit && t.profit ? `<div class="text-xs text-emerald-600">璧?楼${t.profit.toFixed(0)}</div>` : ''}
                     </div>
                     ${canEdit ? `<svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>` : ''}
                 </div>
@@ -1140,25 +1154,25 @@
         `;
     }
 
-    // ==================== 业务操作 ====================
+    // ==================== 涓氬姟鎿嶄綔 ====================
     async function submitSale() {
         const id = document.getElementById('saleSelect').value;
         const qty = parseInt(document.getElementById('saleQty').value);
         const price = parseFloat(document.getElementById('salePrice').value);
 
-        if (!id || !qty || !price) { alert('请填写完整信息'); return; }
+        if (!id || !qty || !price) { alert('璇峰～鍐欏畬鏁翠俊鎭?); return; }
 
         const item = inventoryCache.find(i => i.id === id);
-        if (!item) { alert('商品不存在'); return; }
-        if (item.quantity < qty) { alert('库存不足'); return; }
+        if (!item) { alert('鍟嗗搧涓嶅瓨鍦?); return; }
+        if (item.quantity < qty) { alert('搴撳瓨涓嶈冻'); return; }
 
         try {
-            // 更新库存
+            // 鏇存柊搴撳瓨
             const inv = AV.Object.createWithoutData('Inventory', id);
             inv.set('quantity', item.quantity - qty);
             await inv.save();
 
-            // 添加交易记录
+            // 娣诲姞浜ゆ槗璁板綍
             const Transaction = AV.Object.extend('Transaction');
             const tx = new Transaction();
             tx.set('type', 'sale');
@@ -1173,21 +1187,21 @@
             tx.set('operator', currentUser.name);
             await tx.save();
 
-            alert('销售记录成功！');
+            alert('閿€鍞褰曟垚鍔燂紒');
             document.getElementById('saleSelect').value = '';
-            document.getElementById('selectedTireDisplay').textContent = '点击搜索/选择轮胎...';
+            document.getElementById('selectedTireDisplay').textContent = '鐐瑰嚮鎼滅储/閫夋嫨杞儙...';
             document.getElementById('selectedTireDisplay').className = 'text-slate-400';
             
             document.getElementById('saleQty').value = '';
             document.getElementById('salePrice').value = '';
-            document.getElementById('saleTotal').textContent = '¥0';
+            document.getElementById('saleTotal').textContent = '楼0';
             document.getElementById('saleStockInfo').style.display = 'none';
 
             showSyncIndicator();
             loadInventorySelect();
         } catch (e) {
             console.error(e);
-            alert('操作失败: ' + e.message);
+            alert('鎿嶄綔澶辫触: ' + e.message);
         }
     }
 
@@ -1196,7 +1210,7 @@
         const qty = parseInt(document.getElementById('serviceQty').value);
         const price = parseFloat(document.getElementById('servicePrice').value);
 
-        if (!qty || !price) { alert('请填写完整信息'); return; }
+        if (!qty || !price) { alert('璇峰～鍐欏畬鏁翠俊鎭?); return; }
 
         try {
             const Transaction = AV.Object.extend('Transaction');
@@ -1209,14 +1223,14 @@
             tx.set('operator', currentUser.name);
             await tx.save();
 
-            alert('服务记录成功！');
+            alert('鏈嶅姟璁板綍鎴愬姛锛?);
             document.getElementById('serviceQty').value = '';
             document.getElementById('servicePrice').value = '';
 
             showSyncIndicator();
         } catch (e) {
             console.error(e);
-            alert('操作失败: ' + e.message);
+            alert('鎿嶄綔澶辫触: ' + e.message);
         }
     }
 
@@ -1225,11 +1239,11 @@
         const qty = parseInt(document.getElementById('bossSaleQty').value);
         const price = parseFloat(document.getElementById('bossSalePrice').value);
 
-        if (!id || !qty || !price) { alert('请填写完整信息'); return; }
+        if (!id || !qty || !price) { alert('璇峰～鍐欏畬鏁翠俊鎭?); return; }
 
         const item = inventoryCache.find(i => i.id === id);
-        if (!item) { alert('商品不存在'); return; }
-        if (item.quantity < qty) { alert('库存不足'); return; }
+        if (!item) { alert('鍟嗗搧涓嶅瓨鍦?); return; }
+        if (item.quantity < qty) { alert('搴撳瓨涓嶈冻'); return; }
 
         try {
             const inv = AV.Object.createWithoutData('Inventory', id);
@@ -1250,18 +1264,20 @@
             tx.set('operator', currentUser.name);
             await tx.save();
 
-            alert('销售记录成功！');
+            alert('閿€鍞褰曟垚鍔燂紒');
             document.getElementById('bossSaleSelect').value = '';
+            document.getElementById('selectedBossTireDisplay').textContent = '点击搜索/选择轮胎...';
+            document.getElementById('selectedBossTireDisplay').className = 'text-slate-400';
             document.getElementById('bossSaleQty').value = '';
             document.getElementById('bossSalePrice').value = '';
-            document.getElementById('bossSaleTotal').textContent = '¥0';
+            document.getElementById('bossSaleTotal').textContent = '楼0';
             document.getElementById('bossSaleStockInfo').style.display = 'none';
 
             showSyncIndicator();
             loadBossInventorySelect();
         } catch (e) {
             console.error(e);
-            alert('操作失败: ' + e.message);
+            alert('鎿嶄綔澶辫触: ' + e.message);
         }
     }
 
@@ -1270,7 +1286,7 @@
         const qty = parseInt(document.getElementById('bossServiceQty').value);
         const price = parseFloat(document.getElementById('bossServicePrice').value);
 
-        if (!qty || !price) { alert('请填写完整信息'); return; }
+        if (!qty || !price) { alert('璇峰～鍐欏畬鏁翠俊鎭?); return; }
 
         try {
             const Transaction = AV.Object.extend('Transaction');
@@ -1283,14 +1299,14 @@
             tx.set('operator', currentUser.name);
             await tx.save();
 
-            alert('服务记录成功！');
+            alert('鏈嶅姟璁板綍鎴愬姛锛?);
             document.getElementById('bossServiceQty').value = '';
             document.getElementById('bossServicePrice').value = '';
 
             showSyncIndicator();
         } catch (e) {
             console.error(e);
-            alert('操作失败: ' + e.message);
+            alert('鎿嶄綔澶辫触: ' + e.message);
         }
     }
 
@@ -1299,7 +1315,7 @@
         const desc = document.getElementById('otherDesc').value.trim();
         const price = parseFloat(document.getElementById('otherPrice').value);
 
-        if (!name || !price) { alert('请填写业务名称和收款金额'); return; }
+        if (!name || !price) { alert('璇峰～鍐欎笟鍔″悕绉板拰鏀舵閲戦'); return; }
 
         try {
             const Transaction = AV.Object.extend('Transaction');
@@ -1313,7 +1329,7 @@
             tx.set('operator', currentUser.name);
             await tx.save();
 
-            alert('记录成功！');
+            alert('璁板綍鎴愬姛锛?);
             document.getElementById('otherName').value = '';
             document.getElementById('otherDesc').value = '';
             document.getElementById('otherPrice').value = '';
@@ -1321,7 +1337,7 @@
             showSyncIndicator();
         } catch (e) {
             console.error(e);
-            alert('操作失败: ' + e.message);
+            alert('鎿嶄綔澶辫触: ' + e.message);
         }
     }
 
@@ -1330,7 +1346,7 @@
         const desc = document.getElementById('bossOtherDesc').value.trim();
         const price = parseFloat(document.getElementById('bossOtherPrice').value);
 
-        if (!name || !price) { alert('请填写业务名称和收款金额'); return; }
+        if (!name || !price) { alert('璇峰～鍐欎笟鍔″悕绉板拰鏀舵閲戦'); return; }
 
         try {
             const Transaction = AV.Object.extend('Transaction');
@@ -1344,7 +1360,7 @@
             tx.set('operator', currentUser.name);
             await tx.save();
 
-            alert('记录成功！');
+            alert('璁板綍鎴愬姛锛?);
             document.getElementById('bossOtherName').value = '';
             document.getElementById('bossOtherDesc').value = '';
             document.getElementById('bossOtherPrice').value = '';
@@ -1352,11 +1368,11 @@
             showSyncIndicator();
         } catch (e) {
             console.error(e);
-            alert('操作失败: ' + e.message);
+            alert('鎿嶄綔澶辫触: ' + e.message);
         }
     }
 
-    // ==================== 入库 ====================
+    // ==================== 鍏ュ簱 ====================
     function showStockInModal() {
         document.getElementById('stockInModal').style.display = 'flex';
     }
@@ -1375,7 +1391,7 @@
         const qty = parseInt(document.getElementById('stockQty').value);
         const cost = parseFloat(document.getElementById('stockCost').value);
 
-        if (!brand || !spec || !qty || !cost) { alert('请填写完整信息'); return; }
+        if (!brand || !spec || !qty || !cost) { alert('璇峰～鍐欏畬鏁翠俊鎭?); return; }
 
         try {
             let inv = null;
@@ -1385,7 +1401,7 @@
                 query.equalTo('spec', spec);
                 inv = await query.first();
             } catch (queryError) {
-                console.log('Inventory类尚不存在，将创建新记录');
+                console.log('Inventory绫诲皻涓嶅瓨鍦紝灏嗗垱寤烘柊璁板綍');
             }
 
             if (inv) {
@@ -1416,17 +1432,17 @@
             tx.set('operator', currentUser.name);
             await tx.save();
 
-            alert(`成功入库 ${qty} 条`);
+            alert(`鎴愬姛鍏ュ簱 ${qty} 鏉);
             hideStockInModal();
             showSyncIndicator();
             loadInventory();
         } catch (e) {
             console.error(e);
-            alert('入库失败: ' + e.message);
+            alert('鍏ュ簱澶辫触: ' + e.message);
         }
     }
 
-    // ==================== 编辑库存 ====================
+    // ==================== 缂栬緫搴撳瓨 ====================
     function showEditInventoryModal(id) {
         const item = inventoryCache.find(i => i.id === id);
         if (!item) return;
@@ -1451,7 +1467,7 @@
         const cost = parseFloat(document.getElementById('editInvCost').value);
 
         if (!brand || !spec || isNaN(qty) || isNaN(cost)) {
-            alert('请填写完整信息');
+            alert('璇峰～鍐欏畬鏁翠俊鎭?);
             return;
         }
 
@@ -1463,18 +1479,18 @@
             inv.set('avgCost', cost);
             await inv.save();
 
-            alert('修改成功！');
+            alert('淇敼鎴愬姛锛?);
             hideEditInventoryModal();
             showSyncIndicator();
             loadInventory();
         } catch (e) {
             console.error(e);
-            alert('修改失败: ' + e.message);
+            alert('淇敼澶辫触: ' + e.message);
         }
     }
 
     async function deleteInventory() {
-        if (!confirm('确定要删除这个库存记录吗？此操作不可撤销！')) return;
+        if (!confirm('纭畾瑕佸垹闄よ繖涓簱瀛樿褰曞悧锛熸鎿嶄綔涓嶅彲鎾ら攢锛?)) return;
 
         const id = document.getElementById('editInvId').value;
 
@@ -1482,17 +1498,17 @@
             const inv = AV.Object.createWithoutData('Inventory', id);
             await inv.destroy();
 
-            alert('删除成功！');
+            alert('鍒犻櫎鎴愬姛锛?);
             hideEditInventoryModal();
             showSyncIndicator();
             loadInventory();
         } catch (e) {
             console.error(e);
-            alert('删除失败: ' + e.message);
+            alert('鍒犻櫎澶辫触: ' + e.message);
         }
     }
 
-    // ==================== 编辑交易记录 ====================
+    // ==================== 缂栬緫浜ゆ槗璁板綍 ====================
     let editingTx = null;
 
     function showEditTxModal(id) {
@@ -1508,12 +1524,12 @@
             document.getElementById('editTxServiceFields').style.display = 'none';
             document.getElementById('editTxBrand').value = tx.brand || '';
             document.getElementById('editTxSpec').value = tx.spec || '';
-            document.getElementById('editTxPriceLabel').textContent = tx.type === 'stock_in' ? '进货单价' : '销售单价';
+            document.getElementById('editTxPriceLabel').textContent = tx.type === 'stock_in' ? '杩涜揣鍗曚环' : '閿€鍞崟浠?;
         } else {
             document.getElementById('editTxSaleFields').style.display = 'none';
             document.getElementById('editTxServiceFields').style.display = 'block';
             document.getElementById('editTxServiceName').value = tx.serviceName || '';
-            document.getElementById('editTxPriceLabel').textContent = '总价';
+            document.getElementById('editTxPriceLabel').textContent = '鎬讳环';
         }
 
         document.getElementById('editTxQty').value = tx.quantity;
@@ -1542,7 +1558,7 @@
         } else {
             total = qty * price;
         }
-        document.getElementById('editTxTotal').textContent = '¥' + total.toFixed(0);
+        document.getElementById('editTxTotal').textContent = '楼' + total.toFixed(0);
     }
 
     async function saveEditTx() {
@@ -1552,7 +1568,7 @@
         const price = parseFloat(document.getElementById('editTxPrice').value);
 
         if (!qty || !price) {
-            alert('请填写完整信息');
+            alert('璇峰～鍐欏畬鏁翠俊鎭?);
             return;
         }
 
@@ -1586,7 +1602,7 @@
                 }
             }
 
-            alert('修改成功！');
+            alert('淇敼鎴愬姛锛?);
             hideEditTxModal();
             showSyncIndicator();
 
@@ -1597,12 +1613,12 @@
             }
         } catch (e) {
             console.error(e);
-            alert('修改失败: ' + e.message);
+            alert('淇敼澶辫触: ' + e.message);
         }
     }
 
     async function deleteTx() {
-        if (!confirm('确定要删除这条记录吗？此操作不可撤销！')) return;
+        if (!confirm('纭畾瑕佸垹闄よ繖鏉¤褰曞悧锛熸鎿嶄綔涓嶅彲鎾ら攢锛?)) return;
 
         const id = document.getElementById('editTxId').value;
         const type = document.getElementById('editTxType').value;
@@ -1620,7 +1636,7 @@
             const tx = AV.Object.createWithoutData('Transaction', id);
             await tx.destroy();
 
-            alert('删除成功！');
+            alert('鍒犻櫎鎴愬姛锛?);
             hideEditTxModal();
             showSyncIndicator();
 
@@ -1631,11 +1647,11 @@
             }
         } catch (e) {
             console.error(e);
-            alert('删除失败: ' + e.message);
+            alert('鍒犻櫎澶辫触: ' + e.message);
         }
     }
 
-    // ==================== 轮胎选择搜索逻辑 ====================
+    // ==================== 杞儙閫夋嫨鎼滅储閫昏緫 ====================
     function showTireSelectModal() {
         document.getElementById('tireSearchInput').value = '';
         renderTireSelectList(inventoryCache.filter(i => i.quantity > 0));
@@ -1650,7 +1666,7 @@
     function renderTireSelectList(list) {
         const container = document.getElementById('tireSelectList');
         if (list.length === 0) {
-            container.innerHTML = '<div class="p-8 text-center text-slate-400">未找到匹配轮胎</div>';
+            container.innerHTML = '<div class="p-8 text-center text-slate-400">鏈壘鍒板尮閰嶈疆鑳?/div>';
             return;
         }
 
@@ -1660,7 +1676,7 @@
                     <div class="font-bold text-slate-800">${i.brand}</div>
                     <div class="text-sm text-slate-500">${i.spec}</div>
                 </div>
-                <div class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-lg">余 ${i.quantity}</div>
+                <div class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-lg">浣?${i.quantity}</div>
             </div>
         `).join('');
     }
@@ -1681,15 +1697,64 @@
             document.getElementById('selectedTireDisplay').textContent = `${item.brand} - ${item.spec}`;
             document.getElementById('selectedTireDisplay').className = 'text-slate-800 font-bold';
             
-            // 更新库存显示逻辑
+            // 鏇存柊搴撳瓨鏄剧ず閫昏緫
             const info = document.getElementById('saleStockInfo');
-            info.textContent = `当前库存: ${item.quantity} 条`;
+            info.textContent = `褰撳墠搴撳瓨: ${item.quantity} 鏉;
             info.style.display = 'block';
         }
         closeTireSelectModal();
     }
 
-    // ==================== 仓库日志功能 (新增) ====================
+    // ==================== 浠撳簱鏃ュ織鍔熻兘 (鏂板) ====================
+
+    function showBossTireSelectModal() {
+        document.getElementById('bossTireSearchInput').value = '';
+        renderBossTireSelectList(inventoryCache.filter(i => i.quantity > 0));
+        document.getElementById('bossTireSelectModal').style.display = 'flex';
+        setTimeout(() => document.getElementById('bossTireSearchInput').focus(), 100);
+    }
+
+    function closeBossTireSelectModal() {
+        document.getElementById('bossTireSelectModal').style.display = 'none';
+    }
+
+    function renderBossTireSelectList(list) {
+        const container = document.getElementById('bossTireSelectList');
+        if (list.length === 0) {
+            container.innerHTML = '<div class="p-8 text-center text-slate-400">未找到匹配轮胎</div>';
+            return;
+        }
+
+        container.innerHTML = list.map(i => `
+            <div class="search-list-item flex justify-between items-center" onclick="selectBossTire('${i.id}')">
+                <div>
+                    <div class="font-bold text-slate-800">${i.brand}</div>
+                    <div class="text-sm text-slate-500">${i.spec}</div>
+                </div>
+                <div class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-lg">余: ${i.quantity}</div>
+            </div>
+        `).join('');
+    }
+
+    function filterBossTireSelect() {
+        const keyword = document.getElementById('bossTireSearchInput').value.toLowerCase();
+        const filtered = inventoryCache.filter(i =>
+            i.quantity > 0 &&
+            (i.brand.toLowerCase().includes(keyword) || i.spec.toLowerCase().includes(keyword))
+        );
+        renderBossTireSelectList(filtered);
+    }
+
+    function selectBossTire(id) {
+        const item = inventoryCache.find(i => i.id === id);
+        if (item) {
+            document.getElementById('bossSaleSelect').value = id;
+            document.getElementById('selectedBossTireDisplay').textContent = `${item.brand} - ${item.spec}`;
+            document.getElementById('selectedBossTireDisplay').className = 'text-slate-800 font-bold';
+            updateBossSaleInfo();
+        }
+        closeBossTireSelectModal();
+    }
     function showInventoryLog() {
         document.getElementById('inventoryLogModal').style.display = 'flex';
         renderInventoryLog();
@@ -1702,26 +1767,26 @@
     async function renderInventoryLog() {
         if (transactionsCache.length === 0) await loadTransactions();
 
-        // 筛选 入库 和 销售 记录
+        // 绛涢€?鍏ュ簱 鍜?閿€鍞?璁板綍
         const logs = transactionsCache.filter(t => t.type === 'stock_in' || t.type === 'sale');
         
         const container = document.getElementById('inventoryLogList');
         if (logs.length === 0) {
-            container.innerHTML = '<div class="text-center text-slate-400 py-8">暂无出入库记录</div>';
+            container.innerHTML = '<div class="text-center text-slate-400 py-8">鏆傛棤鍑哄叆搴撹褰?/div>';
             return;
         }
 
         container.innerHTML = logs.map(t => {
             const date = new Date(t.date);
-            // 格式: 2026.2.2
+            // 鏍煎紡: 2026.2.2
             const dateStr = `${date.getFullYear()}.${date.getMonth() + 1}.${date.getDate()}`;
             
             let actionHtml = '';
             if (t.type === 'stock_in') {
-                actionHtml = `<span class="tag-in">增加</span> ${t.brand} ${t.spec} x${t.quantity}`;
+                actionHtml = `<span class="tag-in">澧炲姞</span> ${t.brand} ${t.spec} x${t.quantity}`;
             } else {
-                // 销售即为使用
-                actionHtml = `<span class="tag-out">使用</span> ${t.brand} ${t.spec} x${t.quantity}`;
+                // 閿€鍞嵆涓轰娇鐢?
+                actionHtml = `<span class="tag-out">浣跨敤</span> ${t.brand} ${t.spec} x${t.quantity}`;
             }
 
             return `
@@ -1733,7 +1798,7 @@
         }).join('');
     }
 
-    // ==================== 报表功能 (升级：支持月报) ====================
+    // ==================== 鎶ヨ〃鍔熻兘 (鍗囩骇锛氭敮鎸佹湀鎶? ====================
     function setBossReportToday() {
         if (reportType === 'day') {
             const today = new Date().toISOString().slice(0, 10);
@@ -1757,13 +1822,13 @@
             btnDay.style.color = '#2563eb';
             btnMonth.className = 'flex-1 py-1.5 text-sm font-bold rounded-lg text-slate-500 transition-all';
             input.type = 'date';
-            label.textContent = '选择日期';
+            label.textContent = '閫夋嫨鏃ユ湡';
         } else {
             btnMonth.className = 'flex-1 py-1.5 text-sm font-bold rounded-lg bg-white shadow text-blue-600 transition-all';
             btnMonth.style.color = '#2563eb';
             btnDay.className = 'flex-1 py-1.5 text-sm font-bold rounded-lg text-slate-500 transition-all';
-            input.type = 'month'; // 切换为月份选择器
-            label.textContent = '选择月份';
+            input.type = 'month'; // 鍒囨崲涓烘湀浠介€夋嫨鍣?
+            label.textContent = '閫夋嫨鏈堜唤';
         }
         setBossReportToday();
     }
@@ -1777,13 +1842,13 @@
         let filteredTx = [];
 
         if (reportType === 'day') {
-            // 日报模式：匹配 YYYY-MM-DD
+            // 鏃ユ姤妯″紡锛氬尮閰?YYYY-MM-DD
             filteredTx = transactionsCache.filter(t => {
                 const txDate = new Date(t.date).toISOString().slice(0, 10);
                 return txDate === dateStr && (t.type === 'sale' || t.type === 'service' || t.type === 'other');
             });
         } else {
-            // 月报模式：匹配 YYYY-MM
+            // 鏈堟姤妯″紡锛氬尮閰?YYYY-MM
             filteredTx = transactionsCache.filter(t => {
                 const txMonth = new Date(t.date).toISOString().slice(0, 7);
                 return txMonth === dateStr && (t.type === 'sale' || t.type === 'service' || t.type === 'other');
@@ -1794,13 +1859,13 @@
         const profit = filteredTx.reduce((s, t) => s + (t.profit || 0), 0);
         const orders = filteredTx.length;
 
-        document.getElementById('reportRevenue').textContent = '¥' + revenue;
-        document.getElementById('reportProfit').textContent = '¥' + profit.toFixed(0);
+        document.getElementById('reportRevenue').textContent = '楼' + revenue;
+        document.getElementById('reportProfit').textContent = '楼' + profit.toFixed(0);
         document.getElementById('reportOrders').textContent = orders;
 
         const byEmployee = {};
         filteredTx.forEach(t => {
-            const emp = t.operator || '未知';
+            const emp = t.operator || '鏈煡';
             if (!byEmployee[emp]) {
                 byEmployee[emp] = { revenue: 0, profit: 0, orders: 0 };
             }
@@ -1809,26 +1874,26 @@
             byEmployee[emp].orders += 1;
         });
 
-        const empList = Object.entries(byEmployee).sort((a,b) => b[1].revenue - a[1].revenue); // 按营业额排序
+        const empList = Object.entries(byEmployee).sort((a,b) => b[1].revenue - a[1].revenue); // 鎸夎惀涓氶鎺掑簭
         if (empList.length === 0) {
-            document.getElementById('reportByEmployee').innerHTML = '<div class="text-slate-400 text-center py-4">暂无数据</div>';
+            document.getElementById('reportByEmployee').innerHTML = '<div class="text-slate-400 text-center py-4">鏆傛棤鏁版嵁</div>';
         } else {
             document.getElementById('reportByEmployee').innerHTML = empList.map(([name, data]) => `
                 <div class="flex justify-between items-center py-2 border-b border-slate-100 last:border-0">
                     <div>
                         <div class="font-bold">${name}</div>
-                        <div class="text-xs text-slate-500">${data.orders} 单</div>
+                        <div class="text-xs text-slate-500">${data.orders} 鍗?/div>
                     </div>
                     <div class="text-right">
-                        <div class="font-bold text-blue-600">¥${data.revenue}</div>
-                        <div class="text-xs text-emerald-600">利润 ¥${data.profit.toFixed(0)}</div>
+                        <div class="font-bold text-blue-600">楼${data.revenue}</div>
+                        <div class="text-xs text-emerald-600">鍒╂鼎 楼${data.profit.toFixed(0)}</div>
                     </div>
                 </div>
             `).join('');
         }
 
         if (filteredTx.length === 0) {
-            document.getElementById('reportRecords').innerHTML = '<div class="text-center py-8 text-slate-400">该时段暂无记录</div>';
+            document.getElementById('reportRecords').innerHTML = '<div class="text-center py-8 text-slate-400">璇ユ椂娈垫殏鏃犺褰?/div>';
         } else {
             document.getElementById('reportRecords').innerHTML = filteredTx.map(t => renderTxItem(t, true, false)).join('');
         }
@@ -1856,24 +1921,24 @@
         const revenue = dayTx.reduce((s, t) => s + (t.totalPrice || 0), 0);
         const orders = dayTx.length;
 
-        document.getElementById('empReportRevenue').textContent = '¥' + revenue;
+        document.getElementById('empReportRevenue').textContent = '楼' + revenue;
         document.getElementById('empReportOrders').textContent = orders;
 
         if (dayTx.length === 0) {
-            document.getElementById('empReportRecords').innerHTML = '<div class="text-center py-8 text-slate-400">该日期暂无记录</div>';
+            document.getElementById('empReportRecords').innerHTML = '<div class="text-center py-8 text-slate-400">璇ユ棩鏈熸殏鏃犺褰?/div>';
         } else {
             document.getElementById('empReportRecords').innerHTML = dayTx.map(t => renderTxItem(t, false, false)).join('');
         }
     }
 
-    // ==================== 同步指示器 ====================
+    // ==================== 鍚屾鎸囩ず鍣?====================
     function showSyncIndicator() {
         const indicator = document.getElementById('syncIndicator');
         indicator.style.display = 'block';
         setTimeout(() => { indicator.style.display = 'none'; }, 2000);
     }
 
-    // ==================== 初始化 ====================
+    // ==================== 鍒濆鍖?====================
     window.onload = function() {
         const saved = localStorage.getItem('tireShopUser');
         if (saved) {
